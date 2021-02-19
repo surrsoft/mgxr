@@ -6,6 +6,9 @@ export class Card extends Component<any, any> {
   }
 
   render() {
+    if (!this.props.card) {
+      return <div>Please press Show button</div>
+    }
     return (<div>
       <div>{this.props.card.title}</div>
       <div><a href={this.props.card.url} target="_blank" rel="noopener noreferrer">{this.props.card.url}</a></div>

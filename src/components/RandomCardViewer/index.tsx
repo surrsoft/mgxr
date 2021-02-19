@@ -9,6 +9,7 @@ export class RandomCardViewer extends Component<any, any> {
   render() {
     return (<div className="rc-viewer">
       <button onClick={this.props.handleShow}>Show</button>
+      <div>Показано: {this.props.countShowed} / {this.props.countAll}</div>
       <Card card={this.props.card}/>
     </div>);
   }
