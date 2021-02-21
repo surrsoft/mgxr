@@ -1,0 +1,14 @@
+.app__settings {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+}
+
+.settings__button {
+    margin-left: 8px;
+}
+
+.settings__loading {
+    color: green;
+}

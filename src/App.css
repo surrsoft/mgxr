@@ -1,11 +1,13 @@
 .App {
-  padding: 24px;
+    padding: 24px;
 }
 
 .appRoutes {
-  display: flex;
-  column-gap: 16px;
+    display: flex;
+    column-gap: 16px;
 }
 
-
+.app__error_string {
+    color: red;
+}
 

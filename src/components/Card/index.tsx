@@ -1,28 +1,44 @@
 import { Component } from 'react';
 import './card.css';
+import { CardsB } from '../../api/cards-api';
 
 export class Card extends Component<any, any> {
   constructor(props: any) {
     super(props);
+    this.handleLinkPress = this.handleLinkPress.bind(this);
+  }
+
+  // @ts-ignore
+  async handleLinkPress(e) {
+    const url = e.target.href;
+    const {card} = this.props;
+    await CardsB.update(card.tid, card);
   }
 
   render() {
-    if (!this.props.card) {
+    const {card} = this.props;
+    if (!card) {
       return <div>card is null</div>
     }
-    // ---
-    let url = this.props.card.url;
+    // --- обрезка отображаемого url
+    let urlName = card.url;
     const ln = 47;
-    if (url && url.length > ln) {
-      url = url.substr(0, ln) + '...';
+    if (urlName && urlName.length > ln) {
+      urlName = urlName.substr(0, ln) + '...';
     }
     // ---
     return (<div className="card">
-      <div className="card__title">{this.props.card.title}</div>
-      <div className="card__link"><a href={this.props.card.url} target="_blank" rel="noopener noreferrer">{url}</a>
+      <div className="card__title">{card.title}</div>
+      <div className="card__link">
+        <a href={card.url} onClick={this.handleLinkPress} target="_blank" rel="noopener noreferrer">{urlName}</a>
       </div>
-      <div>{this.props.card.comm}</div>
-      <div>{this.props.card.body}</div>
+      <div>{card.comm}</div>
+      <div>{card.body}</div>
+      <div className="card__infos">
+        <div>Число переходов: {card.trans_count}</div>
+      </div>
     </div>);
   }
+
+
 }

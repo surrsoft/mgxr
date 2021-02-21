@@ -1,9 +1,9 @@
 import React from 'react';
 import './App.css';
 import { RandomCardViewer } from './components/RandomCardViewer';
-import { randomExcept } from './utils/utils';
+import { LSApiKey, randomExcept } from './utils/utils';
 import { CardsB } from './api/cards-api';
-import { Router, Link, Switch, Route } from 'react-router-dom';
+import { Link, Route, Router, Switch } from 'react-router-dom';
 import { createBrowserHistory } from "history";
 import { MAirtable } from './api/airtable-api';
 import { Settings } from './components/Settings';
@@ -23,7 +23,9 @@ class App extends React.Component<any, any> {
       countShowed: 0,
       countAll: 0,
       showedIxs: [],
-      isLoading: true
+      isLoading: true,
+      isApiKeySetted: false,
+      errorStr: ''
     }
     this.do = this.do.bind(this);
   }
@@ -44,21 +46,32 @@ class App extends React.Component<any, any> {
   }
 
   async componentDidMount() {
-    try {
-      const records = await MAirtable.recordsGet();
-      console.log('!!-!!-!! 2358-10 records {210220235848}\n', records); // del+
-      this.cardsB = new CardsB(records);
-      this.setState({isLoading: false, countAll: this.cardsB.countAllGet()});
-    } catch (err) {
-      throw new Error(err);
+    const apiKey = LSApiKey.apiKeyGet()
+    if (apiKey) {
+      try {
+        this.setState({isApiKeySetted: true});
+        // ---
+        const records = await MAirtable.recordsGet();
+        this.cardsB = new CardsB(records);
+        this.setState({
+          isLoading: false,
+          countAll: this.cardsB.countAllGet()
+        });
+      } catch (err) {
+        if (err.statusCode === 401 && err.message.includes('provide valid api key')) {
+          this.setState({errorStr: 'invalid Airtable API Key'})
+        } else {
+          throw new Error(err);
+        }
+      }
     }
   }
 
   render() {
+    const {isApiKeySetted, isLoading, errorStr} = this.state;
     return (
       <Router history={customHistory}>
         <div className="App">
-          <div>rev.2</div>
           <div className="appRoutes">
             <Link to="/">Главная</Link>
             <Link to="/settings">Настройки</Link>
@@ -66,11 +79,18 @@ class App extends React.Component<any, any> {
           <Switch>
             <Route path="/" exact>
               {
-                this.state.isLoading ?
-                  <div>Loading...</div> :
-                  <RandomCardViewer countAll={this.state.countAll} countShowed={this.state.countShowed}
-                                    card={this.state.card}
-                                    handleShow={() => this.handleShow()}/>
+                errorStr ? <div className="app__error_string">{errorStr}</div>
+                  : isLoading ?
+                  (<div>
+                    {
+                      isApiKeySetted ?
+                        <div>Loading...</div> :
+                        <div>please provide "Airtable API Key" at "Settings"</div>
+                    }
+                  </div>)
+                  : <RandomCardViewer countAll={this.state.countAll} countShowed={this.state.countShowed}
+                                      card={this.state.card}
+                                      handleShow={() => this.handleShow()}/>
               }
             </Route>
             <Route path="/settings">

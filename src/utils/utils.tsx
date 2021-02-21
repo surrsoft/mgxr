@@ -1,11 +1,31 @@
 import _ from 'lodash';
+import { MGXR_LS_AIRTABLE_API_KEY } from '../consts';
+
+export class LSApiKey {
+  static apiKeyGet(): string | null {
+    return localStorage.getItem(MGXR_LS_AIRTABLE_API_KEY)
+  }
+
+  static apiKeySet(apiKey?: string): boolean {
+    if (isEmptyOrWhitespaces(apiKey)) {
+      return false
+    } else if (apiKey) {
+      localStorage.setItem(MGXR_LS_AIRTABLE_API_KEY, apiKey);
+      return true
+    }
+    return false
+  }
+}
 
 export class TpCard {
   constructor(
     readonly title?: string,
     readonly url?: string,
     readonly comm?: string,
-    readonly body?: string
+    readonly body?: string,
+    readonly id?: string,
+    readonly tid?: string,
+    readonly trans_count: number = 0
   ) {
   }
 }
@@ -43,3 +63,11 @@ export function randomExcept(ix: number, arrExcept: [number]): number {
   const rnd = _.random(arr0.length - 1);
   return arr0[rnd];
 }
+
+/**
+ * ID [210217114100], rev.1.0 2021-02-17
+ */
+export function isEmptyOrWhitespaces(str?: string) {
+  return (!str || str.length === 0 || /^\s*$/.test(str))
+}
+

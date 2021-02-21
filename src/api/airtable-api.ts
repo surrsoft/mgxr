@@ -1,14 +1,20 @@
 import Airtable from 'airtable';
 import Record from 'airtable/lib/record';
-import { CONF_AIRTABLE_API_KEY, CONF_AIRTABLE_BASE, CONF_AIRTABLE_TABLE_NAME } from '../consts';
+import { CONF_AIRTABLE_BASE, CONF_AIRTABLE_TABLE_NAME } from '../consts';
+import { LSApiKey } from '../utils/utils';
 
 export class MAirtable {
 
   static init() {
-    const dc = Airtable.default_config()
-    dc.apiKey = CONF_AIRTABLE_API_KEY
-    dc.endpointUrl = 'https://api.airtable.com'
-    Airtable.configure(dc)
+    const apiKey = LSApiKey.apiKeyGet()
+    if (!apiKey) {
+      alert('please add "Airtable API Key" at "Settings"')
+    } else {
+      const dc = Airtable.default_config()
+      dc.apiKey = apiKey
+      dc.endpointUrl = 'https://api.airtable.com'
+      Airtable.configure(dc)
+    }
   }
 
   /**
@@ -28,8 +34,6 @@ export class MAirtable {
         .select(selectCfg)
         .eachPage(
           function page(records, fetchNextPage) {
-            console.count('page')
-            console.log('!!-!!-!! records.length {210221000727}\n', records.length); // del+
             records.forEach(function (record) {
               ret.push(record)
             });
@@ -41,6 +45,27 @@ export class MAirtable {
               reject(err)
             }
             resolve(ret)
+          }
+        )
+    });
+  }
+
+  static async recordUpdate(tid: number, fields: any) {
+    console.log(`!!-!!-!! 0003-10 -> :::::::::::::: recordUpdate() {210222000258}:${Date.now()}`); // del+
+    console.log('!!-!!-!! 0003-20 tid {210222000307}\n', tid); // del+
+    console.log('!!-!!-!! 0003-30 fields {210222000322}\n', fields); // del+
+    return new Promise((resolve, reject) => {
+      const updOj = {id: tid, fields}
+      console.log('!!-!!-!! 0003-40 updOj {210222000414}\n', updOj); // del+
+      Airtable
+        .base(CONF_AIRTABLE_BASE)(CONF_AIRTABLE_TABLE_NAME)
+        .update(
+          [updOj],
+          function (err: any, records: Record[] | undefined) {
+            if (err) {
+              reject(err);
+            }
+            resolve(records);
           }
         )
     });
