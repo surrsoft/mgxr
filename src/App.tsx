@@ -2,10 +2,11 @@ import React from 'react';
 import './App.css';
 import { RandomCardViewer } from './components/RandomCardViewer';
 import { randomExcept } from './utils/utils';
-import { Cards, CardsB } from './api/cards-api';
+import { CardsB } from './api/cards-api';
 import { Router, Link, Switch, Route } from 'react-router-dom';
 import { createBrowserHistory } from "history";
 import { MAirtable } from './api/airtable-api';
+import { Settings } from './components/Settings';
 
 const customHistory = createBrowserHistory();
 
@@ -58,9 +59,12 @@ class App extends React.Component<any, any> {
       <Router history={customHistory}>
         <div className="App">
           <div>rev.2</div>
-          <Link to="/">App</Link>
+          <div className="appRoutes">
+            <Link to="/">Главная</Link>
+            <Link to="/settings">Настройки</Link>
+          </div>
           <Switch>
-            <Route path="/">
+            <Route path="/" exact>
               {
                 this.state.isLoading ?
                   <div>Loading...</div> :
@@ -68,6 +72,9 @@ class App extends React.Component<any, any> {
                                     card={this.state.card}
                                     handleShow={() => this.handleShow()}/>
               }
+            </Route>
+            <Route path="/settings">
+              <Settings/>
             </Route>
           </Switch>
         </div>
