@@ -1,0 +1,15 @@
+.card {
+    border: 1px solid black;
+    border-radius: 4px;
+    padding: 18px 20px 32px 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.card__title {
+    font-size: 20px;
+    margin-bottom: 16px;
+    text-shadow: 1px 1px silver;
+}
+
+.card__link {
+}

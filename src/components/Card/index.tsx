@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import './card.css';
 
 export class Card extends Component<any, any> {
   constructor(props: any) {
@@ -7,11 +8,19 @@ export class Card extends Component<any, any> {
 
   render() {
     if (!this.props.card) {
-      return <div>Please press Show button</div>
+      return <div>card is null</div>
     }
-    return (<div>
-      <div>{this.props.card.title}</div>
-      <div><a href={this.props.card.url} target="_blank" rel="noopener noreferrer">{this.props.card.url}</a></div>
+    // ---
+    let url = this.props.card.url;
+    const ln = 47;
+    if (url && url.length > ln) {
+      url = url.substr(0, ln) + '...';
+    }
+    // ---
+    return (<div className="card">
+      <div className="card__title">{this.props.card.title}</div>
+      <div className="card__link"><a href={this.props.card.url} target="_blank" rel="noopener noreferrer">{url}</a>
+      </div>
       <div>{this.props.card.comm}</div>
       <div>{this.props.card.body}</div>
     </div>);
