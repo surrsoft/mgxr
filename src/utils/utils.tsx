@@ -25,7 +25,9 @@ export class TpCard {
     readonly body?: string,
     readonly id?: string,
     readonly tid?: string,
-    readonly trans_count: number = 0
+    readonly trans_count: number = 0,
+    readonly trans_date_last?: string,
+    readonly show_date_last?: string,
   ) {
   }
 }

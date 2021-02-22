@@ -1,12 +1,14 @@
 import React from 'react';
 import './App.css';
 import { RandomCardViewer } from './components/RandomCardViewer';
-import { LSApiKey, randomExcept } from './utils/utils';
+import { LSApiKey, randomExcept, TpCard } from './utils/utils';
 import { CardsB } from './api/cards-api';
 import { Link, Route, Router, Switch } from 'react-router-dom';
 import { createBrowserHistory } from "history";
 import { MAirtable } from './api/airtable-api';
 import { Settings } from './components/Settings';
+import { isEmpty as _isEmpty } from 'lodash';
+import dayjs from 'dayjs';
 
 const customHistory = createBrowserHistory();
 
@@ -30,15 +32,22 @@ class App extends React.Component<any, any> {
     this.do = this.do.bind(this);
   }
 
-  handleShow() {
+  async handleShow() {
     const rnd = randomExcept(this.state.countAll - 1, this.state.showedIxs);
     if (rnd !== -1) {
       const arr1 = [...this.state.showedIxs, rnd];
-      this.setState({
-        card: this.cardsB ? this.cardsB.getByIndex(rnd) : {},
-        countShowed: this.state.countShowed + 1,
-        showedIxs: arr1
-      })
+      if (this.cardsB) {
+        const card: TpCard = this.cardsB.getByIndex(rnd);
+        this.setState({
+          card,
+          countShowed: this.state.countShowed + 1,
+          showedIxs: arr1
+        })
+        // ---
+        const card0 = {...card, [CardsB.FIELD_SHOW_DATE_LAST]: dayjs().format('YYYY-MM-DD')};
+        console.log('!!-!!-!! card0 {210222121922}\n', card0); // del+
+        await CardsB.update(card.tid || '', card0);
+      }
     }
   }
 
@@ -51,6 +60,7 @@ class App extends React.Component<any, any> {
       try {
         this.setState({isApiKeySetted: true});
         // ---
+        // [[210222113321]]
         const records = await MAirtable.recordsGet();
         this.cardsB = new CardsB(records);
         this.setState({

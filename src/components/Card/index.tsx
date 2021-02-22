@@ -1,10 +1,21 @@
 import { Component } from 'react';
 import './card.css';
 import { TpCard } from '../../utils/utils';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import isBetween from 'dayjs/plugin/isBetween';
 
 export interface CardProps {
   card: TpCard,
   handleLinkClick: (card: TpCard) => void
+}
+
+function DateFieldShow(name: string, dateSt?: string) {
+  return (<div>
+    {name}: {dateSt ?
+    (`${dateSt} (прошло дней: ${dayjs().diff(dateSt, 'day')})`)
+    : '-'}
+  </div>)
 }
 
 export class Card extends Component<CardProps, any> {
@@ -12,6 +23,8 @@ export class Card extends Component<CardProps, any> {
   constructor(props: CardProps) {
     super(props);
     this.handleLinkPress = this.handleLinkPress.bind(this);
+    dayjs.extend(relativeTime)
+    dayjs.extend(isBetween)
   }
 
   // @ts-ignore
@@ -25,12 +38,6 @@ export class Card extends Component<CardProps, any> {
     if (!card) {
       return <div>card is null</div>
     }
-    // --- обрезка отображаемого url
-    let urlName = card.url;
-    const ln = 47;
-    if (urlName && urlName.length > ln) {
-      urlName = urlName.substr(0, ln) + '...';
-    }
     // ---
     return (<div className="card">
       <div className="card__title">{card.title}</div>
@@ -40,13 +47,15 @@ export class Card extends Component<CardProps, any> {
           onClick={this.handleLinkPress}
           target="_blank"
           rel="noopener noreferrer">
-          {urlName}
+          {card.url}
         </a>
       </div>
       <div>{card.comm}</div>
       <div>{card.body}</div>
       <div className="card__infos">
         <div>Число переходов: {card.trans_count}</div>
+        {DateFieldShow('Дата последнего перехода: ', card.trans_date_last)}
+        {DateFieldShow('Дата последнего показа: ', card.show_date_last)}
       </div>
     </div>);
   }
