@@ -1,18 +1,23 @@
 import { Component } from 'react';
 import './card.css';
-import { CardsB } from '../../api/cards-api';
+import { TpCard } from '../../utils/utils';
 
-export class Card extends Component<any, any> {
-  constructor(props: any) {
+export interface CardProps {
+  card: TpCard,
+  handleLinkClick: (card: TpCard) => void
+}
+
+export class Card extends Component<CardProps, any> {
+
+  constructor(props: CardProps) {
     super(props);
     this.handleLinkPress = this.handleLinkPress.bind(this);
   }
 
   // @ts-ignore
   async handleLinkPress(e) {
-    const url = e.target.href;
-    const {card} = this.props;
-    await CardsB.update(card.tid, card);
+    const {card, handleLinkClick} = this.props;
+    handleLinkClick(card);
   }
 
   render() {
@@ -30,7 +35,13 @@ export class Card extends Component<any, any> {
     return (<div className="card">
       <div className="card__title">{card.title}</div>
       <div className="card__link">
-        <a href={card.url} onClick={this.handleLinkPress} target="_blank" rel="noopener noreferrer">{urlName}</a>
+        <a
+          href={card.url}
+          onClick={this.handleLinkPress}
+          target="_blank"
+          rel="noopener noreferrer">
+          {urlName}
+        </a>
       </div>
       <div>{card.comm}</div>
       <div>{card.body}</div>
@@ -39,6 +50,5 @@ export class Card extends Component<any, any> {
       </div>
     </div>);
   }
-
 
 }

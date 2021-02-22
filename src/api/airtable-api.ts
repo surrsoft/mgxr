@@ -50,7 +50,7 @@ export class MAirtable {
     });
   }
 
-  static async recordUpdate(tid: number, fields: any) {
+  static async recordUpdate(tid: string, fields: any) {
     console.log(`!!-!!-!! 0003-10 -> :::::::::::::: recordUpdate() {210222000258}:${Date.now()}`); // del+
     console.log('!!-!!-!! 0003-20 tid {210222000307}\n', tid); // del+
     console.log('!!-!!-!! 0003-30 fields {210222000322}\n', fields); // del+

@@ -73,11 +73,11 @@ class App extends React.Component<any, any> {
       <Router history={customHistory}>
         <div className="App">
           <div className="appRoutes">
-            <Link to="/">Главная</Link>
+            <Link to="/mgxr">Главная</Link>
             <Link to="/settings">Настройки</Link>
           </div>
           <Switch>
-            <Route path="/" exact>
+            <Route path={["/", "/mgxr"]} exact>
               {
                 errorStr ? <div className="app__error_string">{errorStr}</div>
                   : isLoading ?

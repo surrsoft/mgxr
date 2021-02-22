@@ -50,7 +50,7 @@ export class CardsB {
     )
   }
 
-  static async update(tid: number, card: TpCard) {
+  static async update(tid: string, card: TpCard) {
     const fields = {
       [CardsB.FIELD_TRANS_COUNT]: card.trans_count + 1
     }
