@@ -1,5 +1,10 @@
-export class FnegResult {
-  constructor(readonly success: boolean = false, readonly code: string = '', readonly comm: string = '') {
+export class FnegResult<T> {
+  constructor(
+    readonly success: boolean = false,
+    readonly code: string = '',
+    readonly comm: string = '',
+    readonly value?: T
+  ) {
   }
 
   isValid() {

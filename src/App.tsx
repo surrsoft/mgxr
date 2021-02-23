@@ -9,6 +9,7 @@ import { MAirtable } from './api/airtable-api';
 import { Settings } from './components/Settings';
 import { isEmpty as _isEmpty } from 'lodash';
 import dayjs from 'dayjs';
+import { PageDebug } from './components/PageDebug';
 
 const customHistory = createBrowserHistory();
 
@@ -85,6 +86,7 @@ class App extends React.Component<any, any> {
           <div className="appRoutes">
             <Link to="/mgxr">Главная</Link>
             <Link to="/settings">Настройки</Link>
+            <Link to="/debug">Debug</Link>
           </div>
           <Switch>
             <Route path={["/", "/mgxr"]} exact>
@@ -103,8 +105,11 @@ class App extends React.Component<any, any> {
                                       handleShow={() => this.handleShow()}/>
               }
             </Route>
-            <Route path="/settings">
+            <Route path={["/settings", "/mgxr/settings"]}>
               <Settings/>
+            </Route>
+            <Route path={["/debug", "/mgxr/debug"]}>
+              <PageDebug/>
             </Route>
           </Switch>
         </div>

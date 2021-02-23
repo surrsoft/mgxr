@@ -1,6 +1,6 @@
 import Airtable from 'airtable';
 import Record from 'airtable/lib/record';
-import { CONF_AIRTABLE_BASE, CONF_AIRTABLE_TABLE_NAME } from '../consts';
+import { CONF_AIRTABLE_DB_NAME, CONF_AIRTABLE_TABLE_NAME } from '../consts';
 import { LSApiKey } from '../utils/utils';
 
 export class MAirtable {
@@ -30,7 +30,7 @@ export class MAirtable {
         selectCfg.maxRecords = maxRecords
       }
       Airtable
-        .base(CONF_AIRTABLE_BASE)(CONF_AIRTABLE_TABLE_NAME)
+        .base(CONF_AIRTABLE_DB_NAME)(CONF_AIRTABLE_TABLE_NAME)
         .select(selectCfg)
         .eachPage(
           function page(records, fetchNextPage) {
@@ -58,7 +58,7 @@ export class MAirtable {
       const updOj = {id: tid, fields}
       console.log('!!-!!-!! 0003-40 updOj {210222000414}\n', updOj); // del+
       Airtable
-        .base(CONF_AIRTABLE_BASE)(CONF_AIRTABLE_TABLE_NAME)
+        .base(CONF_AIRTABLE_DB_NAME)(CONF_AIRTABLE_TABLE_NAME)
         .update(
           [updOj],
           function (err: any, records: Record[] | undefined) {
