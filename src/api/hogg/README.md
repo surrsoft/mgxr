@@ -1,11 +1,2 @@
-* [[hogg]] пробная альтернатива [fneg]
+* [[hogg]] - универсальное отражение реляционной БД. Поле понятий - база данных, таблица, ряд, столбец, ячейка, ...
 
-# Обозначения
-* Cnn - connection
-* Dbe - database
-* Tbe - table
-* Row - row
-* Tup - tuple, кортеж
-* Con - column
-* Cee - cell
-* Vau - value
