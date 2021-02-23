@@ -1,6 +1,6 @@
 import { HoggCellNT } from '../interfaces/HoggCellNT';
 
-export class MCee implements HoggCellNT {
+export class BaseCell implements HoggCellNT {
   private columnName: string = '';
   private value: string = '';
 

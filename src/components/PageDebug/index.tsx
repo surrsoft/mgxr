@@ -1,37 +1,67 @@
 import { Component } from 'react';
 import './styles.css';
-import { AirtableAdapter } from '../../api/fneg/AirtableAdapter';
 import { LSApiKey } from '../../utils/utils';
 import { CONF_AIRTABLE_DB_NAME, CONF_AIRTABLE_TABLE_NAME } from '../../consts';
-import { FnegTable } from '../../api/fneg/FnegTable';
-import { FnegTableName } from '../../api/fneg/FnegTableName';
-import { FnegRow } from '../../api/fneg/FnegRow';
 import { HoggTupleNT } from '../../api/hogg/interfaces/HoggTupleNT';
-import { HoggConnectionAirtable } from '../../api/hogg/connections/hogg-connection-airtable';
+import { HoggOffsetCount } from '../../api/hogg/connections/HoggOffsetCount';
+import { HoggConnectionAirtable } from '../../api/hogg/connections/HoggConnectionAirtable';
+import { HoggCellNT } from '../../api/hogg/interfaces/HoggCellNT';
+import { HoggResult } from '../../api/hogg/utils/HoggResult';
+import { BaseCell } from '../../api/hogg/base-implements/BaseCell';
+import { BaseTuple } from '../../api/hogg/base-implements/BaseTuple';
+import { HoggConnectionNT } from '../../api/hogg/interfaces/HoggConnectionNT';
 
 export class PageDebug extends Component<any, any> {
+  private connection?: HoggConnectionAirtable;
 
-  async np() {
-    console.log(`!!-!!-!! 1741-10 -> :::::::::::::: np() {210222174129}:${Date.now()}`); // del+
-    const adapter = new AirtableAdapter(LSApiKey.apiKeyGet() || '', CONF_AIRTABLE_DB_NAME)
-    const fnegTableName = new FnegTableName(adapter, CONF_AIRTABLE_TABLE_NAME);
-    const table = new FnegTable(adapter, fnegTableName)
-    const rows: FnegRow[] = await table.rowsGet(3);
-    console.log('!!-!!-!! 2022-10 rows {210222202256}\n', rows); // del+
-  }
-
-  async np2() {
-    const cnn = new HoggConnectionAirtable();
-    cnn.init({apiKey: LSApiKey.apiKeyGet() || ''})
-    const res: HoggTupleNT[] = await cnn
-      .db(CONF_AIRTABLE_DB_NAME)
-      .table(CONF_AIRTABLE_TABLE_NAME)
-      .query(0, 0);
+  async query() {
+    const connection = new HoggConnectionAirtable();
+    connection.init({apiKey: LSApiKey.apiKeyGet() || ''})
+    const res: HoggTupleNT[] | undefined = await this.connection?.query(new HoggOffsetCount(false, 0, 10));
     console.log('!!-!!-!! res {210223104514}\n', res); // del+
   }
 
+  async update() {
+    const tuple = new BaseTuple()
+      .cellAdd(new BaseCell().create('tid', 'rec04BflzOVX54PWs'))
+      .cellAdd(new BaseCell().create('comm', '1-1-3'))
+    // ---
+    const res: HoggResult<boolean> | undefined = await this.connection?.update([tuple])
+    console.log('!!-!!-!! res {210223104515}\n', res); // del+
+  }
+
+  async create() {
+    const tuples = [
+      new BaseTuple().cellAdd(new BaseCell().create('title', 'mmm')).cellAdd(new BaseCell().create('comm', '1-1-4')),
+      new BaseTuple().cellAdd(new BaseCell().create('title', 'mmm-2')).cellAdd(new BaseCell().create('comm', '1-1-5'))
+    ]
+    // ---
+    const res: HoggResult<boolean> | undefined = await this.connection?.create(tuples)
+    console.log('!!-!!-!! res {210223104515}\n', res); // del+
+  }
+
+  async delete() {
+    const res = await this.connection?.delete(['recgsvfjiB1rDtNP5', 'recNGoZaZe7pPfzOH'])
+    console.log('!!-!!-!! res {210223204510}\n', res); // del+
+  }
+
+  componentDidMount() {
+    this.connection = new HoggConnectionAirtable();
+    this.connection.init({apiKey: LSApiKey.apiKeyGet() || ''});
+    this.connection
+      .db(CONF_AIRTABLE_DB_NAME)
+      .table(CONF_AIRTABLE_TABLE_NAME);
+  }
+
   nx() {
-    return <button onClick={() => this.np2()}>DO</button>
+    return (
+      <div>
+        <button onClick={() => this.query()}>Query</button>
+        <button onClick={() => this.update()}>Update</button>
+        <button onClick={() => this.create()}>Create</button>
+        <button onClick={() => this.delete()}>Delete</button>
+      </div>
+    )
   }
 
   render() {
