@@ -8,42 +8,6 @@ import { BaseCell } from '../base-implements/BaseCell';
 import { HoggOffsetCount } from './HoggOffsetCount';
 import { HoggResult } from '../utils/HoggResult';
 
-function updConfsGet(tuples: HoggTupleNT[]) {
-  const updConfs: any[] = [];
-  const isOk = tuples.every(tuple => { // LOOP
-    const cells: HoggCellNT[] = tuple.cellsGet();
-    const updConf: any = {id: '', fields: {}}
-    cells.forEach(cell => { // LOOP-2
-      const fieldName = cell.columnNameGet()
-      if (fieldName === 'tid') {
-        updConf.id = cell.valueGet();
-      } else {
-        updConf.fields[fieldName] = cell.valueGet()
-      }
-    }) // LOOP-2
-    if (!updConf.id) {
-      return false; // stop loop
-    }
-    updConfs.push(updConf);
-    return true;
-  }) // LOOP
-  return {updConfs, isOk};
-}
-
-function updConfsAtCreateGet(tuples: HoggTupleNT[]) {
-  const updConfs: any[] = [];
-  tuples.forEach(tuple => { // LOOP
-    const cells: HoggCellNT[] = tuple.cellsGet();
-    const updConf: any = {fields: {}}
-    cells.forEach(cell => { // LOOP-2
-      const fieldName = cell.columnNameGet()
-      updConf.fields[fieldName] = cell.valueGet()
-    }) // LOOP-2
-    updConfs.push(updConf);
-    return true;
-  }) // LOOP
-  return updConfs;
-}
 
 export class HoggConnectionAirtable implements HoggConnectionNT {
 
@@ -196,3 +160,39 @@ export class HoggConnectionAirtable implements HoggConnectionNT {
 
 }
 
+function updConfsGet(tuples: HoggTupleNT[]) {
+  const updConfs: any[] = [];
+  const isOk = tuples.every(tuple => { // LOOP
+    const cells: HoggCellNT[] = tuple.cellsGet();
+    const updConf: any = {id: '', fields: {}}
+    cells.forEach(cell => { // LOOP-2
+      const fieldName = cell.columnNameGet()
+      if (fieldName === 'tid') {
+        updConf.id = cell.valueGet();
+      } else {
+        updConf.fields[fieldName] = cell.valueGet()
+      }
+    }) // LOOP-2
+    if (!updConf.id) {
+      return false; // stop loop
+    }
+    updConfs.push(updConf);
+    return true;
+  }) // LOOP
+  return {updConfs, isOk};
+}
+
+function updConfsAtCreateGet(tuples: HoggTupleNT[]) {
+  const updConfs: any[] = [];
+  tuples.forEach(tuple => { // LOOP
+    const cells: HoggCellNT[] = tuple.cellsGet();
+    const updConf: any = {fields: {}}
+    cells.forEach(cell => { // LOOP-2
+      const fieldName = cell.columnNameGet()
+      updConf.fields[fieldName] = cell.valueGet()
+    }) // LOOP-2
+    updConfs.push(updConf);
+    return true;
+  }) // LOOP
+  return updConfs;
+}
