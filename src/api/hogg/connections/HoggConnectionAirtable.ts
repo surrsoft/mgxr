@@ -30,7 +30,7 @@ function updConfsGet(tuples: HoggTupleNT[]) {
   return {updConfs, isOk};
 }
 
-function updConfsAtCrateGet(tuples: HoggTupleNT[]) {
+function updConfsAtCreateGet(tuples: HoggTupleNT[]) {
   const updConfs: any[] = [];
   tuples.forEach(tuple => { // LOOP
     const cells: HoggCellNT[] = tuple.cellsGet();
@@ -66,7 +66,7 @@ export class HoggConnectionAirtable implements HoggConnectionNT {
     return this;
   }
 
-  private convertRecord(record: Record): HoggTupleNT {
+  private static convertRecord(record: Record): HoggTupleNT {
     const {fields} = record;
     const cees: HoggCellNT[] = [];
     for (const [key, value] of Object.entries(fields)) {
@@ -104,7 +104,7 @@ export class HoggConnectionAirtable implements HoggConnectionNT {
             records.forEach(function (record) {
               counter++;
               if (counter > offsetCount.offset) {
-                const tup = _th.convertRecord(record);
+                const tup = HoggConnectionAirtable.convertRecord(record);
                 ret.push(tup)
               }
             });
@@ -164,7 +164,7 @@ export class HoggConnectionAirtable implements HoggConnectionNT {
       return new HoggResult<boolean>(false, '[[210223170254-2]]', 'tuples is empty')
     } else {
       // ---
-      const createData = updConfsAtCrateGet(tuples);
+      const createData = updConfsAtCreateGet(tuples);
       // ---
       try {
         await Airtable
