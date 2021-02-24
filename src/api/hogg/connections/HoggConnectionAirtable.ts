@@ -15,18 +15,18 @@ export class HoggConnectionAirtable implements HoggConnectionNT {
   private columnNames: string[] = [];
   private tableName: string = '';
 
+  db(dbName: string): HoggConnectionNT {
+    this.dbName = dbName;
+    return this;
+  }
+
+  table(tableName: string): HoggConnectionNT {
+    this.tableName = tableName;
+    return this;
+  }
+
   columns(columnNames: string[]): HoggConnectionNT {
     this.columnNames = columnNames;
-    return this;
-  }
-
-  db(dbeName: string): HoggConnectionNT {
-    this.dbName = dbeName;
-    return this;
-  }
-
-  table(tbeName: string): HoggConnectionNT {
-    this.tableName = tbeName;
     return this;
   }
 
@@ -44,7 +44,6 @@ export class HoggConnectionAirtable implements HoggConnectionNT {
 
   // TODO учесть columnNames
   async query(offsetCount: HoggOffsetCount): Promise<HoggTupleNT[]> {
-    const _th = this;
     return new Promise((resolve, reject) => {
       const ret: HoggTupleNT[] = [];
       const selectCfg = {}
@@ -53,10 +52,13 @@ export class HoggConnectionAirtable implements HoggConnectionNT {
         if (maxRecords > 0) {
           // @ts-ignore
           selectCfg.maxRecords = maxRecords;
-          // ---
           // @ts-ignore
           selectCfg.pageSize = maxRecords > 100 ? 100 : maxRecords;
         }
+      }
+      if(this.columnNames && this.columnNames.length > 0) {
+        // @ts-ignore
+        selectCfg.fields = this.columnNames;
       }
       let counter = 0;
       Airtable

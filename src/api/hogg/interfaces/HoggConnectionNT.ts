@@ -7,6 +7,11 @@ export interface HoggConnectionNT {
 
   table(tableName: string): HoggConnectionNT
 
+  /**
+   * Имена столбцов значения которых необходимо получить. Если не имена не передаются, то подразумевается необходимость
+   * получить значения всех столбцов
+   * @param columnNames
+   */
   columns(columnNames: string[]): HoggConnectionNT
 
   /**

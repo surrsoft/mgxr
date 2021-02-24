@@ -15,7 +15,9 @@ export class PageDebug extends Component<any, any> {
   async query() {
     const connection = new HoggConnectionAirtable();
     connection.init({apiKey: LSApiKey.apiKeyGet() || ''})
-    const res: HoggTupleNT[] | undefined = await this.connection?.query(new HoggOffsetCount(false, 0, 10));
+    const res: HoggTupleNT[] | undefined = await this.connection
+      ?.columns(['id'])
+      .query(new HoggOffsetCount(false, 0, 10));
     console.log('!!-!!-!! res {210223104514}\n', res); // del+
   }
 
