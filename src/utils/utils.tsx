@@ -73,3 +73,9 @@ export function isEmptyOrWhitespaces(str?: string) {
   return (!str || str.length === 0 || /^\s*$/.test(str))
 }
 
+export function utilPathGet(name?: string): string[] {
+  if (!name) {
+    return ["/", "/mgxr"]
+  }
+  return [`/${name}`, `/mgxr/${name}`]
+}
