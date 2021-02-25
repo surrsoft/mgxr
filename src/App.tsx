@@ -1,15 +1,13 @@
 import React from 'react';
 import './App.css';
-import { RandomCardViewer } from './components/RandomCardViewer';
-import { utilPathGet, LSApiKey, randomExcept, TpCard } from './utils/utils';
-import { CardsB } from './api/cards-api';
-import { Link, Route, Router, Switch } from 'react-router-dom';
+import { utilPathGet } from './utils/utils';
+import { NavLink, Route, Router, Switch } from 'react-router-dom';
 import { createBrowserHistory } from "history";
 import { MAirtable } from './api/airtable-api';
 import { Settings } from './components/Settings';
-import dayjs from 'dayjs';
 import { PageDebug } from './components/PageDebug';
 import { PageNews } from './components/PageNews';
+import { PageUarw } from './components/PageUarw';
 
 const customHistory = createBrowserHistory();
 
@@ -17,18 +15,19 @@ MAirtable.init();
 
 class App extends React.Component<any, any> {
 
-
   render() {
 
     return (
       <Router history={customHistory}>
         <div className="App">
           <div className="appRoutes">
-            <Link to="/mgxr">Главная</Link>
-            <Link to="/news">Новости</Link>
-            <Link to="/settings">Настройки</Link>
-            <Link to="/debug">Debug</Link>
+            <NavLink to="/mgxr" activeClassName="active-link">Главная</NavLink>
+            <NavLink to="/uarw" activeClassName="active-link">"Карточки"</NavLink>
+            <NavLink to="/news" activeClassName="active-link">"Новости"</NavLink>
+            <NavLink to="/settings" activeClassName="active-link">Настройки</NavLink>
+            <NavLink to="/debug" activeClassName="active-link">Debug</NavLink>
           </div>
+          {/* // --- */}
           <Switch>
             <Route path={utilPathGet()} exact>
               <div>Главная</div>
@@ -40,7 +39,10 @@ class App extends React.Component<any, any> {
               <PageDebug/>
             </Route>
             <Route path={utilPathGet('news')} exact>
-              <PageNews />
+              <PageNews/>
+            </Route>
+            <Route path={utilPathGet('uarw')} exact>
+              <PageUarw/>
             </Route>
           </Switch>
         </div>

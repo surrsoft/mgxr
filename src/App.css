@@ -5,6 +5,10 @@
 .appRoutes {
     display: flex;
     column-gap: 16px;
+    margin-bottom: 16px;
 }
 
+.active-link {
+    color: red;
+}
 
