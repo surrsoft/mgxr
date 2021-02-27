@@ -64,7 +64,6 @@ export function arrObjectsSortByStringProp(arrObjectsBack: object[], propName: s
 }
 
 export function selectOptionToVusc(fieldName: string, option: { value: string } | { value: string }[] | null): string {
-  console.log('!!-!!-!! option {210227191715}\n', option); // del+
   // --- values
   const values = [];
   if (option) {
@@ -75,7 +74,6 @@ export function selectOptionToVusc(fieldName: string, option: { value: string } 
     }
   }
   // ---
-  // AND({fieldName} = value1, {fieldName} = value2)
   const nx = values.map(val => `{${fieldName}} = '${val}'`).join(', ')
-  return `OR(${nx})`
+  return nx.length > 0 ? `OR(${nx})` : ''
 }

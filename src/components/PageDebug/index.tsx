@@ -18,7 +18,6 @@ export class PageDebug extends Component<any, any> {
     const res: HoggTupleNT[] | undefined = await this.connection
       ?.columns(['id'])
       .query(new HoggOffsetCount(false, 0, 10));
-    console.log('!!-!!-!! res {210223104514}\n', res); // del+
   }
 
   async update() {
@@ -27,7 +26,6 @@ export class PageDebug extends Component<any, any> {
       .cellAdd(new BaseCell().create('comm', '1-1-3'))
     // ---
     const res: HoggResult<boolean> | undefined = await this.connection?.update([tuple])
-    console.log('!!-!!-!! res {210223104515}\n', res); // del+
   }
 
   async create() {
@@ -37,12 +35,10 @@ export class PageDebug extends Component<any, any> {
     ]
     // ---
     const res: HoggResult<boolean> | undefined = await this.connection?.create(tuples)
-    console.log('!!-!!-!! res {210223104515}\n', res); // del+
   }
 
   async delete() {
     const res = await this.connection?.delete(['recgsvfjiB1rDtNP5', 'recNGoZaZe7pPfzOH'])
-    console.log('!!-!!-!! res {210223204510}\n', res); // del+
   }
 
   componentDidMount() {

@@ -16,7 +16,7 @@ import { HoggConnectionNT } from '../../api/hogg/interfaces/HoggConnectionNT';
 
 export class UarwLogic {
 
-  private static connectionTableCreate() {
+  private static connectionTableCreate(): HoggConnectionNT {
     const connection = new HoggConnectionAirtable();
     const apiKey = LSApiKey.apiKeyGet() || '';
     connection.init({apiKey});
@@ -29,24 +29,22 @@ export class UarwLogic {
     const data: HoggTupleNT[] = await UarwLogic.connectionTableCreate()
       .filterVusc(filterVusc)
       .query(new HoggOffsetCount(true))
-    console.log('!!-!!-!! data {210226000136}\n', data); // del+
     const uarwTuples = new UarwTuples(data)
     return uarwTuples.qcards
   }
 
-  async scopesAndProgressesGet(): Promise<{ scopes: ValCount[], progresses: ValCount[] }> {
-    const data = await UarwLogic.connectionTableCreate()
+  async scopesAndProgressesGet(): Promise<{ scopes: ValCount[], progresses: ValCount[], countAll: number }> {
+    const tuples = await UarwLogic.connectionTableCreate()
       .columns([UARW_FE_SCOPES, UARW_FE_PROGRESS])
       .query(new HoggOffsetCount(true))
-    console.log('!!-!!-!! data {210227201209}\n', data); // del+
     // ---
     const scopes: string[] = []
     const progresses: string[] = []
-    data.forEach(tuple => {
+    tuples.forEach(tuple => {
+      let b19 = false;
       tuple.cellsGet().forEach(cell => {
         const columnName = cell.columnNameGet();
         const value = cell.valueGet();
-        let b19 = false;
         if (columnName === UARW_FE_SCOPES) {
           scopes.push(value)
         }
@@ -54,10 +52,10 @@ export class UarwLogic {
           progresses.push(value)
           b19 = true
         }
-        if (!b19) {
-          progresses.push(UARW_PV_PROGRESS_1)
-        }
       })
+      if (!b19) {
+        progresses.push(UARW_PV_PROGRESS_1)
+      }
     })
     // ---
     const scopesVC = colination(scopes, new SortInfo(false))
@@ -65,7 +63,7 @@ export class UarwLogic {
     const progressesVC = colination(progresses, new SortInfo(false))
     arrObjectsSortByStringProp(progressesVC, 'value', true)
     // ---
-    return {scopes: scopesVC, progresses: progressesVC}
+    return {scopes: scopesVC, progresses: progressesVC, countAll: tuples.length}
   }
 }
 

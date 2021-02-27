@@ -24,7 +24,6 @@ export class QCard extends Component<QCardProps, QCardState> {
 
   render() {
     const {qcard} = this.props;
-    console.log('!!-!!-!! qcard {210227204510}\n', qcard); // del+
     const {answerShowed} = this.state;
     return (
       <div className="qcard">

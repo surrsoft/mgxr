@@ -17,7 +17,6 @@ export class RandomCardViewer extends Component<any, any> {
       ...card,
       [CardsB.FIELD_TRANS_DATE_LAST]: dayjs(Date.now()).format('YYYY-MM-DD')
     }
-    console.log('!!-!!-!! card0 {210222120706}\n', card0); // del+
     await CardsB.update(card.tid || '', card0);
   }
 

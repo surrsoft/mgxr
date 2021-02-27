@@ -51,12 +51,8 @@ export class MAirtable {
   }
 
   static async recordUpdate(tid: string, fields: any) {
-    console.log(`!!-!!-!! 0003-10 -> :::::::::::::: recordUpdate() {210222000258}:${Date.now()}`); // del+
-    console.log('!!-!!-!! 0003-20 tid {210222000307}\n', tid); // del+
-    console.log('!!-!!-!! 0003-30 fields {210222000322}\n', fields); // del+
     return new Promise((resolve, reject) => {
       const updOj = {id: tid, fields}
-      console.log('!!-!!-!! 0003-40 updOj {210222000414}\n', updOj); // del+
       Airtable
         .base(CONF_AIRTABLE_DB_NAME)(CONF_AIRTABLE_TABLE_NAME)
         .update(

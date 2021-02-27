@@ -36,7 +36,6 @@ export class PageNews extends Component<any, any> {
         })
         // ---
         const card0 = {...card, [CardsB.FIELD_SHOW_DATE_LAST]: dayjs().format('YYYY-MM-DD')};
-        console.log('!!-!!-!! card0 {210222121922}\n', card0); // del+
         await CardsB.update(card.tid || '', card0);
       }
     }

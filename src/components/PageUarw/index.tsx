@@ -5,11 +5,9 @@ import Select from 'react-select';
 import './styles.scss'
 import { QCard } from './QCard';
 import { QCardOj, UarwLogic, UarwTuples } from '../../utils/uarw/uarw-logic';
-import { UARW_FE_SCOPES } from '../../consts-uarw';
+import { UARW_FE_PROGRESS, UARW_FE_SCOPES } from '../../consts-uarw';
 
 interface UarwState {
-  // TRUE при первом показе (до нажатия кнопки получения карточек)
-  isInitiale: boolean,
   uarwTuples: UarwTuples | null,
   loaded: boolean,
   errStr: string,
@@ -17,7 +15,8 @@ interface UarwState {
   selectScSelectedOption: object | object[] | null,
   selectPrOptions: object[],
   selectPrSelectedOption: object | object[] | null,
-  qcards: QCardOj[]
+  qcards: QCardOj[],
+  countAll: number
 }
 
 
@@ -27,15 +26,15 @@ export class PageUarw extends Component<any, UarwState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      isInitiale: true,
-      loaded: true,
+      loaded: false,
       uarwTuples: null,
       errStr: '',
       selectScOptions: [],
       selectScSelectedOption: null,
       selectPrOptions: [],
       selectPrSelectedOption: null,
-      qcards: []
+      qcards: [],
+      countAll: 0
     }
     this.selectScHandleChange = this.selectScHandleChange.bind(this);
     this.selectPrHandleChange = this.selectPrHandleChange.bind(this);
@@ -44,9 +43,9 @@ export class PageUarw extends Component<any, UarwState> {
 
   async componentDidMount() {
     this.uarwLogic = new UarwLogic()
-    const {scopes, progresses} = await this.uarwLogic.scopesAndProgressesGet();
-    console.log('!!-!!-!! scopes {210227202352}\n', scopes); // del+
-    console.log('!!-!!-!! progresses {210227202405}\n', progresses); // del+
+    this.setState({loaded: false})
+    const {scopes, progresses, countAll} = await this.uarwLogic.scopesAndProgressesGet();
+    this.setState({loaded: true, countAll})
     this.onSuccess(scopes, progresses);
   }
 
@@ -64,24 +63,33 @@ export class PageUarw extends Component<any, UarwState> {
 
   selectScHandleChange(selectedOption: any) {
     this.setState({selectScSelectedOption: selectedOption})
-    console.log('!!-!!-!! this.state {210227132917}\n', this.state); // del+
   }
 
   selectPrHandleChange(selectedOption: any) {
     this.setState({selectPrSelectedOption: selectedOption})
-    console.log('!!-!!-!! this.state {210227132924}\n', this.state); // del+
   }
-
 
   async handleClick() {
     try {
-      let filterVusc = selectOptionToVusc(UARW_FE_SCOPES, this.state.selectScSelectedOption as { value: string })
-      console.log('!!-!!-!! filterVusc {210227191510}\n', filterVusc); // del+
+      this.setState({loaded: false});
+      // ---
+      let filterScVusc = selectOptionToVusc(UARW_FE_SCOPES, this.state.selectScSelectedOption as { value: string });
+      console.log('!!-!!-!! filterScVusc {210227210928}\n', filterScVusc); // del+
+      let filterPrVusc = selectOptionToVusc(UARW_FE_PROGRESS, this.state.selectPrSelectedOption as { value: string });
+      console.log('!!-!!-!! filterPrVusc {210227211201}\n', filterPrVusc); // del+
+      let filterVusc = '';
+      if (filterScVusc && filterPrVusc) {
+        filterVusc = `AND(${filterScVusc}, ${filterPrVusc})`
+      } else if (filterScVusc) {
+        filterVusc = filterScVusc
+      } else {
+        filterVusc = filterPrVusc
+      }
+      console.log('!!-!!-!! filterVusc {210227211453}\n', filterVusc); // del+
       // ---
       const qcardOjs = await this.uarwLogic?.qcardsGet(filterVusc);
       // ---
       this.setState({
-        isInitiale: false,
         qcards: qcardOjs || [],
         loaded: true,
       })
@@ -92,19 +100,19 @@ export class PageUarw extends Component<any, UarwState> {
 
   render() {
     const {
-      isInitiale,
       selectScOptions,
       selectScSelectedOption,
       selectPrOptions,
       selectPrSelectedOption,
-      qcards
+      qcards,
+      countAll
     } = this.state;
-    console.log('!!-!!-!! this.state {210227133042}\n', this.state); // del+
     return <Loader loaded={this.state.loaded}>
       {this.state.errStr
         ? <div>{this.state.errStr}</div>
         :
         <div className="uarw-container">
+          <div>Всего карточек: {countAll}</div>
           <div className="selects-container">
             <Select
               className="select-scopes"
