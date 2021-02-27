@@ -14,6 +14,8 @@ export class HoggConnectionAirtable implements HoggConnectionNT {
   private dbName: string = '';
   private columnNames: string[] = [];
   private tableName: string = '';
+  // [vusc]
+  private pFilterVusc: string = '';
 
   db(dbName: string): HoggConnectionNT {
     this.dbName = dbName;
@@ -27,6 +29,11 @@ export class HoggConnectionAirtable implements HoggConnectionNT {
 
   columns(columnNames: string[]): HoggConnectionNT {
     this.columnNames = columnNames;
+    return this;
+  }
+
+  filterVusc(filter: string): HoggConnectionNT {
+    this.pFilterVusc = filter;
     return this;
   }
 
@@ -56,9 +63,13 @@ export class HoggConnectionAirtable implements HoggConnectionNT {
           selectCfg.pageSize = maxRecords > 100 ? 100 : maxRecords;
         }
       }
-      if(this.columnNames && this.columnNames.length > 0) {
+      if (this.columnNames && this.columnNames.length > 0) {
         // @ts-ignore
         selectCfg.fields = this.columnNames;
+      }
+      if (this.pFilterVusc) {
+        // @ts-ignore
+        selectCfg.filterByFormula = this.pFilterVusc;
       }
       let counter = 0;
       Airtable

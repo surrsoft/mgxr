@@ -15,6 +15,12 @@ export interface HoggConnectionNT {
   columns(columnNames: string[]): HoggConnectionNT
 
   /**
+   * [vusc]
+   * @param filter
+   */
+  filterVusc(filter: string): HoggConnectionNT
+
+  /**
    * Некоторым *источникам может требоваться инициализация, этот метод для этого
    * @param options
    */

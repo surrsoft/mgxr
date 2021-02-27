@@ -4,6 +4,10 @@
 * [210222113321] - место где можно ограничить количество загружаемых карточек
 * [210222111416] - место преобразования Record => TpCard
 
+# [uarw] - понятия
+* question, вопрос - вопрос
+* scope, область - это область к которой относится *вопрос, например "JavaScript", "English" 
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

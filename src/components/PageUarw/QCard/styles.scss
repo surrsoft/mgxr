@@ -1,0 +1,23 @@
+.qcard {
+  border: 1px solid silver;
+  border-radius: 4px;
+  padding: 8px 14px;
+
+  .qcard__question {
+    margin-top: 8px;
+    border: 1px solid silver;
+    padding: 4px 8px;
+  }
+
+  .qcard__scope {
+    display: inline-block;
+    font-size: 80%;
+    border: 1px solid silver;
+    padding: 2px 6px;
+    color: silver;
+  }
+
+  .qcard__button {
+    margin-top: 8px;
+  }
+}

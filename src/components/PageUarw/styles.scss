@@ -1,0 +1,23 @@
+.uarw-container {
+
+  .selects-container {
+
+    .select-scopes {
+    }
+
+    .select-progresses {
+      margin-top: 8px;
+    }
+  }
+
+  .qcards {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px;
+  }
+
+  .get-button {
+    margin-top: 8px;
+  }
+}
