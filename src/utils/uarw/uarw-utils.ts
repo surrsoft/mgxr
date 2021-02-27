@@ -1,3 +1,5 @@
+import { UARW_FE_PROGRESS, UARW_PV_PROGRESS_1 } from '../../consts-uarw';
+
 export function colination(arr: string[], sortByCount?: SortInfo): ValCount[] {
   const ret: ValCount[] = [];
   if (arr && arr.length > 0) {
@@ -66,14 +68,27 @@ export function arrObjectsSortByStringProp(arrObjectsBack: object[], propName: s
 export function selectOptionToVusc(fieldName: string, option: { value: string } | { value: string }[] | null): string {
   // --- values
   const values = [];
+  let b51 = false;
   if (option) {
     if (Array.isArray(option)) {
-      option.forEach(el => values.push(el.value))
+      option.forEach(el => {
+        values.push(el.value)
+        if (fieldName === UARW_FE_PROGRESS && el.value === UARW_PV_PROGRESS_1) {
+          b51 = true;
+        }
+      })
     } else {
       values.push(option.value)
+      if (fieldName === UARW_FE_PROGRESS && option.value === UARW_PV_PROGRESS_1) {
+        b51 = true;
+      }
     }
   }
   // ---
-  const nx = values.map(val => `{${fieldName}} = '${val}'`).join(', ')
-  return nx.length > 0 ? `OR(${nx})` : ''
+  const arr = values.map(val => `{${fieldName}} = '${val}'`)
+  if (b51) {
+    arr.push(`{${fieldName}} = ''`)
+  }
+  const stJoin = arr.join(', ')
+  return arr.length > 0 ? `OR(${stJoin})` : ''
 }

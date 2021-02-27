@@ -33,10 +33,13 @@ export class UarwLogic {
     return uarwTuples.qcards
   }
 
-  async scopesAndProgressesGet(): Promise<{ scopes: ValCount[], progresses: ValCount[], countAll: number }> {
+  async scopesAndProgressesGet(filterVusc: string = ''): Promise<{ scopes: ValCount[], progresses: ValCount[], countAll: number }> {
+    console.log(`!!-!!-!! 2309-10 -> :::::::::::::: scopesAndProgressesGet() {210227230942}:${Date.now()}`); // del+
     const tuples = await UarwLogic.connectionTableCreate()
       .columns([UARW_FE_SCOPES, UARW_FE_PROGRESS])
+      .filterVusc(filterVusc)
       .query(new HoggOffsetCount(true))
+    console.log('!!-!!-!! 2309-20 tuples {210227230859}\n', tuples); // del+
     // ---
     const scopes: string[] = []
     const progresses: string[] = []

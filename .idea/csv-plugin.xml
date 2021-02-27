@@ -10,6 +10,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/package.json">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/public/index.html">
           <value>
             <Attribute>
