@@ -10,6 +10,7 @@ import { UARW_FE_PROGRESS, UARW_FE_SCOPES } from '../../consts-uarw';
 interface UarwState {
   uarwTuples: UarwTuples | null,
   loaded: boolean,
+  loadedScopes: boolean,
   errStr: string,
   selectScOptions: object[],
   selectScSelectedOption: object | object[] | null,
@@ -45,6 +46,7 @@ export class PageUarw extends Component<any, UarwState> {
     super(props);
     this.state = {
       loaded: false,
+      loadedScopes: false,
       uarwTuples: null,
       errStr: '',
       selectScOptions: [],
@@ -56,21 +58,34 @@ export class PageUarw extends Component<any, UarwState> {
     }
     this.selectScHandleChange = this.selectScHandleChange.bind(this);
     this.selectPrHandleChange = this.selectPrHandleChange.bind(this);
-    this.handleClick = this.handleClick.bind(this);
+    this.handleShowCards = this.handleShowCards.bind(this);
   }
 
   async componentDidMount() {
-    this.uarwLogic = new UarwLogic()
+    this.setState({loaded: true});
+    this.uarwLogic = new UarwLogic();
     await this.selectorsDataGetAndUpdate();
   }
 
+  async componentDidUpdate(prevProps: Readonly<any>, prevState: Readonly<UarwState>, snapshot?: any) {
+    console.log(`!!-!!-!! -> :::::::::::::: componentDidUpdate() {210227231432}:${Date.now()}`); // del+
+    if (this.flag1) {
+      this.flag1 = false;
+      await this.selectHandleChange();
+    }
+  }
+
+  /**
+   * Получение списка *скоупов и *прогрессов, в соответствии с выбранными в текущий момент *скоупами и *прогрессами
+   * @private
+   */
   private async selectorsDataGetAndUpdate() {
     if (this.uarwLogic) {
-      this.setState({loaded: false})
+      this.setState({loadedScopes: false})
+      // --- получение текущих *скоупов/*прогрессов и формирование на их базе [vusc]-строки
       const filterVusc = this.fnFilterVuscGet();
-      console.log('!!-!!-!! filterVusc {210227224723}\n', filterVusc); // del+
       const {scopes, progresses, countAll} = await this.uarwLogic.scopesAndProgressesGet(filterVusc);
-      this.setState({loaded: true, countAll});
+      this.setState({loadedScopes: true, countAll});
       // ---
       const scopesVL: ValLabel[] = ValCount.asValLabels(scopes)
       const progressesVL: ValLabel[] = ValCount.asValLabels(progresses)
@@ -90,29 +105,21 @@ export class PageUarw extends Component<any, UarwState> {
   async selectScHandleChange(selectedOption: any) {
     console.log(`!!-!!-!! -> :::::::::::::: selectScHandleChange() {210227231432}:${Date.now()}`); // del+
     this.flag1 = true;
-    this.setState({selectScSelectedOption: selectedOption})
+    this.setState({selectScSelectedOption: selectedOption, qcards: []})
   }
 
   async selectPrHandleChange(selectedOption: any) {
     console.log(`!!-!!-!! -> :::::::::::::: selectPrHandleChange() {210227231432}:${Date.now()}`); // del+
     this.flag1 = true;
-    this.setState({selectPrSelectedOption: selectedOption})
-  }
-
-  async componentDidUpdate(prevProps: Readonly<any>, prevState: Readonly<UarwState>, snapshot?: any) {
-    console.log(`!!-!!-!! -> :::::::::::::: componentDidUpdate() {210227231432}:${Date.now()}`); // del+
-    if (this.flag1) {
-      this.flag1 = false;
-      await this.selectHandleChange();
-    }
+    this.setState({selectPrSelectedOption: selectedOption, qcards: []})
   }
 
   async selectHandleChange() {
     console.log(`!!-!!-!! -> :::::::::::::: selectHandleChange() {210227231432_1}:${Date.now()}`); // del+
-    await this.selectorsDataGetAndUpdate()
+    await this.selectorsDataGetAndUpdate();
   }
 
-  async handleClick() {
+  async handleShowCards() {
     try {
       this.setState({loaded: false});
       // ---
@@ -150,40 +157,44 @@ export class PageUarw extends Component<any, UarwState> {
       qcards,
       countAll
     } = this.state;
-    return <Loader loaded={this.state.loaded}>
+    return <div>
       {this.state.errStr
         ? <div>{this.state.errStr}</div>
         :
         <div className="uarw-container">
           <div className="cards-count">Карточек: {countAll}</div>
-          <div className="selects-container">
-            <Select
-              className="select-scopes"
-              value={selectScSelectedOption}
-              options={selectScOptions}
-              onChange={this.selectScHandleChange}
-              isMulti
-            />
-            <Select
-              className="select-progresses"
-              value={selectPrSelectedOption}
-              options={selectPrOptions}
-              onChange={this.selectPrHandleChange}
-              isMulti
-            />
-          </div>
-          <div className="get-button">
-            <input type="button" onClick={this.handleClick} value="get"/>
-          </div>
-          <div className="qcards">
-            {
-              qcards.map(qcard => {
-                return <QCard qcard={qcard}/>
-              })
-            }
-          </div>
+          <Loader loaded={this.state.loadedScopes} position="relative" top="30px">
+            <div className="selects-container">
+              <Select
+                className="select-scopes"
+                value={selectScSelectedOption}
+                options={selectScOptions}
+                onChange={this.selectScHandleChange}
+                isMulti
+              />
+              <Select
+                className="select-progresses"
+                value={selectPrSelectedOption}
+                options={selectPrOptions}
+                onChange={this.selectPrHandleChange}
+                isMulti
+              />
+            </div>
+            <div className="get-button">
+              <input type="button" onClick={this.handleShowCards} value="get"/>
+            </div>
+          </Loader>
+          <Loader loaded={this.state.loaded} position='relative'>
+            <div className="qcards">
+              {
+                qcards.map(qcard => {
+                  return <QCard qcard={qcard}/>
+                })
+              }
+            </div>
+          </Loader>
         </div>
       }
-    </Loader>
+    </div>
   }
 }

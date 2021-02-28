@@ -6,7 +6,8 @@
 
 # [uarw] - понятия
 * question, вопрос - вопрос
-* scope, область - это область к которой относится *вопрос, например "JavaScript", "English" 
+* scope, область, скоуп - это область к которой относится *вопрос, например "JavaScript", "English"
+* progress, прогресс - 
 
 # Getting Started with Create React App
 
