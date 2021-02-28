@@ -47,7 +47,6 @@ function fnOptionsRefresh(currSelectOption: object | object[] | null, newVL: Val
 
 export class PageUarw extends Component<any, UarwState> {
   private uarwLogic?: UarwLogic;
-  private flag1: boolean = false;
 
   constructor(props: any) {
     super(props);
@@ -75,14 +74,6 @@ export class PageUarw extends Component<any, UarwState> {
     this.setState({loaded: true});
     this.uarwLogic = new UarwLogic();
     await this.selectorsDataGetAndUpdate();
-  }
-
-  async componentDidUpdate(prevProps: Readonly<any>, prevState: Readonly<UarwState>, snapshot?: any) {
-    console.log(`!!-!!-!! -> :::::::::::::: componentDidUpdate() {210227231432}:${Date.now()}`); // del+
-    if (this.flag1) {
-      this.flag1 = false;
-      await this.selectHandleChange();
-    }
   }
 
   /**
@@ -118,14 +109,16 @@ export class PageUarw extends Component<any, UarwState> {
 
   async selectScHandleChange(selectedOption: any) {
     console.log(`!!-!!-!! -> :::::::::::::: selectScHandleChange() {210227231432}:${Date.now()}`); // del+
-    this.flag1 = true;
-    this.setState({selectScSelectedOption: selectedOption, qcards: []})
+    this.setState({selectScSelectedOption: selectedOption, qcards: []}, async () => {
+      await this.selectHandleChange()
+    })
   }
 
   async selectPrHandleChange(selectedOption: any) {
     console.log(`!!-!!-!! -> :::::::::::::: selectPrHandleChange() {210227231432}:${Date.now()}`); // del+
-    this.flag1 = true;
-    this.setState({selectPrSelectedOption: selectedOption, qcards: []})
+    this.setState({selectPrSelectedOption: selectedOption, qcards: []}, async () => {
+      await this.selectHandleChange()
+    })
   }
 
   async selectHandleChange() {
@@ -175,7 +168,7 @@ export class PageUarw extends Component<any, UarwState> {
       selectScSelectedOption: null,
       selectPrSelectedOption: null
     }, () => {
-      if(mode === SelectMode.FREE) {
+      if (mode === SelectMode.FREE) {
         this.selectorsDataGetAndUpdate()
       }
     })

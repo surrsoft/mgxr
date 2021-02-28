@@ -1,6 +1,6 @@
 export const UARW_CONF_AIRTABLE_DB_NAME = 'appL0eof6VFTiPyjm';
 // export const UARW_CONF_AIRTABLE_TABLE_NAME = 'main';
-export const UARW_CONF_AIRTABLE_TABLE_NAME = 'main-0';
+export const UARW_CONF_AIRTABLE_TABLE_NAME = 'main-test';
 
 // --- airtable fields
 export const UARW_FE_SCOPES = 'scopes';
