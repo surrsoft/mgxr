@@ -6,7 +6,7 @@ import './styles.scss'
 import { QCard } from './QCard';
 import { QCardOj, UarwLogic, UarwTuples } from '../../utils/uarw/uarw-logic';
 import { UARW_FE_PROGRESS, UARW_FE_SCOPES } from '../../consts-uarw';
-import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
+import { Button, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 
 interface UarwState {
   uarwTuples: UarwTuples | null,
@@ -84,7 +84,8 @@ export class PageUarw extends Component<any, UarwState> {
     if (this.uarwLogic) {
       try {
         this.setState({loadedScopes: false})
-        // --- получение текущих *скоупов/*прогрессов и формирование на их базе [vusc]-строки
+        // ---
+        // получение текущих *скоупов/*прогрессов и формирование на их базе [vusc]-строки
         const filterVusc = this.fnFilterVuscGet();
         const {scopes, progresses, countAll} = await this.uarwLogic.scopesAndProgressesGet(filterVusc);
         this.setState({loadedScopes: true, countAll});
@@ -108,21 +109,18 @@ export class PageUarw extends Component<any, UarwState> {
   }
 
   async selectScHandleChange(selectedOption: any) {
-    console.log(`!!-!!-!! -> :::::::::::::: selectScHandleChange() {210227231432}:${Date.now()}`); // del+
     this.setState({selectScSelectedOption: selectedOption, qcards: []}, async () => {
       await this.selectHandleChange()
     })
   }
 
   async selectPrHandleChange(selectedOption: any) {
-    console.log(`!!-!!-!! -> :::::::::::::: selectPrHandleChange() {210227231432}:${Date.now()}`); // del+
     this.setState({selectPrSelectedOption: selectedOption, qcards: []}, async () => {
       await this.selectHandleChange()
     })
   }
 
   async selectHandleChange() {
-    console.log(`!!-!!-!! -> :::::::::::::: selectHandleChange() {210227231432_1}:${Date.now()}`); // del+
     if (this.state.selectMode === SelectMode.STRICT) {
       await this.selectorsDataGetAndUpdate();
     }
@@ -166,7 +164,8 @@ export class PageUarw extends Component<any, UarwState> {
     this.setState({
       selectMode: mode,
       selectScSelectedOption: null,
-      selectPrSelectedOption: null
+      selectPrSelectedOption: null,
+      qcards: []
     }, () => {
       if (mode === SelectMode.FREE) {
         this.selectorsDataGetAndUpdate()
@@ -212,12 +211,12 @@ export class PageUarw extends Component<any, UarwState> {
                 value={this.state.selectMode}
                 onChange={this.selectModeChange}
               >
-                <ToggleButton value={1} variant="secondary" size="sm">Strict</ToggleButton>
-                <ToggleButton value={2} variant="secondary" size="sm">Free</ToggleButton>
+                <ToggleButton value={1} variant="secondary" size="sm">strict</ToggleButton>
+                <ToggleButton value={2} variant="secondary" size="sm">free</ToggleButton>
               </ToggleButtonGroup>
             </div>
             <div className="get-button">
-              <input type="button" onClick={this.handleShowCards} value="get"/>
+              <Button onClick={this.handleShowCards} variant="success" size="sm">show all</Button>
             </div>
           </Loader>
           <Loader loaded={this.state.loaded} position='relative'>
