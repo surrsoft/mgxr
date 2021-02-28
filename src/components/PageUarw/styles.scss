@@ -1,3 +1,5 @@
+@import "~bootstrap/scss/bootstrap";
+
 .uarw-container {
 
   .cards-count {
@@ -25,5 +27,24 @@
 
   .get-button {
     margin-top: 8px;
+  }
+
+  .uarw-btn-group {
+    margin-top: 8px;
+  }
+
+  .select-mode {
+    margin-top: 8px;
+
+    & label.active {
+    }
+
+    & label:not(.active) {
+      background-color: silver;
+    }
+
+    & label {
+      z-index: 0 !important;
+    }
   }
 }
