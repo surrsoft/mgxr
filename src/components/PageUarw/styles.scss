@@ -2,13 +2,45 @@
 
 .uarw-container {
 
+  .random-mode-container {
+    margin-top: 8px;
+    border: 1px solid silver;
+    border-radius: 4px;
+    padding: 8px;
+
+    .random-mode-select {
+      & label:not(.active) {
+        background-color: silver;
+      }
+
+      & label {
+        z-index: 0 !important;
+      }
+    }
+  }
+
+  .buttons {
+    display: flex;
+    column-gap: 8px;
+    margin-top: 8px;
+
+    .show-random-btn {
+
+    }
+
+    .get-button {
+    }
+  }
+
   .cards-count {
     font-size: 70%;
   }
 
   .selects-container {
     margin-top: 8px;
-
+    border: 1px solid silver;
+    border-radius: 4px;
+    padding: 8px;
 
     .select-scopes {
     }
@@ -23,10 +55,6 @@
     display: flex;
     flex-direction: column;
     row-gap: 16px;
-  }
-
-  .get-button {
-    margin-top: 8px;
   }
 
   .uarw-btn-group {

@@ -20,12 +20,21 @@ interface UarwState {
   selectPrSelectedOption: object | object[] | null,
   qcards: QCardOj[],
   countAll: number,
-  selectMode: number
+  selectMode: number,
+  randomMode: number
 }
 
 enum SelectMode {
   STRICT = 1,
   FREE = 2
+}
+
+enum RandomMode {
+  /**
+   * Показать все карточки в случайном порядке
+   */
+  A = 1,
+  B
 }
 
 function fnOptionsRefresh(currSelectOption: object | object[] | null, newVL: ValLabel[]): object | object[] | null {
@@ -62,7 +71,8 @@ export class PageUarw extends Component<any, UarwState> {
       selectPrSelectedOption: null,
       qcards: [],
       countAll: 0,
-      selectMode: SelectMode.STRICT
+      selectMode: SelectMode.STRICT,
+      randomMode: RandomMode.A
     }
     this.selectScHandleChange = this.selectScHandleChange.bind(this);
     this.selectPrHandleChange = this.selectPrHandleChange.bind(this);
@@ -126,14 +136,19 @@ export class PageUarw extends Component<any, UarwState> {
     }
   }
 
-  async handleShowCards() {
+  async handleShowCards(random: boolean = false) {
     try {
       this.setState({loaded: false});
-      // ---
       let filterVusc = this.fnFilterVuscGet();
-      // ---
       const qcardOjs = await this.uarwLogic?.qcardsGet(filterVusc);
-      // ---
+      if (random) {
+        if (this.state.randomMode === RandomMode.A) {
+          qcardOjs?.sort(() => Math.random() - 0.5)
+        }
+        if (this.state.randomMode === RandomMode.B) {
+          alert('no realised!')
+        }
+      }
       this.setState({
         qcards: qcardOjs || [],
         loaded: true,
@@ -144,9 +159,6 @@ export class PageUarw extends Component<any, UarwState> {
   }
 
   private fnFilterVuscGet() {
-    console.log('!!-!!-!! this.state.selectScSelectedOption {210228142743}\n', this.state.selectScSelectedOption); // del+
-    console.log('!!-!!-!! this.state.selectPrSelectedOption {210228142743}\n', this.state.selectPrSelectedOption); // del+
-
     let filterScVusc = selectOptionToVusc(UARW_FE_SCOPES, this.state.selectScSelectedOption as { value: string });
     let filterPrVusc = selectOptionToVusc(UARW_FE_PROGRESS, this.state.selectPrSelectedOption as { value: string });
     if (filterScVusc && filterPrVusc) {
@@ -159,8 +171,6 @@ export class PageUarw extends Component<any, UarwState> {
   }
 
   async selectModeChange(mode: SelectMode) {
-    console.log(`!!-!!-!! -> :::::::::::::: radioChange() {210228113307}:${Date.now()}`); // del+
-    console.log('!!-!!-!! mode {210228115358}\n', mode); // del+
     this.setState({
       selectMode: mode,
       selectScSelectedOption: null,
@@ -211,12 +221,35 @@ export class PageUarw extends Component<any, UarwState> {
                 value={this.state.selectMode}
                 onChange={this.selectModeChange}
               >
-                <ToggleButton value={1} variant="secondary" size="sm">strict</ToggleButton>
-                <ToggleButton value={2} variant="secondary" size="sm">free</ToggleButton>
+                <ToggleButton value={SelectMode.STRICT} variant="secondary" size="sm">strict</ToggleButton>
+                <ToggleButton value={SelectMode.FREE} variant="secondary" size="sm">free</ToggleButton>
               </ToggleButtonGroup>
             </div>
-            <div className="get-button">
-              <Button onClick={this.handleShowCards} variant="success" size="sm">show all</Button>
+            <div className="random-mode-container">
+              <div>random mode:</div>
+              <ToggleButtonGroup
+                className="random-mode-select"
+                name="value"
+                type="radio"
+                value={this.state.randomMode}
+                onChange={this.randomModeChange}
+              >
+                <ToggleButton value={RandomMode.A} variant="secondary" size="sm">A</ToggleButton>
+                <ToggleButton value={RandomMode.B} variant="secondary" size="sm">B</ToggleButton>
+              </ToggleButtonGroup>
+            </div>
+            <div className="buttons">
+              <div className="show-random-btn">
+                <Button
+                  variant="success"
+                  size="sm"
+                  onClick={() => this.showRandomHandle()}
+                  disabled={this.state.randomMode === RandomMode.B}
+                >show random</Button>
+              </div>
+              <div className="get-button">
+                <Button onClick={() => this.handleShowCards()} variant="success" size="sm">show all</Button>
+              </div>
             </div>
           </Loader>
           <Loader loaded={this.state.loaded} position='relative'>
@@ -231,5 +264,15 @@ export class PageUarw extends Component<any, UarwState> {
         </div>
       }
     </div>
+  }
+
+  randomModeChange = (mode: RandomMode) => {
+    console.log(`!!-!!-!! -> :::::::::::::: randomModeChange() {210228151843}:${Date.now()}`); // del+
+    console.log('!!-!!-!! mode {210228151905}\n', mode); // del+
+    this.setState({randomMode: mode})
+  }
+
+  async showRandomHandle() {
+    await this.handleShowCards(true)
   }
 }
