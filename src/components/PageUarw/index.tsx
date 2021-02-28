@@ -81,24 +81,28 @@ export class PageUarw extends Component<any, UarwState> {
    */
   private async selectorsDataGetAndUpdate() {
     if (this.uarwLogic) {
-      this.setState({loadedScopes: false})
-      // --- получение текущих *скоупов/*прогрессов и формирование на их базе [vusc]-строки
-      const filterVusc = this.fnFilterVuscGet();
-      const {scopes, progresses, countAll} = await this.uarwLogic.scopesAndProgressesGet(filterVusc);
-      this.setState({loadedScopes: true, countAll});
-      // ---
-      const scopesVL: ValLabel[] = ValCount.asValLabels(scopes)
-      const progressesVL: ValLabel[] = ValCount.asValLabels(progresses)
-      // ---
-      const newSelectScSelectedOption = fnOptionsRefresh(this.state.selectScSelectedOption, scopesVL)
-      const newSelectPrSelectedOption = fnOptionsRefresh(this.state.selectPrSelectedOption, progressesVL)
-      const newState = {
-        selectScOptions: scopesVL,
-        selectScSelectedOption: newSelectScSelectedOption,
-        selectPrOptions: progressesVL,
-        selectPrSelectedOption: newSelectPrSelectedOption
-      };
-      this.setState(newState)
+      try {
+        this.setState({loadedScopes: false})
+        // --- получение текущих *скоупов/*прогрессов и формирование на их базе [vusc]-строки
+        const filterVusc = this.fnFilterVuscGet();
+        const {scopes, progresses, countAll} = await this.uarwLogic.scopesAndProgressesGet(filterVusc);
+        this.setState({loadedScopes: true, countAll});
+        // ---
+        const scopesVL: ValLabel[] = ValCount.asValLabels(scopes)
+        const progressesVL: ValLabel[] = ValCount.asValLabels(progresses)
+        // ---
+        const newSelectScSelectedOption = fnOptionsRefresh(this.state.selectScSelectedOption, scopesVL)
+        const newSelectPrSelectedOption = fnOptionsRefresh(this.state.selectPrSelectedOption, progressesVL)
+        const newState = {
+          selectScOptions: scopesVL,
+          selectScSelectedOption: newSelectScSelectedOption,
+          selectPrOptions: progressesVL,
+          selectPrSelectedOption: newSelectPrSelectedOption
+        };
+        this.setState(newState)
+      } catch (err) {
+        this.setState({errStr: err.message})
+      }
     }
   }
 
