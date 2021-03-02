@@ -2,7 +2,6 @@ import cards from './cards.json';
 import { TpCard } from '../utils/utils';
 import Record from 'airtable/lib/record';
 import { MAirtable } from './airtable-api';
-import dayjs from 'dayjs';
 
 export class Cards {
   static allGet(): TpCard[] {

@@ -237,6 +237,7 @@ export class PageUarw extends Component<any, UarwState> {
                 <ToggleButton value={RandomMode.A} variant="secondary" size="sm">A</ToggleButton>
                 <ToggleButton value={RandomMode.B} variant="secondary" size="sm">B</ToggleButton>
               </ToggleButtonGroup>
+              {this.fnRandomModeCommentGet()}
             </div>
             <div className="buttons">
               <div className="show-random-btn">
@@ -255,8 +256,8 @@ export class PageUarw extends Component<any, UarwState> {
           <Loader loaded={this.state.loaded} position='relative'>
             <div className="qcards">
               {
-                qcards.map(qcard => {
-                  return <QCard qcard={qcard}/>
+                qcards.map((qcard, index) => {
+                  return <QCard key={index} qcard={qcard}/>
                 })
               }
             </div>
@@ -266,9 +267,20 @@ export class PageUarw extends Component<any, UarwState> {
     </div>
   }
 
+  private fnRandomModeCommentGet() {
+    let text = '';
+    switch (this.state.randomMode) {
+      case RandomMode.A:
+        text = 'показ всех карточек, в случайном порядке'
+        break;
+      case RandomMode.B:
+        text = '-';
+        break;
+    }
+    return <div className="cls2121">{text}</div>
+  }
+
   randomModeChange = (mode: RandomMode) => {
-    console.log(`!!-!!-!! -> :::::::::::::: randomModeChange() {210228151843}:${Date.now()}`); // del+
-    console.log('!!-!!-!! mode {210228151905}\n', mode); // del+
     this.setState({randomMode: mode})
   }
 

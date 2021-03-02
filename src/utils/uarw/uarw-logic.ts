@@ -144,6 +144,9 @@ export class QCardOj {
           break;
       }
     })
+    if (!qcard.progress) {
+      qcard.progress = UARW_PV_PROGRESS_1;
+    }
     return qcard
   }
 

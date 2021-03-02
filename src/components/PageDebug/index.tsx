@@ -15,6 +15,7 @@ export class PageDebug extends Component<any, any> {
   async query() {
     const connection = new HoggConnectionAirtable();
     connection.init({apiKey: LSApiKey.apiKeyGet() || ''})
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const res: HoggTupleNT[] | undefined = await this.connection
       ?.columns(['id'])
       .query(new HoggOffsetCount(false, 0, 10));
@@ -25,6 +26,7 @@ export class PageDebug extends Component<any, any> {
       .cellAdd(new BaseCell().create('tid', 'rec04BflzOVX54PWs'))
       .cellAdd(new BaseCell().create('comm', '1-1-3'))
     // ---
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const res: HoggResult<boolean> | undefined = await this.connection?.update([tuple])
   }
 
@@ -34,10 +36,12 @@ export class PageDebug extends Component<any, any> {
       new BaseTuple().cellAdd(new BaseCell().create('title', 'mmm-2')).cellAdd(new BaseCell().create('comm', '1-1-5'))
     ]
     // ---
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const res: HoggResult<boolean> | undefined = await this.connection?.create(tuples)
   }
 
   async delete() {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const res = await this.connection?.delete(['recgsvfjiB1rDtNP5', 'recNGoZaZe7pPfzOH'])
   }
 
