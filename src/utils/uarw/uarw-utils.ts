@@ -1,4 +1,4 @@
-import { UARW_FE_PROGRESS, UARW_PV_PROGRESS_1 } from '../../consts-uarw';
+import { UARW_COLUMN_NAME, UARW_PROGRESSES } from '../../consts-uarw';
 
 export function colination(arr: string[], sortByCount?: SortInfo): ValCount[] {
   const ret: ValCount[] = [];
@@ -73,13 +73,13 @@ export function selectOptionToVusc(fieldName: string, option: { value: string } 
     if (Array.isArray(option)) {
       option.forEach(el => {
         values.push(el.value)
-        if (fieldName === UARW_FE_PROGRESS && el.value === UARW_PV_PROGRESS_1) {
+        if (fieldName === UARW_COLUMN_NAME.PROGRESS && el.value === UARW_PROGRESSES.P1) {
           b51 = true;
         }
       })
     } else {
       values.push(option.value)
-      if (fieldName === UARW_FE_PROGRESS && option.value === UARW_PV_PROGRESS_1) {
+      if (fieldName === UARW_COLUMN_NAME.PROGRESS && option.value === UARW_PROGRESSES.P1) {
         b51 = true;
       }
     }

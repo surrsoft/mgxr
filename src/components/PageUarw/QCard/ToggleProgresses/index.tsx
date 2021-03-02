@@ -1,11 +1,11 @@
 import { Component } from 'react';
 import './styles.scss';
 import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
-import { UARW_PV_PROGRESS_1 } from '../../../../consts-uarw';
+import { UARW_PROGRESSES } from '../../../../consts-uarw';
 
 class Props {
   vls: { value: string, label: string }[] = []
-  currValue: string = UARW_PV_PROGRESS_1
+  currValue: string = UARW_PROGRESSES.P1
   onChange?: (val: string) => void = () => {
   }
 }

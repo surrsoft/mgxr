@@ -1,18 +1,18 @@
 import { HoggTupleNT } from '../../api/hogg/interfaces/HoggTupleNT';
 import {
-  UARW_CONF_AIRTABLE_DB_NAME, UARW_CONF_AIRTABLE_TABLE_NAME,
-  UARW_FE_ANSWER,
-  UARW_FE_ID,
-  UARW_FE_PROGRESS,
-  UARW_FE_QUESTION,
-  UARW_FE_SCOPES,
-  UARW_FE_TID, UARW_PV_PROGRESS_1
+  UARW_COLUMN_NAME,
+  UARW_CONF_AIRTABLE_DB_NAME,
+  UARW_CONF_AIRTABLE_TABLE_NAME,
+  UARW_PROGRESSES
 } from '../../consts-uarw';
 import { arrObjectsSortByStringProp, colination, SortInfo, ValCount } from './uarw-utils';
 import { HoggConnectionAirtable } from '../../api/hogg/connections/HoggConnectionAirtable';
 import { LSApiKey } from '../utils';
 import { HoggOffsetCount } from '../../api/hogg/connections/HoggOffsetCount';
 import { HoggConnectionNT } from '../../api/hogg/interfaces/HoggConnectionNT';
+import { BaseTuple } from '../../api/hogg/base-implements/BaseTuple';
+import { BaseCell } from '../../api/hogg/base-implements/BaseCell';
+import { HoggResult } from '../../api/hogg/utils/HoggResult';
 
 export class UarwLogic {
 
@@ -33,9 +33,19 @@ export class UarwLogic {
     return uarwTuples.qcards
   }
 
+  static async qcardProgressUpdate(cardTid: string, progress: UARW_PROGRESSES): Promise<HoggResult<boolean>> {
+    const conn = UarwLogic.connectionTableCreate();
+    const tuple = new BaseTuple()
+      .cellAdd(new BaseCell().create(UARW_COLUMN_NAME.TID, cardTid))
+      .cellAdd(new BaseCell().create(UARW_COLUMN_NAME.PROGRESS, progress))
+    const res = await conn.update([tuple])
+    console.log('!!-!!-!! res {210302224128}\n', res); // del+
+    return res;
+  }
+
   async scopesAndProgressesGet(filterVusc: string = ''): Promise<{ scopes: ValCount[], progresses: ValCount[], countAll: number }> {
     const tuples = await UarwLogic.connectionTableCreate()
-      .columns([UARW_FE_SCOPES, UARW_FE_PROGRESS])
+      .columns([UARW_COLUMN_NAME.SCOPES, UARW_COLUMN_NAME.PROGRESS])
       .filterVusc(filterVusc)
       .query(new HoggOffsetCount(true))
     // ---
@@ -46,16 +56,16 @@ export class UarwLogic {
       tuple.cellsGet().forEach(cell => {
         const columnName = cell.columnNameGet();
         const value = cell.valueGet();
-        if (columnName === UARW_FE_SCOPES) {
+        if (columnName === UARW_COLUMN_NAME.SCOPES) {
           scopes.push(value)
         }
-        if (columnName === UARW_FE_PROGRESS) {
+        if (columnName === UARW_COLUMN_NAME.PROGRESS) {
           progresses.push(value)
           b19 = true
         }
       })
       if (!b19) {
-        progresses.push(UARW_PV_PROGRESS_1)
+        progresses.push(UARW_PROGRESSES.P1)
       }
     })
     // ---
@@ -81,7 +91,7 @@ export class UarwTuples {
       tuple.cellsGet().forEach(cell => {
         const columnName = cell.columnNameGet()
         const value = cell.valueGet()
-        if (columnName === UARW_FE_SCOPES) {
+        if (columnName === UARW_COLUMN_NAME.SCOPES) {
           scopes.push(value)
         }
       })
@@ -96,7 +106,7 @@ export class UarwTuples {
       tuple.cellsGet().forEach(cell => {
         const columnName = cell.columnNameGet()
         const value = cell.valueGet()
-        if (columnName === UARW_FE_PROGRESS) {
+        if (columnName === UARW_COLUMN_NAME.PROGRESS) {
           pgs.push(value)
         }
       })
@@ -110,12 +120,13 @@ export class UarwTuples {
 }
 
 export class QCardOj {
-  public question: string = ''
-  public answer: string = ''
-  public progress: string = ''
-  public scope: string = ''
-  public id: string = ''
-  public tid: string = ''
+  question: string = ''
+  answer: string = ''
+  progress: string = ''
+  scope: string = ''
+  id: string = ''
+  tid: string = ''
+  errMsg: string = ''
 
   static create(tuple: HoggTupleNT): QCardOj {
     const cells = tuple.cellsGet()
@@ -124,28 +135,28 @@ export class QCardOj {
       const columnName = cell.columnNameGet()
       const value = cell.valueGet()
       switch (columnName) {
-        case UARW_FE_QUESTION:
+        case UARW_COLUMN_NAME.QUESTION:
           qcard.question = value;
           break;
-        case UARW_FE_ANSWER:
+        case UARW_COLUMN_NAME.ANSWER:
           qcard.answer = value;
           break;
-        case UARW_FE_PROGRESS:
+        case UARW_COLUMN_NAME.PROGRESS:
           qcard.progress = value;
           break;
-        case UARW_FE_SCOPES:
+        case UARW_COLUMN_NAME.SCOPES:
           qcard.scope = value;
           break;
-        case UARW_FE_TID:
+        case UARW_COLUMN_NAME.TID:
           qcard.tid = value;
           break;
-        case UARW_FE_ID:
+        case UARW_COLUMN_NAME.ID:
           qcard.id = value;
           break;
       }
     })
     if (!qcard.progress) {
-      qcard.progress = UARW_PV_PROGRESS_1;
+      qcard.progress = UARW_PROGRESSES.P1;
     }
     return qcard
   }

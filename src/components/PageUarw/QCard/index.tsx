@@ -3,38 +3,35 @@ import './styles.scss';
 import { QCardOj } from '../../../utils/uarw/uarw-logic';
 import { ToggleProgresses } from './ToggleProgresses';
 import {
-  UARW_PV_PROGRESS_1,
-  UARW_PV_PROGRESS_2,
-  UARW_PV_PROGRESS_3,
-  UARW_PV_PROGRESS_4,
-  UARW_PV_PROGRESS_5
+  UARW_PROGRESSES,
 } from '../../../consts-uarw';
 
 const ReactMarkdown = require('react-markdown');
 
 class QCardProps {
   qcard?: QCardOj
+  qcardProgressChange?: (qcardTid: string, newProgress: UARW_PROGRESSES) => Promise<boolean>
 }
 
 class QCardState {
   answerShowed: boolean = false
-  progressValue: string = UARW_PV_PROGRESS_1
+  progressValue: string = UARW_PROGRESSES.P1
 }
 
 export class QCard extends Component<QCardProps, QCardState> {
   private vls: { value: string, label: string }[] = [
-    {value: UARW_PV_PROGRESS_1, label: UARW_PV_PROGRESS_1},
-    {value: UARW_PV_PROGRESS_2, label: UARW_PV_PROGRESS_2},
-    {value: UARW_PV_PROGRESS_3, label: UARW_PV_PROGRESS_3},
-    {value: UARW_PV_PROGRESS_4, label: UARW_PV_PROGRESS_4},
-    {value: UARW_PV_PROGRESS_5, label: UARW_PV_PROGRESS_5},
+    {value: UARW_PROGRESSES.P1, label: UARW_PROGRESSES.P1},
+    {value: UARW_PROGRESSES.P2, label: UARW_PROGRESSES.P2},
+    {value: UARW_PROGRESSES.P3, label: UARW_PROGRESSES.P3},
+    {value: UARW_PROGRESSES.P4, label: UARW_PROGRESSES.P4},
+    {value: UARW_PROGRESSES.P5, label: UARW_PROGRESSES.P5},
   ];
 
   constructor(props: QCardProps) {
     super(props);
     this.state = {
       answerShowed: false,
-      progressValue: this.props.qcard?.progress || UARW_PV_PROGRESS_1
+      progressValue: this.props.qcard?.progress || UARW_PROGRESSES.P1
     }
   }
 
@@ -42,10 +39,17 @@ export class QCard extends Component<QCardProps, QCardState> {
     this.setState({answerShowed: true})
   }
 
-  progressesChange = (val: string) => {
+  progressesChange = async (val: string) => {
     console.log(`!!-!!-!! -> :::::::::::::: progressesChange() {210301223647}:${Date.now()}`); // del+
     console.log('!!-!!-!! val {210301223735}\n', val); // del+
-    this.setState({progressValue: val})
+    console.log('!!-!!-!! qcard {210302214154}\n', this.props.qcard); // del+
+    if (this.props.qcardProgressChange) {
+      const res = await this.props.qcardProgressChange(this.props.qcard?.tid || '', val as UARW_PROGRESSES);
+      console.log('!!-!!-!! res {210303002044}\n', res); // del+
+      if (res) {
+        this.setState({progressValue: val})
+      }
+    }
   }
 
   render() {
@@ -64,6 +68,7 @@ export class QCard extends Component<QCardProps, QCardState> {
             onChange={this.progressesChange}
           />
         </div>
+        {this.props.qcard?.errMsg && <div className="err-msg">{this.props.qcard?.errMsg}</div>}
       </div>
     )
   }

@@ -110,7 +110,12 @@ export class HoggConnectionAirtable implements HoggConnectionNT {
     }
   }
 
+  /**
+   * Среди ячеек в (1) должна быть ячейка с именем столбца 'tid'
+   * @param tuples
+   */
   async update(tuples: HoggTupleNT[]): Promise<HoggResult<boolean>> {
+    console.log(`!!-!!-!! 2357-10 -> :::::::::::::: update() {210302235749}:${Date.now()}`); // del+
     if (!(tuples && tuples.length > 0)) {
       return new HoggResult<boolean>(false, '[[210223170254]]', 'tuples is empty')
     } else {
@@ -121,15 +126,19 @@ export class HoggConnectionAirtable implements HoggConnectionNT {
         return new HoggResult(false, '[[210223191902]]', 'tid problem')
       }
       try {
-        await Airtable
-          .base(this.dbName)
-          .table(this.tableName)
-          .update(updConfs, function (err: any) {
-            if (err) {
-              return new HoggResult(false, '[[210223202024]]', err.message)
-            }
-          })
-        return new HoggResult<boolean>(true)
+        return new Promise((resolve, reject) => {
+          Airtable
+            .base(this.dbName)
+            .table(this.tableName)
+            .update(updConfs, (err: any) => {
+              console.log('!!-!!-!! 2357-20 err {210302235801}\n', err); // del+
+              if (err) {
+                resolve(new HoggResult(false, '[[210223202024]]', err.message))
+              } else {
+                resolve(new HoggResult<boolean>(true))
+              }
+            })
+        });
       } catch (e) {
         return new HoggResult<boolean>(false, '[[210223193709]]', e.message)
       }

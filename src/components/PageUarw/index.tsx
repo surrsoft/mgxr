@@ -5,8 +5,9 @@ import Select from 'react-select';
 import './styles.scss'
 import { QCard } from './QCard';
 import { QCardOj, UarwLogic, UarwTuples } from '../../utils/uarw/uarw-logic';
-import { UARW_FE_PROGRESS, UARW_FE_SCOPES } from '../../consts-uarw';
 import { Button, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
+import { UARW_COLUMN_NAME, UARW_PROGRESSES } from '../../consts-uarw';
+import { HoggResult } from '../../api/hogg/utils/HoggResult';
 
 interface UarwState {
   uarwTuples: UarwTuples | null,
@@ -21,7 +22,7 @@ interface UarwState {
   qcards: QCardOj[],
   countAll: number,
   selectMode: number,
-  randomMode: number
+  randomMode: number,
 }
 
 enum SelectMode {
@@ -72,12 +73,28 @@ export class PageUarw extends Component<any, UarwState> {
       qcards: [],
       countAll: 0,
       selectMode: SelectMode.STRICT,
-      randomMode: RandomMode.A
+      randomMode: RandomMode.A,
     }
     this.selectScHandleChange = this.selectScHandleChange.bind(this);
     this.selectPrHandleChange = this.selectPrHandleChange.bind(this);
     this.handleShowCards = this.handleShowCards.bind(this);
     this.selectModeChange = this.selectModeChange.bind(this);
+  }
+
+  hadleQCardProgressChange = async (qcardTid: string, newProgress: UARW_PROGRESSES): Promise<boolean> => {
+    console.log(`!!-!!-!! -> :::::::::::::: hadleQCardProgressChange() {210302225851}:${Date.now()}`); // del+
+    const hoggResult: HoggResult<boolean> = await UarwLogic.qcardProgressUpdate(qcardTid, newProgress)
+    console.log('!!-!!-!! hoggResult {210302225339}\n', hoggResult); // del+
+    if (!hoggResult.value) {
+      const qcardWithErr = this.state.qcards.find(qcard => qcard.tid === qcardTid)
+      if (qcardWithErr) {
+        qcardWithErr.errMsg = JSON.stringify(hoggResult);
+        console.log('!!-!!-!! qcardWithErr {210303001137}\n', qcardWithErr); // del+
+        this.setState({qcards: [...this.state.qcards]})
+        return false
+      }
+    }
+    return true
   }
 
   async componentDidMount() {
@@ -159,8 +176,8 @@ export class PageUarw extends Component<any, UarwState> {
   }
 
   private fnFilterVuscGet() {
-    let filterScVusc = selectOptionToVusc(UARW_FE_SCOPES, this.state.selectScSelectedOption as { value: string });
-    let filterPrVusc = selectOptionToVusc(UARW_FE_PROGRESS, this.state.selectPrSelectedOption as { value: string });
+    let filterScVusc = selectOptionToVusc(UARW_COLUMN_NAME.SCOPES, this.state.selectScSelectedOption as { value: string });
+    let filterPrVusc = selectOptionToVusc(UARW_COLUMN_NAME.PROGRESS, this.state.selectPrSelectedOption as { value: string });
     if (filterScVusc && filterPrVusc) {
       return `AND(${filterScVusc}, ${filterPrVusc})`
     } else if (filterScVusc) {
@@ -257,7 +274,11 @@ export class PageUarw extends Component<any, UarwState> {
             <div className="qcards">
               {
                 qcards.map((qcard, index) => {
-                  return <QCard key={index} qcard={qcard}/>
+                  return <QCard
+                    key={index}
+                    qcard={qcard}
+                    qcardProgressChange={this.hadleQCardProgressChange}
+                  />
                 })
               }
             </div>
