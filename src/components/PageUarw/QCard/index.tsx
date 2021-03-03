@@ -16,6 +16,7 @@ class QCardProps {
 class QCardState {
   answerShowed: boolean = false
   progressValue: string = UARW_PROGRESSES.P1
+  progressDisable: boolean = false
 }
 
 export class QCard extends Component<QCardProps, QCardState> {
@@ -31,7 +32,8 @@ export class QCard extends Component<QCardProps, QCardState> {
     super(props);
     this.state = {
       answerShowed: false,
-      progressValue: this.props.qcard?.progress || UARW_PROGRESSES.P1
+      progressValue: this.props.qcard?.progress || UARW_PROGRESSES.P1,
+      progressDisable: false
     }
   }
 
@@ -44,8 +46,10 @@ export class QCard extends Component<QCardProps, QCardState> {
     console.log('!!-!!-!! val {210301223735}\n', val); // del+
     console.log('!!-!!-!! qcard {210302214154}\n', this.props.qcard); // del+
     if (this.props.qcardProgressChange) {
+      this.setState({progressDisable: true});
       const res = await this.props.qcardProgressChange(this.props.qcard?.tid || '', val as UARW_PROGRESSES);
       console.log('!!-!!-!! res {210303002044}\n', res); // del+
+      this.setState({progressDisable: false});
       if (res) {
         this.setState({progressValue: val})
       }
@@ -66,6 +70,7 @@ export class QCard extends Component<QCardProps, QCardState> {
             vls={this.vls}
             currValue={this.state.progressValue}
             onChange={this.progressesChange}
+            disable={this.state.progressDisable}
           />
         </div>
         {this.props.qcard?.errMsg && <div className="err-msg">{this.props.qcard?.errMsg}</div>}

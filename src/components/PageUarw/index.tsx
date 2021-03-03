@@ -83,8 +83,10 @@ export class PageUarw extends Component<any, UarwState> {
 
   hadleQCardProgressChange = async (qcardTid: string, newProgress: UARW_PROGRESSES): Promise<boolean> => {
     console.log(`!!-!!-!! -> :::::::::::::: hadleQCardProgressChange() {210302225851}:${Date.now()}`); // del+
+    // --- обновление прогресса *карточки на сервере
     const hoggResult: HoggResult<boolean> = await UarwLogic.qcardProgressUpdate(qcardTid, newProgress)
     console.log('!!-!!-!! hoggResult {210302225339}\n', hoggResult); // del+
+    // ---
     if (!hoggResult.value) {
       const qcardWithErr = this.state.qcards.find(qcard => qcard.tid === qcardTid)
       if (qcardWithErr) {
