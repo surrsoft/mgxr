@@ -1,14 +1,16 @@
+@import "src/App";
+
 // отключение select-обводки
 .btn-primary:focus, .btn-primary.focus {
-  box-shadow: 0 0 0 0;
+  box-shadow: 0 0 0 0 !important;
 }
 
 .cls2255-container {
   & label.active {
-    background-color: #545b62 !important;
+    background-color: $uarw_qcard_toggle_active-button !important;
   }
   & label:not(.active) {
-    background-color: silver;
+    background-color: $uarw_qcard_toggle_no-active-button;
   }
 
   .cls2255-spinner {

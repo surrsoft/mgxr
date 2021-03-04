@@ -1,9 +1,11 @@
+@import "src/App";
 
 .qcard {
   border: 1px solid silver;
   border-radius: 4px;
   box-shadow: 4px 4px 6px rgba(0,0,0,0.5);
   padding: 8px 14px;
+  background-color: $uarw-color3;
 
   .err-msg {
     color: red;
@@ -14,6 +16,7 @@
     margin-top: 8px;
     border: 1px solid silver;
     padding: 4px 8px;
+    background-color: $uarw_qcard_question_bg-color;
 
     font-family: Ubuntu, sans-serif;
     font-weight: 300;
@@ -24,6 +27,7 @@
     margin-top: 8px;
     border: 1px solid silver;
     padding: 4px 8px;
+    background-color: $uarw_qcard_answer_bg-color;
 
     font-family: Ubuntu, sans-serif;
     font-weight: 300;
@@ -36,7 +40,7 @@
     border: 1px solid silver;
     padding: 2px 6px;
     color: #5f4628;
-    background-color: #fad72a;
+    background-color: $uarw_qcard_scope_bg-color;
   }
 
   .qcard__button {

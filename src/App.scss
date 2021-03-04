@@ -1,0 +1,50 @@
+
+$uarw-color1: #e6e8e6;
+$uarw-color3: #fdf8f8;
+
+
+// Override default variables before the import
+$primary: #7a91ef;
+$secondary: #b0b3b6;
+$body-bg: $uarw-color1;
+
+// --- uarw
+$uarw_qcard_scope_bg-color: #EFE7BC;
+$uarw_qcard_question_bg-color: #E7F2F8;
+$uarw_qcard_answer_bg-color: #EFE7BC;
+
+$uarw_qcard_toggle_active-button: $primary;
+$uarw_qcard_toggle_no-active-button: $secondary;
+
+// ---
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  monospace;
+}
+
+.App {
+  padding: 24px;
+}
+
+.appRoutes {
+  display: flex;
+  column-gap: 16px;
+  margin-bottom: 16px;
+}
+
+.active-link {
+  color: red;
+}
+
+// Import Bootstrap and its default variables
+@import '~bootstrap/scss/bootstrap.scss';

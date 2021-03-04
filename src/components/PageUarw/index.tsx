@@ -234,14 +234,14 @@ export class PageUarw extends Component<any, UarwState> {
                 isMulti
               />
               <ToggleButtonGroup
-                className="select-mode"
+                className="uarw-select-mode"
                 name="value"
                 type="radio"
                 value={this.state.selectMode}
                 onChange={this.selectModeChange}
               >
-                <ToggleButton value={SelectMode.STRICT} variant="secondary" size="sm">strict</ToggleButton>
-                <ToggleButton value={SelectMode.FREE} variant="secondary" size="sm">free</ToggleButton>
+                <ToggleButton value={SelectMode.STRICT} size="sm">strict</ToggleButton>
+                <ToggleButton value={SelectMode.FREE} size="sm">free</ToggleButton>
               </ToggleButtonGroup>
             </div>
             <div className="random-mode-container">
@@ -253,8 +253,8 @@ export class PageUarw extends Component<any, UarwState> {
                 value={this.state.randomMode}
                 onChange={this.randomModeChange}
               >
-                <ToggleButton value={RandomMode.A} variant="secondary" size="sm">A</ToggleButton>
-                <ToggleButton value={RandomMode.B} variant="secondary" size="sm">B</ToggleButton>
+                <ToggleButton value={RandomMode.A} size="sm">A</ToggleButton>
+                <ToggleButton value={RandomMode.B} size="sm">B</ToggleButton>
               </ToggleButtonGroup>
               {this.fnRandomModeCommentGet()}
             </div>
