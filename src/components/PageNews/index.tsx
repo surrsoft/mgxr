@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import './styles.css';
 import { RandomCardViewer } from '../RandomCardViewer';
 import { CardsB } from '../../api/cards-api';
-import { LSApiKey, randomExcept, TpCard } from '../../utils/utils';
 import dayjs from 'dayjs';
 import { MAirtable } from '../../api/airtable-api';
+import { LSApiKey, randomExcept, TpCard } from '../../utils/app-utils';
 
 export class PageNews extends Component<any, any> {
 

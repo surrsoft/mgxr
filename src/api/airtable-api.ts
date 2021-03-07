@@ -1,7 +1,7 @@
 import Airtable from 'airtable';
 import Record from 'airtable/lib/record';
 import { CONF_AIRTABLE_DB_NAME, CONF_AIRTABLE_TABLE_NAME } from '../consts';
-import { LSApiKey } from '../utils/utils';
+import { LSApiKey } from '../utils/app-utils';
 
 export class MAirtable {
 

@@ -79,3 +79,4 @@ export function utilPathGet(name?: string): string[] {
   }
   return [`/${name}`, `/mgxr/${name}`]
 }
+

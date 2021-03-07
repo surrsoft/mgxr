@@ -1,9 +1,9 @@
 import { Component } from 'react';
 import { Card } from '../Card';
 import './styles.css'
-import { TpCard } from '../../utils/utils';
 import { CardsB } from '../../api/cards-api';
 import dayjs from 'dayjs';
+import { TpCard } from '../../utils/app-utils';
 
 
 export class RandomCardViewer extends Component<any, any> {

@@ -5,9 +5,13 @@ import Select from 'react-select';
 import './styles.scss'
 import { QCard } from './QCard';
 import { QCardOj, UarwLogic, UarwTuples } from '../../utils/uarw/uarw-logic';
-import { Button, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
+import { Button, Nav, Navbar, NavItem, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import { UARW_COLUMN_NAME, UARW_PROGRESSES } from '../../consts-uarw';
 import { HoggResult } from '../../api/hogg/utils/HoggResult';
+import { Paths } from '../../consts';
+import { UarwNavbar } from './UarwNavbar';
+import { Route } from 'react-router-dom';
+import { UarwSettings } from './UarwSettings';
 
 interface UarwState {
   uarwTuples: UarwTuples | null,
@@ -212,6 +216,7 @@ export class PageUarw extends Component<any, UarwState> {
       countAll
     } = this.state;
     return <div>
+      <UarwNavbar/>
       {this.state.errStr
         ? <div>{this.state.errStr}</div>
         :

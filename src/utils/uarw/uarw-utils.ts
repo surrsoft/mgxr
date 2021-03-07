@@ -92,3 +92,4 @@ export function selectOptionToVusc(fieldName: string, option: { value: string } 
   const stJoin = arr.join(', ')
   return arr.length > 0 ? `OR(${stJoin})` : ''
 }
+

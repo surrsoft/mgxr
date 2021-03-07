@@ -1,6 +1,5 @@
 import { Component } from 'react';
 import './styles.css';
-import { LSApiKey } from '../../utils/utils';
 import { CONF_AIRTABLE_DB_NAME, CONF_AIRTABLE_TABLE_NAME } from '../../consts';
 import { HoggTupleNT } from '../../api/hogg/interfaces/HoggTupleNT';
 import { HoggOffsetCount } from '../../api/hogg/connections/HoggOffsetCount';
@@ -8,6 +7,7 @@ import { HoggConnectionAirtable } from '../../api/hogg/connections/HoggConnectio
 import { HoggResult } from '../../api/hogg/utils/HoggResult';
 import { BaseCell } from '../../api/hogg/base-implements/BaseCell';
 import { BaseTuple } from '../../api/hogg/base-implements/BaseTuple';
+import { LSApiKey } from '../../utils/app-utils';
 
 export class PageDebug extends Component<any, any> {
   private connection?: HoggConnectionAirtable;

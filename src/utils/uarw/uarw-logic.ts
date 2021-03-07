@@ -7,12 +7,12 @@ import {
 } from '../../consts-uarw';
 import { arrObjectsSortByStringProp, colination, SortInfo, ValCount } from './uarw-utils';
 import { HoggConnectionAirtable } from '../../api/hogg/connections/HoggConnectionAirtable';
-import { LSApiKey } from '../utils';
 import { HoggOffsetCount } from '../../api/hogg/connections/HoggOffsetCount';
 import { HoggConnectionNT } from '../../api/hogg/interfaces/HoggConnectionNT';
 import { BaseTuple } from '../../api/hogg/base-implements/BaseTuple';
 import { BaseCell } from '../../api/hogg/base-implements/BaseCell';
 import { HoggResult } from '../../api/hogg/utils/HoggResult';
+import { LSApiKey } from '../app-utils';
 
 export class UarwLogic {
 

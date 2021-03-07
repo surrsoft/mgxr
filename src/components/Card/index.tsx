@@ -1,9 +1,9 @@
 import { Component } from 'react';
 import './card.css';
-import { TpCard } from '../../utils/utils';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import isBetween from 'dayjs/plugin/isBetween';
+import { TpCard } from '../../utils/app-utils';
 
 export interface CardProps {
   card: TpCard,
