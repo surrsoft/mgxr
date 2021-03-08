@@ -1,17 +1,18 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import Loader from 'react-loader';
 import { selectOptionToVusc, ValCount, ValLabel } from '../../utils/uarw/uarw-utils';
 import Select from 'react-select';
 import './styles.scss'
 import { QCard } from './QCard';
 import { QCardOj, UarwLogic, UarwTuples } from '../../utils/uarw/uarw-logic';
-import { Button, Nav, Navbar, NavItem, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
+import { Button, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import { UARW_COLUMN_NAME, UARW_PROGRESSES } from '../../consts-uarw';
 import { HoggResult } from '../../api/hogg/utils/HoggResult';
 import { Paths } from '../../consts';
-import { UarwNavbar } from './UarwNavbar';
-import { Route } from 'react-router-dom';
+import UarwNavbar from './UarwNavbar';
+import { Route, Switch, withRouter } from 'react-router-dom';
 import { UarwSettings } from './UarwSettings';
+import { UarwAbout } from './UarwAbout';
 
 interface UarwState {
   uarwTuples: UarwTuples | null,
@@ -59,7 +60,7 @@ function fnOptionsRefresh(currSelectOption: object | object[] | null, newVL: Val
   return currSelectOption
 }
 
-export class PageUarw extends Component<any, UarwState> {
+class PageUarw extends Component<any, UarwState> {
   private uarwLogic?: UarwLogic;
 
   constructor(props: any) {
@@ -85,6 +86,13 @@ export class PageUarw extends Component<any, UarwState> {
     this.selectModeChange = this.selectModeChange.bind(this);
   }
 
+  async componentDidMount() {
+    console.log('!!-!!-!! this.props {210308092038}\n', this.props); // del+
+    this.setState({loaded: true});
+    this.uarwLogic = new UarwLogic();
+    await this.selectorsDataGetAndUpdate();
+  }
+
   hadleQCardProgressChange = async (qcardTid: string, newProgress: UARW_PROGRESSES): Promise<boolean> => {
     console.log(`!!-!!-!! -> :::::::::::::: hadleQCardProgressChange() {210302225851}:${Date.now()}`); // del+
     // --- обновление прогресса *карточки на сервере
@@ -101,12 +109,6 @@ export class PageUarw extends Component<any, UarwState> {
       }
     }
     return true
-  }
-
-  async componentDidMount() {
-    this.setState({loaded: true});
-    this.uarwLogic = new UarwLogic();
-    await this.selectorsDataGetAndUpdate();
   }
 
   /**
@@ -217,81 +219,88 @@ export class PageUarw extends Component<any, UarwState> {
     } = this.state;
     return <div>
       <UarwNavbar/>
-      {this.state.errStr
-        ? <div>{this.state.errStr}</div>
-        :
-        <div className="uarw-container">
-          <div className="cards-count">Карточек: {countAll}</div>
-          <Loader loaded={this.state.loadedScopes} position="relative" top="30px">
-            <div className="selects-container">
-              <Select
-                className="select-scopes"
-                value={selectScSelectedOption}
-                options={selectScOptions}
-                onChange={this.selectScHandleChange}
-                isMulti
-              />
-              <Select
-                className="select-progresses"
-                value={selectPrSelectedOption}
-                options={selectPrOptions}
-                onChange={this.selectPrHandleChange}
-                isMulti
-              />
-              <ToggleButtonGroup
-                className="uarw-select-mode"
-                name="value"
-                type="radio"
-                value={this.state.selectMode}
-                onChange={this.selectModeChange}
-              >
-                <ToggleButton value={SelectMode.STRICT} size="sm">strict</ToggleButton>
-                <ToggleButton value={SelectMode.FREE} size="sm">free</ToggleButton>
-              </ToggleButtonGroup>
-            </div>
-            <div className="random-mode-container">
-              <div>random mode:</div>
-              <ToggleButtonGroup
-                className="random-mode-select"
-                name="value"
-                type="radio"
-                value={this.state.randomMode}
-                onChange={this.randomModeChange}
-              >
-                <ToggleButton value={RandomMode.A} size="sm">A</ToggleButton>
-                <ToggleButton value={RandomMode.B} size="sm">B</ToggleButton>
-              </ToggleButtonGroup>
-              {this.fnRandomModeCommentGet()}
-            </div>
-            <div className="buttons">
-              <div className="show-random-btn">
-                <Button
-                  variant="success"
-                  size="sm"
-                  onClick={() => this.showRandomHandle()}
-                  disabled={this.state.randomMode === RandomMode.B}
-                >show random</Button>
-              </div>
-              <div className="get-button">
-                <Button onClick={() => this.handleShowCards()} variant="success" size="sm">show all</Button>
-              </div>
-            </div>
-          </Loader>
-          <Loader loaded={this.state.loaded} position='relative'>
-            <div className="qcards">
-              {
-                qcards.map((qcard, index) => {
-                  return <QCard
-                    key={index}
-                    qcard={qcard}
-                    qcardProgressChange={this.hadleQCardProgressChange}
+      <Switch>
+        <Route path={Paths.UARW + Paths.UARW_SETTINGS_2} exact render={() => (<div>111-111</div>)}/>
+        <Route path={Paths.UARW + Paths.UARW_SETTINGS} exact component={UarwSettings}/>
+        <Route path={Paths.UARW + Paths.UARW_ABOUT} exact component={UarwAbout}/>
+        <Route path={Paths.UARW} exact>
+          {this.state.errStr
+            ? <div>{this.state.errStr}</div>
+            :
+            <div className="uarw-container">
+              <div className="cards-count">Карточек: {countAll}</div>
+              <Loader loaded={this.state.loadedScopes} position="relative" top="30px">
+                <div className="selects-container">
+                  <Select
+                    className="select-scopes"
+                    value={selectScSelectedOption}
+                    options={selectScOptions}
+                    onChange={this.selectScHandleChange}
+                    isMulti
                   />
-                })
-              }
+                  <Select
+                    className="select-progresses"
+                    value={selectPrSelectedOption}
+                    options={selectPrOptions}
+                    onChange={this.selectPrHandleChange}
+                    isMulti
+                  />
+                  <ToggleButtonGroup
+                    className="uarw-select-mode"
+                    name="value"
+                    type="radio"
+                    value={this.state.selectMode}
+                    onChange={this.selectModeChange}
+                  >
+                    <ToggleButton value={SelectMode.STRICT} size="sm">strict</ToggleButton>
+                    <ToggleButton value={SelectMode.FREE} size="sm">free</ToggleButton>
+                  </ToggleButtonGroup>
+                </div>
+                <div className="random-mode-container">
+                  <div>random mode:</div>
+                  <ToggleButtonGroup
+                    className="random-mode-select"
+                    name="value"
+                    type="radio"
+                    value={this.state.randomMode}
+                    onChange={this.randomModeChange}
+                  >
+                    <ToggleButton value={RandomMode.A} size="sm">A</ToggleButton>
+                    <ToggleButton value={RandomMode.B} size="sm">B</ToggleButton>
+                  </ToggleButtonGroup>
+                  {this.fnRandomModeCommentGet()}
+                </div>
+                <div className="buttons">
+                  <div className="show-random-btn">
+                    <Button
+                      variant="success"
+                      size="sm"
+                      onClick={() => this.showRandomHandle()}
+                      disabled={this.state.randomMode === RandomMode.B}
+                    >show random</Button>
+                  </div>
+                  <div className="get-button">
+                    <Button onClick={() => this.handleShowCards()} variant="success" size="sm">show all</Button>
+                  </div>
+                </div>
+              </Loader>
+              <Loader loaded={this.state.loaded} position='relative'>
+                <div className="qcards">
+                  {
+                    qcards.map((qcard, index) => {
+                      return <QCard
+                        key={index}
+                        qcard={qcard}
+                        qcardProgressChange={this.hadleQCardProgressChange}
+                      />
+                    })
+                  }
+                </div>
+              </Loader>
             </div>
-          </Loader>
-        </div>
-      }
+          }
+        </Route>
+      </Switch>
     </div>
   }
 
@@ -316,3 +325,5 @@ export class PageUarw extends Component<any, UarwState> {
     await this.handleShowCards(true)
   }
 }
+
+export default withRouter(PageUarw);

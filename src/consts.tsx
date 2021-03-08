@@ -9,6 +9,7 @@ export enum Paths {
   MGXR = '/mgxr',
   UARW = '/uarw',
   UARW_SETTINGS = '/uarw-settings',
+  UARW_SETTINGS_2 = '/uarw-settings-2',
   UARW_ABOUT = '/uarw-about',
   NEWS = '/news',
   SETTINGS = '/settings',
