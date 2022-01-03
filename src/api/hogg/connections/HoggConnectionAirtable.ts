@@ -5,7 +5,7 @@ import Record from 'airtable/lib/record';
 import { HoggCellNT } from '../interfaces/HoggCellNT';
 import { BaseTuple } from '../base-implements/BaseTuple';
 import { BaseCell } from '../base-implements/BaseCell';
-import { HoggOffsetCount } from './HoggOffsetCount';
+import { HoggOffsetCount } from '../utils/HoggOffsetCount';
 import { HoggResult } from '../utils/HoggResult';
 
 

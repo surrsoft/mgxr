@@ -1,5 +1,5 @@
 import { HoggTupleNT } from './HoggTupleNT';
-import { HoggOffsetCount } from '../connections/HoggOffsetCount';
+import { HoggOffsetCount } from '../utils/HoggOffsetCount';
 import { HoggResult } from '../utils/HoggResult';
 
 export interface HoggConnectionNT {

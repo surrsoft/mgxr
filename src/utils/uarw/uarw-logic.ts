@@ -7,7 +7,7 @@ import {
 } from '../../consts-uarw';
 import { arrObjectsSortByStringProp, colination, SortInfo, ValCount } from './uarw-utils';
 import { HoggConnectionAirtable } from '../../api/hogg/connections/HoggConnectionAirtable';
-import { HoggOffsetCount } from '../../api/hogg/connections/HoggOffsetCount';
+import { HoggOffsetCount } from '../../api/hogg/utils/HoggOffsetCount';
 import { HoggConnectionNT } from '../../api/hogg/interfaces/HoggConnectionNT';
 import { BaseTuple } from '../../api/hogg/base-implements/BaseTuple';
 import { BaseCell } from '../../api/hogg/base-implements/BaseCell';

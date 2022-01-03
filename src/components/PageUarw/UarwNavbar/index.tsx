@@ -21,8 +21,9 @@ class UarwNavbar extends Component<any, State> {
     const {path} = this.props.match;
     return <>
       <Navbar>
-        <Navbar.Brand href={Paths.UARW}>UARW</Navbar.Brand>
+        <Navbar.Brand href={'#' + path}>UARW</Navbar.Brand>
         <Nav onSelect={this.onSelectHandle}>
+          <Nav.Link eventKey={path}>Главная</Nav.Link>
           <Nav.Link eventKey={path + Paths.UARW_SETTINGS}>{Names.nameGet(Paths.UARW_SETTINGS)}</Nav.Link>
           <Nav.Link eventKey={path + Paths.UARW_ABOUT}>{Names.nameGet(Paths.UARW_ABOUT)}</Nav.Link>
           <Nav.Link eventKey={path + Paths.UARW_SETTINGS_2}>Settings-2</Nav.Link>

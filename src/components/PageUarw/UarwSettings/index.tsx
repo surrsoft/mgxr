@@ -1,20 +1,18 @@
-import { Component } from 'react';
 import './styles.scss';
+import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
-class Props {
+export function UarwSettings() {
+  const [count, setCount] = useState(0);
+  let history = useHistory();
+  console.log('!!-!!-!! history {210308225445}\n', history); // del+
 
-}
-
-class State {
-
-}
-
-export class UarwSettings extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-  }
-
-  render() {
-    return <div>UarwSettings</div>
-  }
+  return (
+    <div>
+      <p>Вы кликнули {count} раз</p>
+      <button onClick={() => setCount(count + 1)}>
+        Нажми на меня
+      </button>
+    </div>
+  );
 }

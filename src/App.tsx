@@ -8,7 +8,7 @@ import { PageNews } from './components/PageNews';
 import PageUarw from './components/PageUarw';
 import { Container, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import './App.scss';
-import { Names, Paths } from './consts';
+import { MGXR_APP_REV, Names, Paths } from './consts';
 
 MAirtable.init();
 
@@ -93,8 +93,6 @@ class App extends React.Component<any, State> {
 
     return (
       <div className="App">
-
-        {/* // --- */}
         <Route path={Paths.MGXR}>
           {this.fnMain()}
         </Route>
@@ -102,6 +100,7 @@ class App extends React.Component<any, State> {
           <div>Проекты</div>
           {Names.aTagGet(Paths.UARW)}
           {Names.aTagGet(Paths.NEWS)}
+          <div>Версия приложения: {MGXR_APP_REV}</div>
         </Route>
         <Route path={Paths.MGXR + Paths.SETTINGS} exact>
           <Settings/>
