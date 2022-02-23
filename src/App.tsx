@@ -70,6 +70,7 @@ class App extends React.Component<any, State> {
               >
                 <Nav.Link eventKey={Paths.MGXR}>Главная</Nav.Link>
                 <Nav.Link eventKey={Paths.UARW}>"Карточки"</Nav.Link>
+                <Nav.Link eventKey={Paths.UARW2}>"Карточки2"</Nav.Link>
                 <Nav.Link eventKey={Paths.NEWS}>"Новости"</Nav.Link>
                 <Nav.Link eventKey={Paths.MGXR + Paths.SETTINGS}>Настройки</Nav.Link>
                 <NavDropdown

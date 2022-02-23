@@ -8,6 +8,7 @@ export const MGXR_LS_AIRTABLE_API_KEY = 'mgxr_ls_airtable_api_key';
 export enum Paths {
   MGXR = '/mgxr',
   UARW = '/uarw',
+  UARW2 = '/uarw2',
   UARW_SETTINGS = '/uarw-settings',
   UARW_SETTINGS_2 = '/uarw-settings-2',
   UARW_ABOUT = '/uarw-about',
@@ -21,6 +22,7 @@ export class Names {
   static values = [
     {link: Paths.MGXR, name: "Главная"},
     {link: Paths.UARW, name: `"Карточки"`},
+    {link: Paths.UARW2, name: `"Карточки2"`},
     {link: Paths.UARW_SETTINGS, name: `Настройки`},
     {link: Paths.UARW_ABOUT, name: `О проекте`},
     {link: Paths.NEWS, name: `"Новости"`},
