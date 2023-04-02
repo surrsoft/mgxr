@@ -65,7 +65,7 @@ class App extends React.Component<any, State> {
                 variant="pills"
                 className="mr-auto"
                 defaultActiveKey={Paths.MGXR}
-                activeKey={this.state.navEventKey}
+                activeKey={this.state.navEventKey ?? undefined}
                 onSelect={this.navSelectHandle}
               >
                 <Nav.Link eventKey={Paths.MGXR}>Главная</Nav.Link>
