@@ -8,7 +8,7 @@ import { PageNews } from './components/PageNews';
 import PageUarw from './components/PageUarw';
 import './App.scss';
 import { MGXR_APP_REV, Names, Paths } from './consts';
-import { Main } from './Main';
+import { Main } from './containers/Main';
 
 MAirtable.init();
 
