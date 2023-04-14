@@ -140,7 +140,7 @@ export class HoggConnectionAirtable implements HoggConnectionNT {
             })
         });
       } catch (e) {
-        return new HoggResult<boolean>(false, '[[210223193709]]', e.message)
+        return new HoggResult<boolean>(false, '[[210223193709]]', (e as any)?.message)
       }
     }
   }
@@ -163,7 +163,7 @@ export class HoggConnectionAirtable implements HoggConnectionNT {
           })
         return new HoggResult<boolean>(true)
       } catch (e) {
-        return new HoggResult<boolean>(false, '[[210223193709-2]]', e.message)
+        return new HoggResult<boolean>(false, '[[210223193709-2]]', (e as any)?.message)
       }
     }
   }

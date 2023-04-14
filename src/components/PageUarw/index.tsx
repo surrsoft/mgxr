@@ -145,8 +145,8 @@ class PageUarw extends Component<any, UarwState> {
           selectPrSelectedOption: newSelectPrSelectedOption
         };
         this.setState(newState)
-      } catch (err) {
-        this.setState({errStr: err.message})
+      } catch (err: any) {
+        this.setState({errStr: err?.message})
       }
     }
   }
@@ -186,8 +186,8 @@ class PageUarw extends Component<any, UarwState> {
         qcards: qcardOjs || [],
         loaded: true,
       })
-    } catch (err) {
-      this.setState({loaded: true, errStr: err.message})
+    } catch (err: any) {
+      this.setState({loaded: true, errStr: err?.message})
     }
   }
 

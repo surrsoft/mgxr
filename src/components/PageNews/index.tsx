@@ -54,7 +54,7 @@ export class PageNews extends Component<any, any> {
           isLoading: false,
           countAll: this.cardsB.countAllGet()
         });
-      } catch (err) {
+      } catch (err: any) {
         if (err.statusCode === 401 && err.message.includes('provide valid api key')) {
           this.setState({errorStr: 'invalid Airtable API Key'})
         } else {
