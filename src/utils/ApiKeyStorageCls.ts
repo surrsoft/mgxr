@@ -3,7 +3,7 @@ import { isEmptyOrWhitespaces } from './app-utils';
 const MGXR_LS_AIRTABLE_API_KEY = 'mgxr_ls_airtable_api_key';
 
 /** хранилище Airtable-ключа. Хранится в Local Storage */
-export class LSApiKey {
+export class ApiKeyStorageCls {
   static apiKeyGet(): string | null {
     return localStorage.getItem(MGXR_LS_AIRTABLE_API_KEY);
   }

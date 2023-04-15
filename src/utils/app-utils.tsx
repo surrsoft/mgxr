@@ -1,23 +1,16 @@
 import _ from 'lodash';
-import { CardCls } from './CardCls';
-
-export const tpCards = [
-  new CardCls('Российская газета', 'https://rg.ru'),
-  new CardCls('Коммерсант', 'https://www.kommersant.ru/'),
-  new CardCls('РИА Новости', 'https://ria.ru/')
-]
 
 /**
  * Возвращает случайное число в диапазоне 0 .. (1) включая 0 и (1), но отсутствующее в (2).
  * Если такого случайного числа найти невозможно (из-за того что в (2) уже все индексы есть), то возвращает -1
  *
- * ID [[210219210500]], rev.2 1.1 2021-02-19
+ * ID [[210219210500]]-changed, rev.2 1.1 2021-02-19
  *
  * @param ix (1) -- например 3
  * @param arrExcept -- например [0, 1]
  * @return например может вернуть только 2 или 3
  */
-export function randomExcept(ix: number, arrExcept: [number]): number {
+export function randomExcept(ix: number, arrExcept: number[]): number {
   if (_.isEmpty(arrExcept)) {
     return _.random(ix);
   }

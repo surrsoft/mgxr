@@ -1,23 +1,23 @@
 import { Component } from 'react';
 import { Card } from '../Card';
 import './styles.css'
-import { CardsB } from '../../api/cards-api';
+import { CardsCls } from '../../entries/CardsCls';
 import dayjs from 'dayjs';
-import { CardCls } from '../../utils/CardCls';
+import { CardFtType } from '../../types/CardFtType';
 
 
-export class RandomCardViewer extends Component<any, any> {
+export class CardViewContainer extends Component<any, any> {
   constructor(props: any) {
     super(props);
     this.cardHandleLinkClick.bind(this);
   }
 
-  async cardHandleLinkClick(card: CardCls) {
+  async cardHandleLinkClick(card: CardFtType) {
     const card0 = {
       ...card,
-      [CardsB.FIELD_TRANS_DATE_LAST]: dayjs(Date.now()).format('YYYY-MM-DD')
+      [CardsCls.FIELD_TRANS_DATE_LAST]: dayjs(Date.now()).format('YYYY-MM-DD')
     }
-    await CardsB.update(card.tid || '', card0);
+    await CardsCls.update(card.tid || '', card0);
   }
 
   render() {

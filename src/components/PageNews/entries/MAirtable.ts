@@ -1,12 +1,13 @@
 import Airtable from 'airtable';
 import AirtableRecord from 'airtable/lib/record';
-import { CONF_AIRTABLE_DB_NAME, CONF_AIRTABLE_TABLE_NAME } from '../consts';
-import { LSApiKey } from '../utils/LSApiKeyCls';
+
+import { ApiKeyStorageCls } from '../../../utils/ApiKeyStorageCls';
+import { CONF_AIRTABLE_DB_NAME, CONF_AIRTABLE_TABLE_NAME } from '../constants';
 
 export class MAirtable {
 
   static init() {
-    const apiKey = LSApiKey.apiKeyGet()
+    const apiKey = ApiKeyStorageCls.apiKeyGet()
     if (!apiKey) {
       alert('please add "Airtable API Key" at "Settings"')
     } else {

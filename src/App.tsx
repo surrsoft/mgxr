@@ -1,11 +1,10 @@
 import React from 'react';
 import { Route, withRouter } from 'react-router-dom';
 import { Location as HLocation } from 'history';
-import { MAirtable } from './api/airtable-api';
+import { MAirtable } from './components/PageNews/entries/MAirtable';
 import { Settings } from './components/Settings';
 import { PageDebug } from './components/PageDebug';
-import { PageNews } from './components/PageNews';
-import { PageNews2 } from './components/PageNews/PageNews2';
+import { PageNews } from './components/PageNews/PageNews';
 import PageUarw from './components/PageUarw';
 import './App.scss';
 import { MGXR_APP_REV, Names, Paths } from './consts';
@@ -77,7 +76,7 @@ class App extends React.Component<any, StateType> {
           </Route>
           <Route path={Paths.NEWS} exact>
             {/* "Новости" */}
-            <PageNews2/>
+            <PageNews/>
           </Route>
           <Route path={Paths.UARW}>
             {/* "Карточки" */}
