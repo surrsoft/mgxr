@@ -5,7 +5,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import isBetween from 'dayjs/plugin/isBetween';
 import { TpCard } from '../../utils/app-utils';
 
-export interface CardProps {
+export interface Props {
   card: TpCard,
   handleLinkClick: (card: TpCard) => void
 }
@@ -18,9 +18,9 @@ function DateFieldShow(name: string, dateSt?: string) {
   </div>)
 }
 
-export class Card extends Component<CardProps, any> {
+export class Card extends Component<Props, any> {
 
-  constructor(props: CardProps) {
+  constructor(props: Props) {
     super(props);
     this.handleLinkPress = this.handleLinkPress.bind(this);
     dayjs.extend(relativeTime)
@@ -29,12 +29,13 @@ export class Card extends Component<CardProps, any> {
 
   // @ts-ignore
   async handleLinkPress(e) {
-    const {card, handleLinkClick} = this.props;
+    const { card, handleLinkClick } = this.props;
     handleLinkClick(card);
   }
 
   render() {
-    const {card} = this.props;
+    const { card } = this.props;
+    console.log('!!-!!-!!  card {230415090118}\n', card); // del+
     if (!card) {
       return <div>card is null</div>
     }

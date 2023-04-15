@@ -46,6 +46,7 @@ export class Settings extends Component<any, any> {
         </span>)
         }
       </div>
+      <div>см. <a href="https://airtable.com/create/apikey" target="_blank">https://airtable.com/create/apikey</a></div>
     </div>)
   }
 }

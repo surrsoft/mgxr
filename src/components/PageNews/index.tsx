@@ -35,7 +35,7 @@ export class PageNews extends Component<any, any> {
           showedIxs: arr1
         })
         // ---
-        const card0 = {...card, [CardsB.FIELD_SHOW_DATE_LAST]: dayjs().format('YYYY-MM-DD')};
+        const card0 = { ...card, [CardsB.FIELD_SHOW_DATE_LAST]: dayjs().format('YYYY-MM-DD') };
         await CardsB.update(card.tid || '', card0);
       }
     }
@@ -45,7 +45,7 @@ export class PageNews extends Component<any, any> {
     const apiKey = LSApiKey.apiKeyGet()
     if (apiKey) {
       try {
-        this.setState({isApiKeySetted: true});
+        this.setState({ isApiKeySetted: true });
         // ---
         // [[210222113321]]
         const records = await MAirtable.recordsGet();
@@ -56,7 +56,7 @@ export class PageNews extends Component<any, any> {
         });
       } catch (err: any) {
         if (err.statusCode === 401 && err.message.includes('provide valid api key')) {
-          this.setState({errorStr: 'invalid Airtable API Key'})
+          this.setState({ errorStr: 'invalid Airtable API Key' })
         } else {
           throw new Error(err);
         }
@@ -65,22 +65,28 @@ export class PageNews extends Component<any, any> {
   }
 
   render() {
-    const {isApiKeySetted, isLoading, errorStr} = this.state;
+    const { isApiKeySetted, isLoading, errorStr } = this.state;
     // ---
     return (
       <div>{
-        errorStr ? <div className="app__error_string">{errorStr}</div>
-          : isLoading ?
-          (<div>
-            {
-              isApiKeySetted ?
-                <div>Loading...</div> :
-                <div>please provide "Airtable API Key" at "Settings"</div>
-            }
-          </div>)
-          : <RandomCardViewer countAll={this.state.countAll} countShowed={this.state.countShowed}
-                              card={this.state.card}
-                              handleShow={() => this.handleShow()}/>
+        errorStr
+          ? <div className="app__error_string">{errorStr}</div>
+          : isLoading
+            ?
+            (<div>
+              {
+                isApiKeySetted ?
+                  <div>Loading...</div> :
+                  <div>please provide "Airtable API Key" at "Settings"</div>
+              }
+            </div>)
+            :
+            <RandomCardViewer
+              countAll={this.state.countAll}
+              countShowed={this.state.countShowed}
+              card={this.state.card}
+              handleShow={() => this.handleShow()}
+            />
       }
       </div>
     )

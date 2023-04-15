@@ -25,7 +25,8 @@ export class RandomCardViewer extends Component<any, any> {
       <div>Показано: {this.props.countShowed} / {this.props.countAll}</div>
       <button className="rc-viewer__button" onClick={this.props.handleShow}>Show</button>
       {
-        this.props.card ?
+        this.props.card
+          ?
           <div className="rc-viewer__card">
             <Card
               card={this.props.card}
