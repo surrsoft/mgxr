@@ -1,41 +1,10 @@
 import _ from 'lodash';
-import { MGXR_LS_AIRTABLE_API_KEY } from '../consts';
-
-export class LSApiKey {
-  static apiKeyGet(): string | null {
-    return localStorage.getItem(MGXR_LS_AIRTABLE_API_KEY)
-  }
-
-  static apiKeySet(apiKey?: string): boolean {
-    if (isEmptyOrWhitespaces(apiKey)) {
-      return false
-    } else if (apiKey) {
-      localStorage.setItem(MGXR_LS_AIRTABLE_API_KEY, apiKey);
-      return true
-    }
-    return false
-  }
-}
-
-export class TpCard {
-  constructor(
-    readonly title?: string,
-    readonly url?: string,
-    readonly comm?: string,
-    readonly body?: string,
-    readonly id?: string,
-    readonly tid?: string,
-    readonly trans_count: number = 0,
-    readonly trans_date_last?: string,
-    readonly show_date_last?: string,
-  ) {
-  }
-}
+import { CardCls } from './CardCls';
 
 export const tpCards = [
-  new TpCard('Российская газета', 'https://rg.ru'),
-  new TpCard('Коммерсант', 'https://www.kommersant.ru/'),
-  new TpCard('РИА Новости', 'https://ria.ru/')
+  new CardCls('Российская газета', 'https://rg.ru'),
+  new CardCls('Коммерсант', 'https://www.kommersant.ru/'),
+  new CardCls('РИА Новости', 'https://ria.ru/')
 ]
 
 /**

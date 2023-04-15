@@ -3,7 +3,7 @@ import { Card } from '../Card';
 import './styles.css'
 import { CardsB } from '../../api/cards-api';
 import dayjs from 'dayjs';
-import { TpCard } from '../../utils/app-utils';
+import { CardCls } from '../../utils/CardCls';
 
 
 export class RandomCardViewer extends Component<any, any> {
@@ -12,7 +12,7 @@ export class RandomCardViewer extends Component<any, any> {
     this.cardHandleLinkClick.bind(this);
   }
 
-  async cardHandleLinkClick(card: TpCard) {
+  async cardHandleLinkClick(card: CardCls) {
     const card0 = {
       ...card,
       [CardsB.FIELD_TRANS_DATE_LAST]: dayjs(Date.now()).format('YYYY-MM-DD')

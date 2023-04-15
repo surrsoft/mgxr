@@ -1,10 +1,10 @@
 import cards from './cards.json';
 import Record from 'airtable/lib/record';
 import { MAirtable } from './airtable-api';
-import { TpCard } from '../utils/app-utils';
+import { CardCls } from '../utils/CardCls';
 
 export class Cards {
-  static allGet(): TpCard[] {
+  static allGet(): CardCls[] {
     // @ts-ignore
     return cards.cards.map(el => {
       return el
@@ -15,7 +15,7 @@ export class Cards {
     return cards.cards.length
   }
 
-  static getByIndex(index: number): TpCard {
+  static getByIndex(index: number): CardCls {
     // @ts-ignore
     return cards.cards[index]
   }
@@ -32,6 +32,7 @@ export class CardsB {
   // type - Date
   public static FIELD_TRANS_DATE_LAST = 'trans_date_last';
   public static FIELD_SHOW_DATE_LAST = 'show_date_last';
+  public static FIELD_TAGS = 'tags';
 
   constructor(readonly records: Record[]) {
   }
@@ -41,9 +42,10 @@ export class CardsB {
   }
 
   // [[210222111416]]
-  getByIndex(index: number): TpCard {
+  getByIndex(index: number): CardCls {
     const record = this.records[index]
-    return new TpCard(
+    console.log('!!-!!-!!  record.get(CardsB.FIELD_TAGS) {230415124100}\n', record.get(CardsB.FIELD_TAGS)); // del+
+    return new CardCls(
       record.get(this.FIELD_TITLE),
       record.get(this.FIELD_URL),
       record.get(this.FIELD_COMM),
@@ -53,10 +55,11 @@ export class CardsB {
       record.get(CardsB.FIELD_TRANS_COUNT),
       record.get(CardsB.FIELD_TRANS_DATE_LAST),
       record.get(CardsB.FIELD_SHOW_DATE_LAST),
+      record.get(CardsB.FIELD_TAGS),
     )
   }
 
-  static async update(tid: string, card: TpCard) {
+  static async update(tid: string, card: CardCls) {
     const fields = {
       [CardsB.FIELD_TRANS_COUNT]: card.trans_count + 1,
       [CardsB.FIELD_TRANS_DATE_LAST]: card.trans_date_last,

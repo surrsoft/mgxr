@@ -12,7 +12,7 @@ import { HoggConnectionNT } from '../../api/hogg/interfaces/HoggConnectionNT';
 import { BaseTuple } from '../../api/hogg/base-implements/BaseTuple';
 import { BaseCell } from '../../api/hogg/base-implements/BaseCell';
 import { HoggResult } from '../../api/hogg/utils/HoggResult';
-import { LSApiKey } from '../app-utils';
+import { LSApiKey } from '../LSApiKeyCls';
 
 export class UarwLogic {
 

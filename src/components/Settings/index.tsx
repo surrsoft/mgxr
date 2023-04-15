@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './styles.css'
 import { MGXR_APP_REV } from '../../consts';
-import { LSApiKey } from '../../utils/app-utils';
+import { LSApiKey } from '../../utils/LSApiKeyCls';
 
 export class Settings extends Component<any, any> {
   private textInput: React.RefObject<HTMLInputElement>;

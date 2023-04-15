@@ -5,6 +5,7 @@ import { MAirtable } from './api/airtable-api';
 import { Settings } from './components/Settings';
 import { PageDebug } from './components/PageDebug';
 import { PageNews } from './components/PageNews';
+import { PageNews2 } from './components/PageNews/PageNews2';
 import PageUarw from './components/PageUarw';
 import './App.scss';
 import { MGXR_APP_REV, Names, Paths } from './consts';
@@ -76,7 +77,7 @@ class App extends React.Component<any, StateType> {
           </Route>
           <Route path={Paths.NEWS} exact>
             {/* "Новости" */}
-            <PageNews/>
+            <PageNews2/>
           </Route>
           <Route path={Paths.UARW}>
             {/* "Карточки" */}

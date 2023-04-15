@@ -7,7 +7,7 @@ import { HoggConnectionAirtable } from '../../api/hogg/connections/HoggConnectio
 import { HoggResult } from '../../api/hogg/utils/HoggResult';
 import { BaseCell } from '../../api/hogg/base-implements/BaseCell';
 import { BaseTuple } from '../../api/hogg/base-implements/BaseTuple';
-import { LSApiKey } from '../../utils/app-utils';
+import { LSApiKey } from '../../utils/LSApiKeyCls';
 
 export class PageDebug extends Component<any, any> {
   private connection?: HoggConnectionAirtable;
