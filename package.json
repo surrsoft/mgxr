@@ -11,7 +11,7 @@
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "deployTemp": "gh-pages -d build",
-    "deploy": "(if exist docs (rmdir /S /Q docs)) && npm run build && xcopy /E /I /H /Y \"build\" \"docs\" && git add --all",
+    "deploy": "(if exist docs (rmdir /S /Q docs)) && npm run build && xcopy /E /I /H /Y \"build\" \"docs\" && git add --all"
   },
   "dependencies": {
     "@testing-library/react": "^11.1.0",
