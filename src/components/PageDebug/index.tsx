@@ -1,20 +1,20 @@
 import { Component } from 'react';
 import './styles.css';
-import { CONF_AIRTABLE_DB_NAME, CONF_AIRTABLE_TABLE_NAME } from '../../consts';
 import { HoggTupleNT } from '../../api/hogg/interfaces/HoggTupleNT';
 import { HoggOffsetCount } from '../../api/hogg/utils/HoggOffsetCount';
 import { HoggConnectionAirtable } from '../../api/hogg/connections/HoggConnectionAirtable';
 import { HoggResult } from '../../api/hogg/utils/HoggResult';
 import { BaseCell } from '../../api/hogg/base-implements/BaseCell';
 import { BaseTuple } from '../../api/hogg/base-implements/BaseTuple';
-import { LSApiKey } from '../../utils/app-utils';
+import { ApiKeyStorageCls } from '../../utils/ApiKeyStorageCls';
+import { CONF_AIRTABLE_DB_NAME, CONF_AIRTABLE_TABLE_NAME } from '../PageNews/constants';
 
 export class PageDebug extends Component<any, any> {
   private connection?: HoggConnectionAirtable;
 
   async query() {
     const connection = new HoggConnectionAirtable();
-    connection.init({apiKey: LSApiKey.apiKeyGet() || ''})
+    connection.init({apiKey: ApiKeyStorageCls.apiKeyGet() || ''})
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const res: HoggTupleNT[] | undefined = await this.connection
       ?.columns(['id'])
@@ -47,7 +47,7 @@ export class PageDebug extends Component<any, any> {
 
   componentDidMount() {
     this.connection = new HoggConnectionAirtable();
-    this.connection.init({apiKey: LSApiKey.apiKeyGet() || ''});
+    this.connection.init({apiKey: ApiKeyStorageCls.apiKeyGet() || ''});
     this.connection
       .db(CONF_AIRTABLE_DB_NAME)
       .table(CONF_AIRTABLE_TABLE_NAME);

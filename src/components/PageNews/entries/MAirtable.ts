@@ -1,12 +1,13 @@
 import Airtable from 'airtable';
-import Record from 'airtable/lib/record';
-import { CONF_AIRTABLE_DB_NAME, CONF_AIRTABLE_TABLE_NAME } from '../consts';
-import { LSApiKey } from '../utils/app-utils';
+import AirtableRecord from 'airtable/lib/record';
+
+import { ApiKeyStorageCls } from '../../../utils/ApiKeyStorageCls';
+import { CONF_AIRTABLE_DB_NAME, CONF_AIRTABLE_TABLE_NAME } from '../constants';
 
 export class MAirtable {
 
   static init() {
-    const apiKey = LSApiKey.apiKeyGet()
+    const apiKey = ApiKeyStorageCls.apiKeyGet()
     if (!apiKey) {
       alert('please add "Airtable API Key" at "Settings"')
     } else {
@@ -21,14 +22,15 @@ export class MAirtable {
    *
    * @param maxRecords -- максимальное количество записей которое нужно вернуть, задействуется если > 0
    */
-  static async recordsGet(maxRecords: number = 0): Promise<Record[]> {
+  static async recordsGet(maxRecords: number = 0): Promise<AirtableRecord[]> {
     return new Promise((resolve, reject) => {
-      const ret: Record[] = [];
-      const selectCfg = {}
+      const ret: AirtableRecord[] = [];
+      // --- selectCfg
+      const selectCfg: Airtable.SelectOptions = {}
       if (maxRecords > 0) {
-        // @ts-ignore
         selectCfg.maxRecords = maxRecords
       }
+      // ---
       Airtable
         .base(CONF_AIRTABLE_DB_NAME)(CONF_AIRTABLE_TABLE_NAME)
         .select(selectCfg)
@@ -57,7 +59,7 @@ export class MAirtable {
         .base(CONF_AIRTABLE_DB_NAME)(CONF_AIRTABLE_TABLE_NAME)
         .update(
           [updOj],
-          function (err: any, records: Record[] | undefined) {
+          function (err: any, records: AirtableRecord[] | undefined) {
             if (err) {
               reject(err);
             }

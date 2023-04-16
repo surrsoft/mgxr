@@ -1,54 +1,16 @@
 import _ from 'lodash';
-import { MGXR_LS_AIRTABLE_API_KEY } from '../consts';
-
-export class LSApiKey {
-  static apiKeyGet(): string | null {
-    return localStorage.getItem(MGXR_LS_AIRTABLE_API_KEY)
-  }
-
-  static apiKeySet(apiKey?: string): boolean {
-    if (isEmptyOrWhitespaces(apiKey)) {
-      return false
-    } else if (apiKey) {
-      localStorage.setItem(MGXR_LS_AIRTABLE_API_KEY, apiKey);
-      return true
-    }
-    return false
-  }
-}
-
-export class TpCard {
-  constructor(
-    readonly title?: string,
-    readonly url?: string,
-    readonly comm?: string,
-    readonly body?: string,
-    readonly id?: string,
-    readonly tid?: string,
-    readonly trans_count: number = 0,
-    readonly trans_date_last?: string,
-    readonly show_date_last?: string,
-  ) {
-  }
-}
-
-export const tpCards = [
-  new TpCard('Российская газета', 'https://rg.ru'),
-  new TpCard('Коммерсант', 'https://www.kommersant.ru/'),
-  new TpCard('РИА Новости', 'https://ria.ru/')
-]
 
 /**
  * Возвращает случайное число в диапазоне 0 .. (1) включая 0 и (1), но отсутствующее в (2).
  * Если такого случайного числа найти невозможно (из-за того что в (2) уже все индексы есть), то возвращает -1
  *
- * ID [[210219210500]], rev.2 1.1 2021-02-19
+ * ID [[210219210500]]-changed, rev.2 1.1 2021-02-19
  *
  * @param ix (1) -- например 3
  * @param arrExcept -- например [0, 1]
  * @return например может вернуть только 2 или 3
  */
-export function randomExcept(ix: number, arrExcept: [number]): number {
+export function randomExcept(ix: number, arrExcept: number[]): number {
   if (_.isEmpty(arrExcept)) {
     return _.random(ix);
   }

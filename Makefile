@@ -5,3 +5,5 @@ mgxr_build:
 	cd /home/evgen/Projects/026-mgxr-project/gh-pages-build/ \
 		&& git add --all && git status && git commit -m `date +%FT%T%Z` && git push
 
+start:
+	yarn start

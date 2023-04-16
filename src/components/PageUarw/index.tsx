@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Loader from 'react-loader';
 import { selectOptionToVusc, ValCount, ValLabel } from '../../utils/uarw/uarw-utils';
-import Select from 'react-select';
+import ReactSelect from 'react-select';
 import './styles.scss'
 import { QCard } from './QCard';
 import { QCardOj, UarwLogic, UarwTuples } from '../../utils/uarw/uarw-logic';
@@ -13,6 +13,8 @@ import UarwNavbar from './UarwNavbar';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import { UarwSettings } from './UarwSettings';
 import { UarwAbout } from './UarwAbout';
+import BrPopupFCC from '../../utils/BrPopupFCC/BrPopupFCC';
+import { ReactComponent as IconQuestion } from '../../assets/svgs/question.svg';
 
 interface UarwState {
   uarwTuples: UarwTuples | null,
@@ -28,6 +30,8 @@ interface UarwState {
   countAll: number,
   selectMode: number,
   randomMode: number,
+  popupOpened: boolean,
+  $helpOpened: boolean,
 }
 
 enum SelectMode {
@@ -79,31 +83,30 @@ class PageUarw extends Component<any, UarwState> {
       countAll: 0,
       selectMode: SelectMode.STRICT,
       randomMode: RandomMode.A,
+      popupOpened: false,
+      $helpOpened: false
     }
     this.selectScHandleChange = this.selectScHandleChange.bind(this);
     this.selectPrHandleChange = this.selectPrHandleChange.bind(this);
     this.handleShowCards = this.handleShowCards.bind(this);
     this.selectModeChange = this.selectModeChange.bind(this);
+    this.helpCloseHandle = this.helpCloseHandle.bind(this);
+    this.questionClickHandle = this.questionClickHandle.bind(this);
   }
 
   async componentDidMount() {
-    console.log('!!-!!-!! this.props {210308092038}\n', this.props); // del+
     this.setState({loaded: true});
     this.uarwLogic = new UarwLogic();
     await this.selectorsDataGetAndUpdate();
   }
 
   hadleQCardProgressChange = async (qcardTid: string, newProgress: UARW_PROGRESSES): Promise<boolean> => {
-    console.log(`!!-!!-!! -> :::::::::::::: hadleQCardProgressChange() {210302225851}:${Date.now()}`); // del+
     // --- обновление прогресса *карточки на сервере
     const hoggResult: HoggResult<boolean> = await UarwLogic.qcardProgressUpdate(qcardTid, newProgress)
-    console.log('!!-!!-!! hoggResult {210302225339}\n', hoggResult); // del+
-    // ---
     if (!hoggResult.value) {
       const qcardWithErr = this.state.qcards.find(qcard => qcard.tid === qcardTid)
       if (qcardWithErr) {
         qcardWithErr.errMsg = JSON.stringify(hoggResult);
-        console.log('!!-!!-!! qcardWithErr {210303001137}\n', qcardWithErr); // del+
         this.setState({qcards: [...this.state.qcards]})
         return false
       }
@@ -137,8 +140,8 @@ class PageUarw extends Component<any, UarwState> {
           selectPrSelectedOption: newSelectPrSelectedOption
         };
         this.setState(newState)
-      } catch (err) {
-        this.setState({errStr: err.message})
+      } catch (err: any) {
+        this.setState({errStr: err?.message})
       }
     }
   }
@@ -178,8 +181,8 @@ class PageUarw extends Component<any, UarwState> {
         qcards: qcardOjs || [],
         loaded: true,
       })
-    } catch (err) {
-      this.setState({loaded: true, errStr: err.message})
+    } catch (err: any) {
+      this.setState({loaded: true, errStr: err?.message})
     }
   }
 
@@ -208,6 +211,37 @@ class PageUarw extends Component<any, UarwState> {
     })
   }
 
+  private fnRandomModeCommentGet() {
+    let text = '';
+    switch (this.state.randomMode) {
+      case RandomMode.A:
+        text = 'показ всех карточек, в случайном порядке'
+        break;
+      case RandomMode.B:
+        text = '-';
+        break;
+    }
+    return <div className="cls2121">{text}</div>
+  }
+
+  randomModeChange = (mode: RandomMode) => {
+    this.setState({randomMode: mode})
+  }
+
+  async showRandomHandle() {
+    await this.handleShowCards(true)
+  }
+
+  helpCloseHandle() {
+    if (this.state.$helpOpened) {
+      this.setState({$helpOpened: false})
+    }
+  }
+
+  questionClickHandle() {
+    this.setState({$helpOpened: true})
+  }
+
   render() {
     const {
       selectScOptions,
@@ -217,6 +251,7 @@ class PageUarw extends Component<any, UarwState> {
       qcards,
       countAll
     } = this.state;
+
     return <div>
       <UarwNavbar/>
       <Switch>
@@ -228,33 +263,45 @@ class PageUarw extends Component<any, UarwState> {
             ? <div>{this.state.errStr}</div>
             :
             <div className="uarw-container">
-              <div className="cards-count">Карточек: {countAll}</div>
+              <div className="cards-count">
+                <div>Карточек: {countAll}</div>
+                <div><a href="https://airtable.com/appL0eof6VFTiPyjm/tbl7MTNBt99lPlJYJ/viwdPEO19Tpj54cc4?blocks=hide"
+                        target="_blank">airtable</a></div>
+              </div>
               <Loader loaded={this.state.loadedScopes} position="relative" top="30px">
+                <button onClick={() => this.setState({popupOpened: true})}>test</button>
                 <div className="selects-container">
-                  <Select
+                  <ReactSelect
                     className="select-scopes"
                     value={selectScSelectedOption}
                     options={selectScOptions}
                     onChange={this.selectScHandleChange}
                     isMulti
+                    placeholder="область изучения"
                   />
-                  <Select
+                  <ReactSelect
                     className="select-progresses"
                     value={selectPrSelectedOption}
                     options={selectPrOptions}
                     onChange={this.selectPrHandleChange}
                     isMulti
+                    placeholder="изученность"
                   />
-                  <ToggleButtonGroup
-                    className="uarw-select-mode"
-                    name="value"
-                    type="radio"
-                    value={this.state.selectMode}
-                    onChange={this.selectModeChange}
-                  >
-                    <ToggleButton value={SelectMode.STRICT} size="sm">strict</ToggleButton>
-                    <ToggleButton value={SelectMode.FREE} size="sm">free</ToggleButton>
-                  </ToggleButtonGroup>
+                  <div className="toggles">
+                    <ToggleButtonGroup
+                      className="uarw-select-mode"
+                      name="value"
+                      type="radio"
+                      value={this.state.selectMode}
+                      onChange={this.selectModeChange}
+                    >
+                      <ToggleButton value={SelectMode.STRICT} size="sm">strict</ToggleButton>
+                      <ToggleButton value={SelectMode.FREE} size="sm">free</ToggleButton>
+                    </ToggleButtonGroup>
+                    <div role="button" className="uarw-icon mt-8-a" onClick={this.questionClickHandle}>
+                      <IconQuestion/>
+                    </div>
+                  </div>
                 </div>
                 <div className="random-mode-container">
                   <div>random mode:</div>
@@ -297,6 +344,21 @@ class PageUarw extends Component<any, UarwState> {
                   }
                 </div>
               </Loader>
+              <BrPopupFCC onClose={this.helpCloseHandle} isOpened={this.state.$helpOpened}>
+                <div className="cls1313">
+                  <dl className="cls1313__1">
+                    <dt><span className="cls1313__highlight">strict</span></dt>
+                    <dd>в этом режиме, выпадающий список "Изученность" будет соответствовать тому что выбрано в
+                      выпадающем списке "Область изучения"
+                    </dd>
+                    <dt><span className="cls1313__highlight">free</span></dt>
+                    <dd>в этом режиме, выпадающий список "Изученность" будет вести себя так будто в выпадающем списке
+                      "Область изучения" ничего не выбрано
+                    </dd>
+                  </dl>
+                  <button className="cls1313__btnclose" onClick={this.helpCloseHandle}>закрыть</button>
+                </div>
+              </BrPopupFCC>
             </div>
           }
         </Route>
@@ -304,26 +366,6 @@ class PageUarw extends Component<any, UarwState> {
     </div>
   }
 
-  private fnRandomModeCommentGet() {
-    let text = '';
-    switch (this.state.randomMode) {
-      case RandomMode.A:
-        text = 'показ всех карточек, в случайном порядке'
-        break;
-      case RandomMode.B:
-        text = '-';
-        break;
-    }
-    return <div className="cls2121">{text}</div>
-  }
-
-  randomModeChange = (mode: RandomMode) => {
-    this.setState({randomMode: mode})
-  }
-
-  async showRandomHandle() {
-    await this.handleShowCards(true)
-  }
 }
 
 export default withRouter(PageUarw);

@@ -12,13 +12,13 @@ import { HoggConnectionNT } from '../../api/hogg/interfaces/HoggConnectionNT';
 import { BaseTuple } from '../../api/hogg/base-implements/BaseTuple';
 import { BaseCell } from '../../api/hogg/base-implements/BaseCell';
 import { HoggResult } from '../../api/hogg/utils/HoggResult';
-import { LSApiKey } from '../app-utils';
+import { ApiKeyStorageCls } from '../ApiKeyStorageCls';
 
 export class UarwLogic {
 
   private static connectionTableCreate(): HoggConnectionNT {
     const connection = new HoggConnectionAirtable();
-    const apiKey = LSApiKey.apiKeyGet() || '';
+    const apiKey = ApiKeyStorageCls.apiKeyGet() || '';
     connection.init({apiKey});
     return connection
       .db(UARW_CONF_AIRTABLE_DB_NAME)
@@ -39,13 +39,19 @@ export class UarwLogic {
       .cellAdd(new BaseCell().create(UARW_COLUMN_NAME.TID, cardTid))
       .cellAdd(new BaseCell().create(UARW_COLUMN_NAME.PROGRESS, progress))
     const res = await conn.update([tuple])
-    console.log('!!-!!-!! res {210302224128}\n', res); // del+
     return res;
   }
 
+  /**
+   * получаем данные для фильтров "область изучения" и "изученность"
+   * @param filterVusc
+   */
   async scopesAndProgressesGet(filterVusc: string = ''): Promise<{ scopes: ValCount[], progresses: ValCount[], countAll: number }> {
     const tuples = await UarwLogic.connectionTableCreate()
-      .columns([UARW_COLUMN_NAME.SCOPES, UARW_COLUMN_NAME.PROGRESS])
+      .columns([
+        UARW_COLUMN_NAME.SCOPES,
+        UARW_COLUMN_NAME.PROGRESS,
+      ])
       .filterVusc(filterVusc)
       .query(new HoggOffsetCount(true))
     // ---
@@ -124,6 +130,7 @@ export class QCardOj {
   answer: string = ''
   progress: string = ''
   scope: string = ''
+  subscope: string[] = []
   id: string = ''
   tid: string = ''
   errMsg: string = ''
@@ -146,6 +153,9 @@ export class QCardOj {
           break;
         case UARW_COLUMN_NAME.SCOPES:
           qcard.scope = value;
+          break;
+        case UARW_COLUMN_NAME.SUBSCOPES:
+          qcard.subscope = value as any;
           break;
         case UARW_COLUMN_NAME.TID:
           qcard.tid = value;

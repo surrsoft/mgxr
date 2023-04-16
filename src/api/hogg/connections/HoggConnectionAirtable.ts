@@ -115,7 +115,6 @@ export class HoggConnectionAirtable implements HoggConnectionNT {
    * @param tuples
    */
   async update(tuples: HoggTupleNT[]): Promise<HoggResult<boolean>> {
-    console.log(`!!-!!-!! 2357-10 -> :::::::::::::: update() {210302235749}:${Date.now()}`); // del+
     if (!(tuples && tuples.length > 0)) {
       return new HoggResult<boolean>(false, '[[210223170254]]', 'tuples is empty')
     } else {
@@ -131,7 +130,6 @@ export class HoggConnectionAirtable implements HoggConnectionNT {
             .base(this.dbName)
             .table(this.tableName)
             .update(updConfs, (err: any) => {
-              console.log('!!-!!-!! 2357-20 err {210302235801}\n', err); // del+
               if (err) {
                 resolve(new HoggResult(false, '[[210223202024]]', err.message))
               } else {
@@ -140,7 +138,7 @@ export class HoggConnectionAirtable implements HoggConnectionNT {
             })
         });
       } catch (e) {
-        return new HoggResult<boolean>(false, '[[210223193709]]', e.message)
+        return new HoggResult<boolean>(false, '[[210223193709]]', (e as any)?.message)
       }
     }
   }
@@ -163,7 +161,7 @@ export class HoggConnectionAirtable implements HoggConnectionNT {
           })
         return new HoggResult<boolean>(true)
       } catch (e) {
-        return new HoggResult<boolean>(false, '[[210223193709-2]]', e.message)
+        return new HoggResult<boolean>(false, '[[210223193709-2]]', (e as any)?.message)
       }
     }
   }

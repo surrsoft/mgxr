@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './styles.css'
 import { MGXR_APP_REV } from '../../consts';
-import { LSApiKey } from '../../utils/app-utils';
+import { ApiKeyStorageCls } from '../../utils/ApiKeyStorageCls';
 
 export class Settings extends Component<any, any> {
   private textInput: React.RefObject<HTMLInputElement>;
@@ -17,14 +17,14 @@ export class Settings extends Component<any, any> {
 
   componentDidMount() {
     this.setState({
-      apiKey: LSApiKey.apiKeyGet(),
+      apiKey: ApiKeyStorageCls.apiKeyGet(),
       isLoading: false
     })
   }
 
   handleSave() {
     const val = this.textInput.current?.value
-    if (LSApiKey.apiKeySet(val)) {
+    if (ApiKeyStorageCls.apiKeySet(val)) {
       this.setState({apiKey: val})
       alert('saved')
     } else {
@@ -46,6 +46,7 @@ export class Settings extends Component<any, any> {
         </span>)
         }
       </div>
+      <div>см. <a href="https://airtable.com/create/apikey" target="_blank">https://airtable.com/create/apikey</a></div>
     </div>)
   }
 }

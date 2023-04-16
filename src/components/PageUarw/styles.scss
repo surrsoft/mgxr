@@ -42,6 +42,8 @@
 
   .cards-count {
     font-size: 70%;
+    display: flex;
+    column-gap: 16px;
   }
 
   .selects-container {
@@ -83,4 +85,46 @@
       z-index: 0 !important;
     }
   }
+}
+
+.cls1313 {
+  display: flex;
+  flex-direction: column;
+  row-gap: 16px;
+  height: fit-content;
+  min-width: 248px;
+  max-width: 460px;
+  background-color: #fff;
+  border: 2px solid silver;
+  border-radius: 16px;
+  padding: 16px;
+  box-sizing: border-box;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+
+  .cls1313__highlight {
+    font-weight: bold;
+  }
+
+  .cls1313__btnclose {
+    width: fit-content;
+    align-self: end;
+  }
+}
+
+.toggles {
+  display: flex;
+  column-gap: 16px;
+  justify-content: start;
+  align-items: center;
+}
+
+.uarw-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.mt-8-a {
+  margin-top: 8px;
 }

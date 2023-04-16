@@ -5,6 +5,7 @@ export const UARW_CONF_AIRTABLE_TABLE_NAME = 'main';
 // --- airtable fields
 export enum UARW_COLUMN_NAME {
   SCOPES = 'scopes',
+  SUBSCOPES = 'subscopes',
   QUESTION = 'question',
   ANSWER = 'answer',
   PROGRESS = 'progress',
