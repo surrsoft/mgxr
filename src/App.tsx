@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, withRouter } from 'react-router-dom';
 import { Location as HLocation } from 'history';
 import { MAirtable } from './components/PageNews/entries/MAirtable';
-import { Settings } from './components/Settings';
+import { PageSettings } from './components/PageSettings';
 import { PageDebug } from './components/PageDebug';
 import { PageNews } from './components/PageNews/PageNews';
 import PageUarw from './components/PageUarw';
@@ -68,7 +68,7 @@ class App extends React.Component<any, StateType> {
             <div>Версия приложения: {MGXR_APP_REV}</div>
           </Route>
           <Route path={Paths.MGXR + Paths.SETTINGS} exact>
-            <Settings/>
+            <PageSettings/>
           </Route>
           <Route path={Paths.MGXR + Paths.DEBUG} exact>
             <PageDebug/>

@@ -3,7 +3,7 @@ import './styles.css'
 import { MGXR_APP_REV } from '../../consts';
 import { ApiKeyStorageCls } from '../../utils/ApiKeyStorageCls';
 
-export class Settings extends Component<any, any> {
+export class PageSettings extends Component<any, any> {
   private textInput: React.RefObject<HTMLInputElement>;
 
   constructor(props: any) {
