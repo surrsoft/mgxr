@@ -1,4 +1,4 @@
-export const MGXR_APP_REV = '10';
+export const MGXR_APP_REV = '11';
 
 export enum Paths {
   MGXR = '/mgxr',
