@@ -42,7 +42,6 @@ export class QCard extends Component<QCardProps, QCardState> {
   }
 
   progressesChange = async (val: string) => {
-    console.log(`!!-!!-!! -> :::::::::::::: progressesChange() {210301223647}:${Date.now()}`); // del+
     if (this.props.qcardProgressChange) {
       this.setState({progressDisable: true});
       const res = await this.props.qcardProgressChange(this.props.qcard?.tid || '', val as UARW_PROGRESSES);
@@ -55,7 +54,6 @@ export class QCard extends Component<QCardProps, QCardState> {
 
   render() {
     const {qcard} = this.props;
-    console.log('!!-!!-!! qcard {220226182620}\n', qcard) // del+
     const {answerShowed} = this.state;
     return (
       <div className="qcard">

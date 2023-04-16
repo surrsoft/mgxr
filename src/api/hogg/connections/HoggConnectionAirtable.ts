@@ -115,7 +115,6 @@ export class HoggConnectionAirtable implements HoggConnectionNT {
    * @param tuples
    */
   async update(tuples: HoggTupleNT[]): Promise<HoggResult<boolean>> {
-    console.log(`!!-!!-!! 2357-10 -> :::::::::::::: update() {210302235749}:${Date.now()}`); // del+
     if (!(tuples && tuples.length > 0)) {
       return new HoggResult<boolean>(false, '[[210223170254]]', 'tuples is empty')
     } else {
@@ -131,7 +130,6 @@ export class HoggConnectionAirtable implements HoggConnectionNT {
             .base(this.dbName)
             .table(this.tableName)
             .update(updConfs, (err: any) => {
-              console.log('!!-!!-!! 2357-20 err {210302235801}\n', err); // del+
               if (err) {
                 resolve(new HoggResult(false, '[[210223202024]]', err.message))
               } else {

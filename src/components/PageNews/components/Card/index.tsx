@@ -112,7 +112,6 @@ export class Card extends Component<Props, any> {
 
   render() {
     const { card } = this.props;
-    console.log('!!-!!-!!  card {230415090118}\n', card); // del+
     if (!card) {
       return <div>card is null</div>;
     }

@@ -46,7 +46,6 @@ export function PageNews() {
           // [[210222113321]]
           const records = await MAirtable.recordsGet();
           // ---
-          console.log('!!-!!-!!  records {230415121912}\n', records); // del+
           const cardsNext = new CardsCls(records);
           setCards(cardsNext);
           setIsLoading(false);

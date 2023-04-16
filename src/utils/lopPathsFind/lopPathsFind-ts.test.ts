@@ -61,7 +61,6 @@ describe('lopPathsFind-ts', () => {
 
   it('A-004a', () => {
     const result = lopPathsFind(data2, `${ISARR}`);
-    console.log('!!-!!-!!  result {230402222503}\n', result); // del+
     expect(result).toHaveLength(3);
     expect(result?.[0]?.path).toEqual('0');
     expect(result?.[0]?.value).toBeTruthy();

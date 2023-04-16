@@ -41,7 +41,6 @@ class App extends React.Component<any, StateType> {
   }
 
   componentDidMount() {
-    console.log('!!-!!-!! this.props {210308091043}\n', this.props); // del+
     this.locationHandleToNav(this.props.history.location);
     this.props.history.listen((location: HLocation<unknown>) => {
       this.locationHandleToNav(location);

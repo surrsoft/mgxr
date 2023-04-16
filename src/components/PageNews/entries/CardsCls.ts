@@ -27,7 +27,6 @@ export class CardsCls {
   // [[210222111416]]
   getByIndex(index: number): CardFtType {
     const record = this.records[index];
-    console.log('!!-!!-!!  record.get(CardsB.FIELD_TAGS) {230415124100}\n', record.get(CardsCls.FIELD_TAGS)); // del+
     return {
       title: record.get(CardsCls.FIELD_TITLE),
       url: record.get(CardsCls.FIELD_URL),

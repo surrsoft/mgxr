@@ -24,12 +24,10 @@ function findPaths(arr, target) {
     const fPath = removePointLast(pathElems[0]);
     // --- len; кол-во элементов массива fPath; + другие действия
     let len = 0;
-    debugger; // del+ 230402130123
     if (!fPath) {
       len = target.length;
     } else {
       const val = lodash.get(target, fPath);
-      debugger; // del+ 230402125400
       if (!val) {
         // ^ если на fPath ничего нет
         // удаляем путь из arr
