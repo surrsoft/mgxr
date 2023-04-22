@@ -1,5 +1,5 @@
 import { OnVerifyResultType } from './OnVerifyResultType';
 
 export interface OnVerifyType {
-  (valueIn: string): OnVerifyResultType
+  (valueIn: string): Promise<OnVerifyResultType>
 }
