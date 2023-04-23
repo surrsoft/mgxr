@@ -29,6 +29,7 @@ export class CardViewContainer extends Component<any, any> {
           ?
           <div className="rc-viewer__card">
             <Card
+              key={this.props.card.id}
               card={this.props.card}
               handleLinkClick={this.cardHandleLinkClick}
             />

@@ -11,7 +11,7 @@ import { CardFtType } from './types/CardFtType';
 
 const ErrStringStyled = styled.div`
   color: red;
-`
+`;
 
 export function PageNews() {
 
@@ -69,14 +69,16 @@ export function PageNews() {
       const showedIndexesLocal = [...showedIndexes, randomIndex];
       if (cards) {
         const card: CardFtType = cards.getByIndex(randomIndex);
+        console.log('!!-!!-!!  card {230423121019}\n', card); // del+
         setCurrentCard(card);
         setCountShowed((prev) => prev + 1);
         setShowedIndexes(showedIndexesLocal);
         // ---
         const card0 = { ...card, [CardsCls.FIELD_SHOW_DATE_LAST]: dayjs().format('YYYY-MM-DD') };
-        CardsCls.update(card.tid || '', card0).catch((e: any) => {
-          console.log(`230415124650 - при обновлении карточки произошла ошибка; err [${e}]`);
-        });
+        CardsCls.update(card.tid || '', card0)
+          .catch((e: any) => {
+            console.log(`230415124650 - при обновлении карточки произошла ошибка; err [${e}]`);
+          });
       }
     }
   }

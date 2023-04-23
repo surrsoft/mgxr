@@ -1,13 +1,12 @@
-import { Component } from 'react';
 import styled from 'styled-components/macro';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import isBetween from 'dayjs/plugin/isBetween';
-import { Button } from 'react-bootstrap';
 
 import { CardFtType } from '../../types/CardFtType';
-import './card.css';
 import { EditableText } from '../../../../shared/components/lvl-1/EditableText/EditableText';
+import { useEffectOnce } from 'usehooks-ts';
+import { CardsCls } from '../../entries/CardsCls';
 
 const COLOR_1 = '#f2f7f8';
 const COLOR_2 = '#56686d';
@@ -51,14 +50,6 @@ const TitleStyled = styled.div`
   text-shadow: 1px 1px silver;
 `;
 
-const TitleBrokenStyled = styled.div`
-  color: ${COLOR_6_TITLE_BROKEN_COLOR};
-  background-color: ${COLOR_5_TITLE_BROKEN_BG};
-  padding: 0 6px;
-  border-radius: 999em;
-  font-size: 12px;
-`;
-
 const LinkStyled = styled.div`
   margin-top: 14px;
 
@@ -77,7 +68,22 @@ const LinkStyled = styled.div`
 const BrokenNpStyled = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 4px;
+  margin-top: 16px;
+  font-size: 12px;
+`;
+
+const CardStyled = styled.div`
+  border: 1px solid black;
+  border-radius: 4px;
+  padding: 18px 20px 32px 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  background-color: white;
+`;
+
+const CardInfosStyled = styled.div`
+  display: flex;
+  flex-direction: column;
   margin-top: 16px;
   font-size: 12px;
 `;
@@ -95,74 +101,82 @@ export interface Props {
   handleLinkClick: (card: CardFtType) => void
 }
 
-export class Card extends Component<Props, any> {
+export function Card(props: Props) {
+  const { card, handleLinkClick } = props;
 
-  constructor(props: Props) {
-    super(props);
-    this.handleLinkPress = this.handleLinkPress.bind(this);
-    this.handleBrokenOnConfirm = this.handleBrokenOnConfirm.bind(this);
+  useEffectOnce(() => {
     dayjs.extend(relativeTime);
     dayjs.extend(isBetween);
-  }
+  });
 
   // @ts-ignore
-  async handleLinkPress(e) {
-    const { card, handleLinkClick } = this.props;
+  const handleLinkPress = async (e) => {
     handleLinkClick(card);
-  }
+  };
 
-  async handleBrokenOnConfirm(valueIn: string) {
-    return {
-      isSuccess: true,
-      valueOut: valueIn,
-    };
-  }
-
-  render() {
-    const { card } = this.props;
-    if (!card) {
-      return <div>card is null</div>;
+  const handleBrokenOnConfirm = async (valueIn: string) => {
+    if (card.tid) {
+      try {
+        await CardsCls.brokenUpdate(card.tid, valueIn);
+        return {
+          isSuccess: true,
+          valueOut: valueIn,
+        };
+      } catch (err) {
+        return {
+          isSuccess: false,
+          valueOut: valueIn,
+        };
+      }
+    } else {
+      return {
+        isSuccess: false,
+        valueOut: valueIn,
+      };
     }
-    const { trans_date_last, title, url, show_date_last, trans_count, body, comm, tags, broken } = card;
+  };
 
-    const tagsNext = tags?.map(tag => {
-      return tag.replace('[', '').replace(']', '');
-    });
-
-    // ---
-    return (<div className="card">
-      <TitleContainerStyled>
-        <TitleStyled>{title}</TitleStyled>
-        {broken && <TitleBrokenStyled>{broken}</TitleBrokenStyled>}
-      </TitleContainerStyled>
-      <LinkStyled>
-        <a
-          href={url}
-          onClick={this.handleLinkPress}
-          target="_blank"
-          rel="noopener noreferrer">
-          {url}
-        </a>
-      </LinkStyled>
-      <div>{comm}</div>
-      <div>{body}</div>
-      {/* // --- tags */}
-      {tagsNext && <TagsContainerStyled>
-        <TagsValuesStyled>{
-          tagsNext.map(tag => (<TagStyled>{tag}</TagStyled>))
-        }</TagsValuesStyled>
-      </TagsContainerStyled>}
-      {/* // --- */}
-      <div className="card__infos">
-        <div>Число переходов: {trans_count}</div>
-        {DateFieldShow('Дата последнего перехода: ', trans_date_last)}
-        {DateFieldShow('Дата последнего показа: ', show_date_last)}
-      </div>
-      <BrokenNpStyled>
-        <div>признак недействительности:</div>
-        <EditableText value={broken} onConfirm={this.handleBrokenOnConfirm} />
-      </BrokenNpStyled>
-    </div>);
+  if (!card) {
+    return <div>card is null</div>;
   }
+  const { trans_date_last, title, url, show_date_last, trans_count, body, comm, tags, broken } = card;
+  console.log('!!-!!-!!  broken {230423120355}\n', broken); // del+
 
+  const tagsNext = tags?.map(tag => {
+    return tag.replace('[', '').replace(']', '');
+  });
+
+  // ---
+  return (<CardStyled>
+    <TitleContainerStyled>
+      <TitleStyled>{title}</TitleStyled>
+    </TitleContainerStyled>
+    <LinkStyled>
+      <a
+        href={url}
+        onClick={handleLinkPress}
+        target="_blank"
+        rel="noopener noreferrer">
+        {url}
+      </a>
+    </LinkStyled>
+    <div>{comm}</div>
+    <div>{body}</div>
+    {/* // --- теги */}
+    {tagsNext && <TagsContainerStyled>
+      <TagsValuesStyled>{
+        tagsNext.map(tag => (<TagStyled>{tag}</TagStyled>))
+      }</TagsValuesStyled>
+    </TagsContainerStyled>}
+    {/* // --- */}
+    <CardInfosStyled>
+      <div>Число переходов: {trans_count}</div>
+      {DateFieldShow('Дата последнего перехода: ', trans_date_last)}
+      {DateFieldShow('Дата последнего показа: ', show_date_last)}
+    </CardInfosStyled>
+    <BrokenNpStyled>
+      <div>признак недействительности:</div>
+      <EditableText value={broken || ''} onConfirm={handleBrokenOnConfirm} />
+    </BrokenNpStyled>
+  </CardStyled>);
 }

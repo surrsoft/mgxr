@@ -11,7 +11,6 @@ import { OnVerifyResultType } from './types/OnVerifyResultType';
 const TestAreaStyled = styled.div`
   display: flex;
   border-radius: 8px;
-  padding: 8px;
 `;
 
 const InitialStyled = styled.div`
@@ -40,9 +39,9 @@ interface Props {
 /** Редактируемый текст. Справа от текста показывается иконка "редактировать", при нажатию накоторую текст
  * переключается в режим редактирования */
 export function EditableText(props: Props) {
-  const { value: valueInit = '', onConfirm, maxLength = 0 } = props;
-  const [value, setValue] = useState(valueInit);
-  const [valueMemo, setValueMemo] = useState(value);
+  const { value = '', onConfirm, maxLength = 0 } = props;
+  const [valueLocal, setValueLocal] = useState(value);
+  const [valueMemo, setValueMemo] = useState(valueLocal);
   const [inputScrollWithOnStart, setInputScrollWithOnStart] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -53,7 +52,7 @@ export function EditableText(props: Props) {
     editableRef.current?.setIsErrShowed(false);
     const val = ev.target.value;
     if (maxLength && val && val.length > maxLength) return;
-    setValue(val || '');
+    setValueLocal(val || '');
     // --- подгонка ширины инпута под содержимое
     const input = inputRef.current;
     if (input?.scrollWidth && !inputScrollWithOnStart) {
@@ -65,7 +64,7 @@ export function EditableText(props: Props) {
   };
 
   const cancelLogic = useCallback(() => {
-    setValue(valueMemo);
+    setValueLocal(valueMemo);
     editableRef.current?.changeStanding(StandingEnum.INITIAL);
   }, [valueMemo]);
 
@@ -73,21 +72,21 @@ export function EditableText(props: Props) {
     if (onConfirm) {
       setIsLoading(true);
       editableRef.current?.setIsLoading(true);
-      const confirmResult = await onConfirm(value);
+      const confirmResult = await onConfirm(valueLocal);
       const { isSuccess, valueOut } = confirmResult;
       editableRef.current?.setIsLoading(false);
       setIsLoading(false);
       // ---
       if (isSuccess) {
-        setValue(valueOut);
+        setValueLocal(valueOut);
         setValueMemo(valueOut);
       }
       return confirmResult;
     } else {
-      setValueMemo(value);
+      setValueMemo(valueLocal);
       return { isSuccess: true, valueOut: '', errorText: '' };
     }
-  }, [value, onConfirm]);
+  }, [valueLocal, onConfirm]);
 
   const handleKeyDown = async (event: any) => {
     if (event.key === 'Enter') {
@@ -127,12 +126,12 @@ export function EditableText(props: Props) {
   return <TestAreaStyled>
     <EditableEntry
       componentInitial={
-        <InitialStyled>{value}</InitialStyled>
+        <InitialStyled>{valueLocal}</InitialStyled>
       }
       componentEdit={
         <InputStyled
           ref={inputRef}
-          value={value}
+          value={valueLocal}
           onChange={handleOnChange}
           onKeyDown={handleKeyDown}
           autoFocus

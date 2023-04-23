@@ -51,4 +51,10 @@ export class CardsCls {
     await MAirtable.recordUpdate(tid, fields);
   }
 
+  static async brokenUpdate(tid: string, brokenText: string) {
+    const fields = {
+      [CardsCls.FIELD_BROKEN]: brokenText,
+    };
+    await MAirtable.recordUpdate(tid, fields);
+  }
 }
