@@ -10,7 +10,6 @@ import { OnVerifyResultType } from './types/OnVerifyResultType';
 
 const TestAreaStyled = styled.div`
   display: flex;
-  border: 1px solid red;
   border-radius: 8px;
   padding: 8px;
 `;

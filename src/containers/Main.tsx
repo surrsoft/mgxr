@@ -7,7 +7,7 @@ import { OnVerifyResultType } from '../shared/components/lvl-1/EditableText/type
 
 export function Main({ children, ...rest }: PropsWithChildren<NavStripeProps>) {
 
-  const handleOnVerify = async (valueIn: string) => {
+  const handleOnConfirm = async (valueIn: string) => {
     return new Promise<OnVerifyResultType>((resolve, reject) => {
       setTimeout(() => {
         if (valueIn.length !== 5) {
@@ -26,7 +26,7 @@ export function Main({ children, ...rest }: PropsWithChildren<NavStripeProps>) {
   return <div>
     <NavStripe {...rest} />
 
-    <EditableText value={'hello hello'} onConfirm={handleOnVerify} />
+    <EditableText value={'hello hello'} onConfirm={handleOnConfirm} />
 
     <div>
       {children}

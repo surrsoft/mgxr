@@ -7,6 +7,7 @@ import { Button } from 'react-bootstrap';
 
 import { CardFtType } from '../../types/CardFtType';
 import './card.css';
+import { EditableText } from '../../../../shared/components/lvl-1/EditableText/EditableText';
 
 const COLOR_1 = '#f2f7f8';
 const COLOR_2 = '#56686d';
@@ -73,15 +74,13 @@ const LinkStyled = styled.div`
   }
 `;
 
-const BrokenButtonStyled = styled(Button).attrs({ variant: 'outline-primary', size: 'sm' })`
+const BrokenNpStyled = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   margin-top: 16px;
-  width: fit-content;
+  font-size: 12px;
 `;
-
-export interface Props {
-  card: CardFtType,
-  handleLinkClick: (card: CardFtType) => void
-}
 
 function DateFieldShow(name: string, dateSt?: string) {
   return (<div>
@@ -91,11 +90,17 @@ function DateFieldShow(name: string, dateSt?: string) {
   </div>);
 }
 
+export interface Props {
+  card: CardFtType,
+  handleLinkClick: (card: CardFtType) => void
+}
+
 export class Card extends Component<Props, any> {
 
   constructor(props: Props) {
     super(props);
     this.handleLinkPress = this.handleLinkPress.bind(this);
+    this.handleBrokenOnConfirm = this.handleBrokenOnConfirm.bind(this);
     dayjs.extend(relativeTime);
     dayjs.extend(isBetween);
   }
@@ -106,8 +111,11 @@ export class Card extends Component<Props, any> {
     handleLinkClick(card);
   }
 
-  async handleBroken() {
-    prompt('hello')
+  async handleBrokenOnConfirm(valueIn: string) {
+    return {
+      isSuccess: true,
+      valueOut: valueIn,
+    };
   }
 
   render() {
@@ -150,7 +158,10 @@ export class Card extends Component<Props, any> {
         {DateFieldShow('Дата последнего перехода: ', trans_date_last)}
         {DateFieldShow('Дата последнего показа: ', show_date_last)}
       </div>
-      <BrokenButtonStyled onClick={this.handleBroken}>пометить как недействительный</BrokenButtonStyled>
+      <BrokenNpStyled>
+        <div>признак недействительности:</div>
+        <EditableText value={broken} onConfirm={this.handleBrokenOnConfirm} />
+      </BrokenNpStyled>
     </div>);
   }
 

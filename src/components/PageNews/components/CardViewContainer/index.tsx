@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { Card } from '../Card';
+import { Card } from '../Card/Card';
 import './styles.css'
 import { CardsCls } from '../../entries/CardsCls';
 import dayjs from 'dayjs';
