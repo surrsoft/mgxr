@@ -2,6 +2,7 @@ import { Dispatch, forwardRef, ReactNode, Ref, SetStateAction, useImperativeHand
 import styled from 'styled-components/macro';
 import { IconButton, Spinner } from '@primer/react';
 import { CheckIcon, HeartIcon, PencilIcon, XIcon } from '@primer/octicons-react';
+import { OnVerifyRsType } from './types/OnVerifyRsType';
 
 /*
 - переключатель между двумя компонентами. Рисует кнопки редактировать, сохранить, отменить
@@ -13,6 +14,17 @@ import { CheckIcon, HeartIcon, PencilIcon, XIcon } from '@primer/octicons-react'
 
 const ContainerStyled = styled.div`
   display: flex;
+  flex-direction: column;
+`;
+
+const BaseLineStyled = styled.div`
+  display: flex;
+`;
+
+const ErrorsLineStyled = styled.div`
+  display: flex;
+  color: red;
+  font-size: 12px;
 `;
 
 const ComponentWrapperStyled = styled.div`
@@ -54,9 +66,7 @@ interface Props {
   isBtnCancelHidden?: boolean;
   onCancel?: () => void;
   onStartEdit?: () => void;
-  onConfirm?: () => void;
-  /** Должен вернуть TRUE если можно переходитьт из состояния EDIT в INITIAL */
-  onVerify?: () => Promise<boolean>;
+  onConfirm?: () => Promise<OnVerifyRsType>;
   /** Зазор между "телом" и кнопками */
   gapPx?: number;
 }
@@ -64,6 +74,8 @@ interface Props {
 export interface EditableRefType {
   changeStanding: (standing: StandingEnum) => void;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
+  setIsErrShowed: Dispatch<SetStateAction<boolean>>;
+  setErrText: Dispatch<SetStateAction<string | undefined | null>>;
 }
 
 export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref: Ref<EditableRefType>) {
@@ -73,7 +85,6 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
     onCancel,
     onStartEdit,
     onConfirm,
-    onVerify,
     isBtnEditDisabled,
     isBtnCancelDisabled,
     isBtnSaveDisabled,
@@ -84,6 +95,8 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
   } = props;
   const [standingLocal, setStandingLocal] = useState<StandingEnum>(StandingEnum.INITIAL);
   const [isLoading, setIsLoading] = useState(false);
+  const [isErrShowed, setIsErrShowed] = useState(false);
+  const [errText, setErrText] = useState<string | undefined | null>('');
 
   const isInitial = standingLocal === StandingEnum.INITIAL;
   const isEdit = standingLocal === StandingEnum.EDIT;
@@ -94,42 +107,55 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
         setStandingLocal(standing);
       },
       setIsLoading,
+      setIsErrShowed,
+      setErrText,
     };
   });
 
   const handleBtnEdit = () => {
+    setIsErrShowed(false);
     setStandingLocal(StandingEnum.EDIT);
     onStartEdit?.();
   };
+
   const handleBtnSave = async () => {
-    if (!onVerify) return true;
+    setIsErrShowed(false);
+
+    if (!onConfirm) return true;
 
     setIsLoading(true);
-    const isSuccess = await onVerify();
+    const { isSuccess, errorText } = await onConfirm();
     setIsLoading(false);
     if (isSuccess) {
       setStandingLocal(StandingEnum.INITIAL);
-      onConfirm?.();
+    } else {
+      setErrText(errorText);
+      setIsErrShowed(true);
     }
   };
+
   const handleBtnCancel = () => {
+    setIsErrShowed(false);
     setStandingLocal(StandingEnum.INITIAL);
     onCancel?.();
   };
 
   return <ContainerStyled>
-    <ComponentWrapperStyled>
-      {isInitial && componentInitial}
-      {isEdit && componentEdit}
-    </ComponentWrapperStyled>
-    <ButtonsContainerStyled gap={gapPx}>
-      {!isLoading && isInitial && !isBtnEditHidden &&
-        <ButtonEditStyled onClick={handleBtnEdit} disabled={isBtnEditDisabled || isLoading} />}
-      {!isLoading && isEdit && !isBtnSaveHidden &&
-        <ButtonSaveStyled onClick={handleBtnSave} disabled={isBtnSaveDisabled || isLoading} />}
-      {!isLoading && isEdit && !isBtnCancelHidden &&
-        <ButtonCancelStyled onClick={handleBtnCancel} disabled={isBtnCancelDisabled || isLoading} />}
-      {isLoading && <SpinnerStyled><Spinner size={'small'} /></SpinnerStyled>}
-    </ButtonsContainerStyled>
+    <BaseLineStyled>
+      <ComponentWrapperStyled>
+        {isInitial && componentInitial}
+        {isEdit && componentEdit}
+      </ComponentWrapperStyled>
+      <ButtonsContainerStyled gap={gapPx}>
+        {!isLoading && isInitial && !isBtnEditHidden &&
+          <ButtonEditStyled onClick={handleBtnEdit} disabled={isBtnEditDisabled || isLoading} />}
+        {!isLoading && isEdit && !isBtnSaveHidden &&
+          <ButtonSaveStyled onClick={handleBtnSave} disabled={isBtnSaveDisabled || isLoading} />}
+        {!isLoading && isEdit && !isBtnCancelHidden &&
+          <ButtonCancelStyled onClick={handleBtnCancel} disabled={isBtnCancelDisabled || isLoading} />}
+        {isLoading && <SpinnerStyled><Spinner size={'small'} /></SpinnerStyled>}
+      </ButtonsContainerStyled>
+    </BaseLineStyled>
+    {isErrShowed && errText && !isInitial && <ErrorsLineStyled>{errText}</ErrorsLineStyled>}
   </ContainerStyled>;
 });

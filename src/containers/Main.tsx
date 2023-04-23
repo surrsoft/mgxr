@@ -2,18 +2,23 @@ import { PropsWithChildren } from 'react';
 
 import { NavStripeProps } from '../types/types';
 import { NavStripe } from '../components/NavStripe';
-import { EditableText } from '../shared/components/lvl-1/EditableText';
-import { OnVerifyResultType } from '../shared/types/OnVerifyResultType';
+import { EditableText } from '../shared/components/lvl-1/EditableText/EditableText';
+import { OnVerifyResultType } from '../shared/components/lvl-1/EditableText/types/OnVerifyResultType';
 
 export function Main({ children, ...rest }: PropsWithChildren<NavStripeProps>) {
 
   const handleOnVerify = async (valueIn: string) => {
     return new Promise<OnVerifyResultType>((resolve, reject) => {
       setTimeout(() => {
-        resolve({
-          isSuccess: valueIn.length === 5,
-          valueOut: valueIn,
-        });
+        if (valueIn.length !== 5) {
+          resolve({
+            isSuccess: false,
+            valueOut: valueIn,
+            errorText: 'длина должна быть ровно 5',
+          });
+        } else {
+          resolve({ isSuccess: false, valueOut: valueIn, errorText: 'что-то пошло не так' });
+        }
       }, 2000);
     });
   };
@@ -21,7 +26,7 @@ export function Main({ children, ...rest }: PropsWithChildren<NavStripeProps>) {
   return <div>
     <NavStripe {...rest} />
 
-    <EditableText value={'hello hello'} onConfirm={handleOnVerify} maxLength={10} />
+    <EditableText value={'hello hello'} onConfirm={handleOnVerify} />
 
     <div>
       {children}

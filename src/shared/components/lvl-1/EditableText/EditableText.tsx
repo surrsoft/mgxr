@@ -1,9 +1,12 @@
 import styled from 'styled-components/macro';
 
-import { EditableEntry, EditableRefType, StandingEnum } from '../lvl-0/EditableEntry';
+import { EditableEntry, EditableRefType, StandingEnum } from '../../lvl-0/EditableEntry/EditableEntry';
 import { useCallback, useRef, useState } from 'react';
-import { OnVerifyResultType } from '../../types/OnVerifyResultType';
-import { OnVerifyType } from '../../types/OnVerifyType';
+import { OnVerifyType } from './types/OnVerifyType';
+import { OnVerifyRsType } from '../../lvl-0/EditableEntry/types/OnVerifyRsType';
+import { Simulate } from 'react-dom/test-utils';
+import error = Simulate.error;
+import { OnVerifyResultType } from './types/OnVerifyResultType';
 
 const TestAreaStyled = styled.div`
   display: flex;
@@ -31,12 +34,14 @@ interface Props {
    */
   onConfirm?: OnVerifyType;
   /** Компонент должен не позволять вводить строку длиной больше указанной здесь. Если здесь falsy, то это правило
-   * должно игнорироваться. Значение по умолчанию - 256 */
+   * должно игнорироваться. Значение по умолчанию - 0, что означает "не ограничено" */
   maxLength?: number;
 }
 
+/** Редактируемый текст. Справа от текста показывается иконка "редактировать", при нажатию накоторую текст
+ * переключается в режим редактирования */
 export function EditableText(props: Props) {
-  const { value: valueInit = '', onConfirm, maxLength = 256 } = props;
+  const { value: valueInit = '', onConfirm, maxLength = 0 } = props;
   const [value, setValue] = useState(valueInit);
   const [valueMemo, setValueMemo] = useState(value);
   const [inputScrollWithOnStart, setInputScrollWithOnStart] = useState(0);
@@ -46,6 +51,7 @@ export function EditableText(props: Props) {
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleOnChange = (ev: any) => {
+    editableRef.current?.setIsErrShowed(false);
     const val = ev.target.value;
     if (maxLength && val && val.length > maxLength) return;
     setValue(val || '');
@@ -64,33 +70,35 @@ export function EditableText(props: Props) {
     editableRef.current?.changeStanding(StandingEnum.INITIAL);
   }, [valueMemo]);
 
-  const confirmLogic = useCallback(async () => {
+  const confirmLogic = useCallback(async (): Promise<OnVerifyResultType> => {
     if (onConfirm) {
       setIsLoading(true);
       editableRef.current?.setIsLoading(true);
-      const { isSuccess, valueOut } = await onConfirm(value);
+      const confirmResult = await onConfirm(value);
+      const { isSuccess, valueOut } = confirmResult;
       editableRef.current?.setIsLoading(false);
       setIsLoading(false);
       // ---
       if (isSuccess) {
         setValue(valueOut);
         setValueMemo(valueOut);
-        return true;
-      } else {
-        return false;
       }
+      return confirmResult;
     } else {
       setValueMemo(value);
-      return true;
+      return { isSuccess: true, valueOut: '', errorText: '' };
     }
   }, [value, onConfirm]);
 
   const handleKeyDown = async (event: any) => {
     if (event.key === 'Enter') {
       // ^ если нажат Enter
-      const isSuccess = await confirmLogic();
+      const { isSuccess, errorText } = await confirmLogic();
       if (isSuccess) {
         editableRef.current?.changeStanding(StandingEnum.INITIAL);
+      } else if (errorText) {
+        editableRef.current?.setIsErrShowed(true);
+        editableRef.current?.setErrText(errorText);
       }
     } else if (event.keyCode === 27) {
       // ^ если нажат Esc
@@ -114,15 +122,7 @@ export function EditableText(props: Props) {
   };
 
   const handleOnConfirm = () => {
-    confirmLogic().then();
-  };
-
-  const handleOnVerify = async () => {
-    if (!onConfirm) return true;
-    setIsLoading(true);
-    const { isSuccess } = await onConfirm(value);
-    setIsLoading(false);
-    return isSuccess;
+    return confirmLogic();
   };
 
   return <TestAreaStyled>
@@ -144,7 +144,6 @@ export function EditableText(props: Props) {
       onCancel={handleOnCancel}
       onStartEdit={handleOnStartEdit}
       onConfirm={handleOnConfirm}
-      onVerify={handleOnVerify}
       gapPx={6}
     />
   </TestAreaStyled>;
