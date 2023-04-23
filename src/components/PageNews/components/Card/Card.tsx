@@ -169,7 +169,6 @@ export function Card(props: Props) {
         {url}
       </a>
     </LinkStyled>
-    <div>{comm}</div>
     <CommNpStyled>
       <div>комментарий:</div>
       <EditableText value={comm} onConfirm={handleCommOnConfirm} />
