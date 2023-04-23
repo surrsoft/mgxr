@@ -10,6 +10,7 @@
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
+    "deploy": "react-app-rewired build && git add --all",
     "deployDeprecated": "(if exist docs (rmdir /S /Q docs)) && npm run build && xcopy /E /I /H /Y \"build\" \"docs\" && git add --all"
   },
   "dependencies": {
