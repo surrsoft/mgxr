@@ -57,4 +57,11 @@ export class CardsCls {
     };
     await MAirtable.recordUpdate(tid, fields);
   }
+
+  static async commUpdate(tid: string, commText: string) {
+    const fields = {
+      [CardsCls.FIELD_COMM]: commText,
+    };
+    await MAirtable.recordUpdate(tid, fields);
+  }
 }

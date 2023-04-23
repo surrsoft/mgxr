@@ -18,7 +18,7 @@ const COLOR_6_TITLE_BROKEN_COLOR = 'yellow';
 const TagsContainerStyled = styled.div`
   display: flex;
   gap: 16px;
-  margin-top: 12px;
+  margin-top: 16px;
   padding: 4px 0;
 `;
 
@@ -73,6 +73,14 @@ const BrokenNpStyled = styled.div`
   font-size: 12px;
 `;
 
+const CommNpStyled = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 16px;
+  font-size: 12px;
+`;
+
 const CardStyled = styled.div`
   border: 1px solid black;
   border-radius: 4px;
@@ -115,24 +123,26 @@ export function Card(props: Props) {
   };
 
   const handleBrokenOnConfirm = async (valueIn: string) => {
-    if (card.tid) {
-      try {
-        await CardsCls.brokenUpdate(card.tid, valueIn);
-        return {
-          isSuccess: true,
-          valueOut: valueIn,
-        };
-      } catch (err) {
-        return {
-          isSuccess: false,
-          valueOut: valueIn,
-        };
-      }
-    } else {
-      return {
-        isSuccess: false,
-        valueOut: valueIn,
-      };
+    let ret = { isSuccess: false, valueOut: valueIn };
+    if (!card.tid) return ret;
+    try {
+      await CardsCls.brokenUpdate(card.tid, valueIn);
+      ret = { isSuccess: true, valueOut: valueIn };
+      return ret;
+    } catch (err) {
+      return ret;
+    }
+  };
+
+  const handleCommOnConfirm = async (valueIn: string) => {
+    let ret = { isSuccess: false, valueOut: valueIn };
+    if (!card.tid) return ret;
+    try {
+      await CardsCls.commUpdate(card.tid, valueIn);
+      ret = { isSuccess: true, valueOut: valueIn };
+      return ret;
+    } catch (err) {
+      return ret;
     }
   };
 
@@ -140,7 +150,6 @@ export function Card(props: Props) {
     return <div>card is null</div>;
   }
   const { trans_date_last, title, url, show_date_last, trans_count, body, comm, tags, broken } = card;
-  console.log('!!-!!-!!  broken {230423120355}\n', broken); // del+
 
   const tagsNext = tags?.map(tag => {
     return tag.replace('[', '').replace(']', '');
@@ -161,6 +170,10 @@ export function Card(props: Props) {
       </a>
     </LinkStyled>
     <div>{comm}</div>
+    <CommNpStyled>
+      <div>комментарий:</div>
+      <EditableText value={comm} onConfirm={handleCommOnConfirm} />
+    </CommNpStyled>
     <div>{body}</div>
     {/* // --- теги */}
     {tagsNext && <TagsContainerStyled>

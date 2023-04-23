@@ -69,7 +69,6 @@ export function PageNews() {
       const showedIndexesLocal = [...showedIndexes, randomIndex];
       if (cards) {
         const card: CardFtType = cards.getByIndex(randomIndex);
-        console.log('!!-!!-!!  card {230423121019}\n', card); // del+
         setCurrentCard(card);
         setCountShowed((prev) => prev + 1);
         setShowedIndexes(showedIndexesLocal);
