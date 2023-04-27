@@ -26,7 +26,7 @@ export function Main({ children, ...rest }: PropsWithChildren<NavStripeProps>) {
   return <div>
     <NavStripe {...rest} />
 
-    {/*<EditableText value={'hello hello'} onConfirm={handleOnConfirm} />*/}
+    <EditableText value={'hello hello'} onConfirm={handleOnConfirm} />
 
     <div>
       {children}

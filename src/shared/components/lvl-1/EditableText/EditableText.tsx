@@ -1,12 +1,13 @@
 import styled from 'styled-components/macro';
 
 import { EditableEntry, EditableRefType, StandingEnum } from '../../lvl-0/EditableEntry/EditableEntry';
-import { useCallback, useRef, useState } from 'react';
+import React, { ComponentType, PropsWithChildren, ReactNode, useCallback, useRef, useState } from 'react';
 import { OnVerifyType } from './types/OnVerifyType';
 import { OnVerifyRsType } from '../../lvl-0/EditableEntry/types/OnVerifyRsType';
 import { Simulate } from 'react-dom/test-utils';
 import error = Simulate.error;
 import { OnVerifyResultType } from './types/OnVerifyResultType';
+import { noop } from 'lodash';
 
 const TestAreaStyled = styled.div`
   display: flex;
@@ -88,22 +89,6 @@ export function EditableText(props: Props) {
     }
   }, [valueLocal, onConfirm]);
 
-  const handleKeyDown = async (event: any) => {
-    if (event.key === 'Enter') {
-      // ^ если нажат Enter
-      const { isSuccess, errorText } = await confirmLogic();
-      if (isSuccess) {
-        editableRef.current?.changeStanding(StandingEnum.INITIAL);
-      } else if (errorText) {
-        editableRef.current?.setIsErrShowed(true);
-        editableRef.current?.setErrText(errorText);
-      }
-    } else if (event.keyCode === 27) {
-      // ^ если нажат Esc
-      cancelLogic();
-    }
-  };
-
   const handleOnCancel = () => {
     cancelLogic();
   };
@@ -123,6 +108,11 @@ export function EditableText(props: Props) {
     return confirmLogic();
   };
 
+  const onKeyDownRef = useRef(null)
+  const handleOnGetOnKeyDown = (onKeyDown: any) => {
+    onKeyDownRef.current = onKeyDown;
+  }
+
   return <TestAreaStyled>
     <EditableEntry
       componentInitial={
@@ -133,7 +123,7 @@ export function EditableText(props: Props) {
           ref={inputRef}
           value={valueLocal}
           onChange={handleOnChange}
-          onKeyDown={handleKeyDown}
+          onKeyDown={onKeyDownRef.current || noop}
           autoFocus
           disabled={isLoading}
         />
@@ -143,6 +133,7 @@ export function EditableText(props: Props) {
       onStartEdit={handleOnStartEdit}
       onConfirm={handleOnConfirm}
       gapPx={6}
+      onGetOnKeyDownHandler={handleOnGetOnKeyDown}
     />
   </TestAreaStyled>;
 }

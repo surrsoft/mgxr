@@ -1,8 +1,18 @@
-import { Dispatch, forwardRef, ReactNode, Ref, SetStateAction, useImperativeHandle, useState } from 'react';
+import {
+  ComponentType,
+  Dispatch,
+  forwardRef,
+  ReactNode,
+  Ref,
+  SetStateAction,
+  useImperativeHandle,
+  useState,
+} from 'react';
 import styled from 'styled-components/macro';
 import { IconButton, Spinner } from '@primer/react';
 import { CheckIcon, HeartIcon, PencilIcon, XIcon } from '@primer/octicons-react';
 import { OnVerifyRsType } from './types/OnVerifyRsType';
+import { useEffectOnce } from 'usehooks-ts';
 
 /*
 - переключатель между двумя компонентами. Рисует кнопки редактировать, сохранить, отменить
@@ -69,6 +79,7 @@ interface Props {
   onConfirm?: () => Promise<OnVerifyRsType>;
   /** Зазор между "телом" и кнопками */
   gapPx?: number;
+  onGetOnKeyDownHandler?: (pr: (event: any) => any) => void
 }
 
 export interface EditableRefType {
@@ -92,6 +103,7 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
     isBtnCancelHidden,
     isBtnSaveHidden,
     gapPx = 0,
+    onGetOnKeyDownHandler
   } = props;
   const [standingLocal, setStandingLocal] = useState<StandingEnum>(StandingEnum.INITIAL);
   const [isLoading, setIsLoading] = useState(false);
@@ -118,21 +130,33 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
     onStartEdit?.();
   };
 
-  const handleBtnSave = async () => {
+  const handleBtnSave = async (event: any) => {
     setIsErrShowed(false);
 
     if (!onConfirm) return true;
 
-    setIsLoading(true);
-    const { isSuccess, errorText } = await onConfirm();
-    setIsLoading(false);
-    if (isSuccess) {
+    if (event.key === 'Enter') {
+      // ^ если нажат Enter
+      setIsLoading(true);
+      const { isSuccess, errorText } = await onConfirm();
+      setIsLoading(false);
+      if (isSuccess) {
+        setStandingLocal(StandingEnum.INITIAL);
+      } else {
+        setErrText(errorText);
+        setIsErrShowed(true);
+      }
+    } else if (event.keyCode === 27) {
+      // ^ если нажат Esc
+      setIsErrShowed(false);
       setStandingLocal(StandingEnum.INITIAL);
-    } else {
-      setErrText(errorText);
-      setIsErrShowed(true);
+      onCancel?.();
     }
   };
+
+  useEffectOnce(() => {
+    onGetOnKeyDownHandler?.(handleBtnSave)
+  })
 
   const handleBtnCancel = () => {
     setIsErrShowed(false);
