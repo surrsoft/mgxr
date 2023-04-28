@@ -1,17 +1,20 @@
 import {
+  ChangeEvent,
   Dispatch,
   forwardRef,
   ReactNode,
-  Ref, RefObject,
-  SetStateAction,
-  useImperativeHandle, useRef,
-  useState
+  Ref,
+  RefObject,
+  SetStateAction, useCallback, useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
 } from 'react';
 import styled from 'styled-components/macro';
 import { IconButton, Spinner } from '@primer/react';
 import { CheckIcon, PencilIcon, XIcon } from '@primer/octicons-react';
 import { OnVerifyRsType } from './types/OnVerifyRsType';
-import { useEventListener } from 'usehooks-ts';
+import { useEffectOnce, useEventListener } from 'usehooks-ts';
 
 /*
 - переключатель между двумя компонентами. Рисует кнопки редактировать, сохранить, отменить
@@ -76,9 +79,10 @@ interface Props {
   onCancel?: () => void;
   onStartEdit?: () => void;
   onConfirm?: () => Promise<OnVerifyRsType>;
+  onChange?: (val?: string) => Promise<void>;
   /** Зазор между "телом" и кнопками */
   gapPx?: number;
-  aInputRef?: RefObject<HTMLElement>;
+  inputRef?: RefObject<HTMLElement>;
 }
 
 export interface EditableRefType {
@@ -95,6 +99,7 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
     onCancel,
     onStartEdit,
     onConfirm,
+    onChange,
     isBtnEditDisabled,
     isBtnCancelDisabled,
     isBtnSaveDisabled,
@@ -102,12 +107,13 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
     isBtnCancelHidden,
     isBtnSaveHidden,
     gapPx = 0,
-    aInputRef,
+    inputRef,
   } = props;
   const [standingLocal, setStandingLocal] = useState<StandingEnum>(StandingEnum.INITIAL);
   const [isLoading, setIsLoading] = useState(false);
   const [isErrShowed, setIsErrShowed] = useState(false);
   const [errText, setErrText] = useState<string | undefined | null>('');
+  const [inputScrollWithOnStart, setInputScrollWithOnStart] = useState(0);
 
   const isInitial = standingLocal === StandingEnum.INITIAL;
   const isEdit = standingLocal === StandingEnum.EDIT;
@@ -135,9 +141,9 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
     if (!onConfirm) return true;
 
     setIsLoading(true);
-    aInputRef?.current?.setAttribute('disabled', 'true');
+    inputRef?.current?.setAttribute('disabled', 'true');
     const { isSuccess, errorText } = await onConfirm();
-    aInputRef?.current?.removeAttribute('disabled');
+    inputRef?.current?.removeAttribute('disabled');
     setIsLoading(false);
     if (isSuccess) {
       setStandingLocal(StandingEnum.INITIAL);
@@ -153,20 +159,38 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
     onCancel?.();
   };
 
-  const handleKeyDown = async (event: KeyboardEvent) => {
+  const handleOnKeyDown = async (event: KeyboardEvent) => {
     console.log('!!-!!-!! event {230428063944}\n', event); // del+
     switch (event.code) {
-      case "Enter":
+      case 'Enter':
         await handleBtnSave();
         break;
-      case "Escape":
+      case 'Escape':
         await handleBtnCancel();
         break;
     }
-  }
+  };
 
-  const defatulRef = useRef(null);
-  useEventListener('keydown', handleKeyDown, aInputRef || defatulRef);
+  const handleOnChange = (event: any) => {
+    console.log('!!-!!-!!  event {230428224543}\n', event); // del+
+
+    setIsErrShowed(false);
+    const val = (event.target as any)?.value;
+    onChange?.(val);
+
+    // --- подгонка ширины инпута под содержимое
+    const input = inputRef?.current;
+    if (input?.scrollWidth && !inputScrollWithOnStart) {
+      setInputScrollWithOnStart(input.scrollWidth);
+    }
+    if (input && input.scrollWidth > inputScrollWithOnStart) {
+      input.style.width = `${input.scrollWidth}px`;
+    }
+  };
+
+  const defaultRef = useRef(null);
+  useEventListener('keydown', handleOnKeyDown, inputRef || defaultRef);
+  useEventListener('input', handleOnChange, inputRef || defaultRef);
 
   return <ContainerStyled>
     <BaseLineStyled>
@@ -176,12 +200,12 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
       </ComponentWrapperStyled>
       <ButtonsContainerStyled gap={gapPx}>
         {!isLoading && isInitial && !isBtnEditHidden &&
-					<ButtonEditStyled onClick={handleBtnEdit} disabled={isBtnEditDisabled || isLoading}/>}
+          <ButtonEditStyled onClick={handleBtnEdit} disabled={isBtnEditDisabled || isLoading} />}
         {!isLoading && isEdit && !isBtnSaveHidden &&
-					<ButtonSaveStyled onClick={handleBtnSave} disabled={isBtnSaveDisabled || isLoading}/>}
+          <ButtonSaveStyled onClick={handleBtnSave} disabled={isBtnSaveDisabled || isLoading} />}
         {!isLoading && isEdit && !isBtnCancelHidden &&
-					<ButtonCancelStyled onClick={handleBtnCancel} disabled={isBtnCancelDisabled || isLoading}/>}
-        {isLoading && <SpinnerStyled><Spinner size={'small'}/></SpinnerStyled>}
+          <ButtonCancelStyled onClick={handleBtnCancel} disabled={isBtnCancelDisabled || isLoading} />}
+        {isLoading && <SpinnerStyled><Spinner size={'small'} /></SpinnerStyled>}
       </ButtonsContainerStyled>
     </BaseLineStyled>
     {isErrShowed && errText && !isInitial && <ErrorsLineStyled>{errText}</ErrorsLineStyled>}

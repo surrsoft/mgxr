@@ -4,6 +4,7 @@ import { EditableEntry, EditableRefType, StandingEnum } from '../../lvl-0/Editab
 import { useCallback, useRef, useState } from 'react';
 import { OnVerifyType } from './types/OnVerifyType';
 import { OnVerifyResultType } from './types/OnVerifyResultType';
+import { noop } from 'lodash';
 
 const TestAreaStyled = styled.div`
   display: flex;
@@ -59,11 +60,6 @@ export function EditableText(props: Props) {
     }
   };
 
-  const cancelLogic = useCallback(() => {
-    setValueLocal(valueMemo);
-    editableRef.current?.changeStanding(StandingEnum.INITIAL);
-  }, [valueMemo]);
-
   const confirmLogic = useCallback(async (): Promise<OnVerifyResultType> => {
     if (onConfirm) {
       const confirmResult = await onConfirm(valueLocal);
@@ -81,7 +77,8 @@ export function EditableText(props: Props) {
   }, [valueLocal, onConfirm]);
 
   const handleOnCancel = () => {
-    cancelLogic(); // TODO
+    setValueLocal(valueMemo);
+    editableRef.current?.changeStanding(StandingEnum.INITIAL);
   };
 
   const handleOnStartEdit = () => {
@@ -99,25 +96,27 @@ export function EditableText(props: Props) {
     return confirmLogic();
   };
 
+  const handleOnChangeTw = async (val?: string) => {
+    console.log('!!-!!-!!  val {230428224433}\n', val); // del+
+    if (maxLength && val && val.length > maxLength) return;
+    setValueLocal(val || '');
+  };
+
+  const handleOnCh = () => {
+    return false;
+  };
+
   return <TestAreaStyled>
     <EditableEntry
-      componentInitial={
-        <InitialStyled>{valueLocal}</InitialStyled>
-      }
-      componentEdit={
-        <InputStyled
-          ref={inputRef}
-          value={valueLocal}
-          onChange={handleOnChange}
-          autoFocus
-        />
-      }
+      componentInitial={<InitialStyled>{valueLocal}</InitialStyled>}
+      componentEdit={<InputStyled ref={inputRef} defaultValue={valueLocal} autoFocus />}
+      inputRef={inputRef}
       ref={editableRef}
       onCancel={handleOnCancel}
       onStartEdit={handleOnStartEdit}
       onConfirm={handleOnConfirm}
+      onChange={handleOnChangeTw}
       gapPx={6}
-      aInputRef={inputRef}
     />
   </TestAreaStyled>;
 }
