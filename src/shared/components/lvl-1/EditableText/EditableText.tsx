@@ -3,9 +3,6 @@ import styled from 'styled-components/macro';
 import { EditableEntry, EditableRefType, StandingEnum } from '../../lvl-0/EditableEntry/EditableEntry';
 import { useCallback, useRef, useState } from 'react';
 import { OnVerifyType } from './types/OnVerifyType';
-import { OnVerifyRsType } from '../../lvl-0/EditableEntry/types/OnVerifyRsType';
-import { Simulate } from 'react-dom/test-utils';
-import error = Simulate.error;
 import { OnVerifyResultType } from './types/OnVerifyResultType';
 
 const TestAreaStyled = styled.div`
@@ -43,7 +40,6 @@ export function EditableText(props: Props) {
   const [valueLocal, setValueLocal] = useState(value);
   const [valueMemo, setValueMemo] = useState(valueLocal);
   const [inputScrollWithOnStart, setInputScrollWithOnStart] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
 
   const editableRef = useRef<EditableRefType>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -70,12 +66,8 @@ export function EditableText(props: Props) {
 
   const confirmLogic = useCallback(async (): Promise<OnVerifyResultType> => {
     if (onConfirm) {
-      setIsLoading(true);
-      editableRef.current?.setIsLoading(true);
       const confirmResult = await onConfirm(valueLocal);
       const { isSuccess, valueOut } = confirmResult;
-      editableRef.current?.setIsLoading(false);
-      setIsLoading(false);
       // ---
       if (isSuccess) {
         setValueLocal(valueOut);
@@ -88,24 +80,8 @@ export function EditableText(props: Props) {
     }
   }, [valueLocal, onConfirm]);
 
-  const handleKeyDown = async (event: any) => {
-    if (event.key === 'Enter') {
-      // ^ если нажат Enter
-      const { isSuccess, errorText } = await confirmLogic();
-      if (isSuccess) {
-        editableRef.current?.changeStanding(StandingEnum.INITIAL);
-      } else if (errorText) {
-        editableRef.current?.setIsErrShowed(true);
-        editableRef.current?.setErrText(errorText);
-      }
-    } else if (event.keyCode === 27) {
-      // ^ если нажат Esc
-      cancelLogic();
-    }
-  };
-
   const handleOnCancel = () => {
-    cancelLogic();
+    cancelLogic(); // TODO
   };
 
   const handleOnStartEdit = () => {
@@ -133,9 +109,7 @@ export function EditableText(props: Props) {
           ref={inputRef}
           value={valueLocal}
           onChange={handleOnChange}
-          onKeyDown={handleKeyDown}
           autoFocus
-          disabled={isLoading}
         />
       }
       ref={editableRef}
@@ -143,6 +117,7 @@ export function EditableText(props: Props) {
       onStartEdit={handleOnStartEdit}
       onConfirm={handleOnConfirm}
       gapPx={6}
+      aInputRef={inputRef}
     />
   </TestAreaStyled>;
 }

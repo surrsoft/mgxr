@@ -1,8 +1,17 @@
-import { Dispatch, forwardRef, ReactNode, Ref, SetStateAction, useImperativeHandle, useState } from 'react';
+import {
+  Dispatch,
+  forwardRef,
+  ReactNode,
+  Ref, RefObject,
+  SetStateAction,
+  useImperativeHandle, useRef,
+  useState
+} from 'react';
 import styled from 'styled-components/macro';
 import { IconButton, Spinner } from '@primer/react';
-import { CheckIcon, HeartIcon, PencilIcon, XIcon } from '@primer/octicons-react';
+import { CheckIcon, PencilIcon, XIcon } from '@primer/octicons-react';
 import { OnVerifyRsType } from './types/OnVerifyRsType';
+import { useEventListener } from 'usehooks-ts';
 
 /*
 - переключатель между двумя компонентами. Рисует кнопки редактировать, сохранить, отменить
@@ -69,6 +78,7 @@ interface Props {
   onConfirm?: () => Promise<OnVerifyRsType>;
   /** Зазор между "телом" и кнопками */
   gapPx?: number;
+  aInputRef?: RefObject<HTMLElement>;
 }
 
 export interface EditableRefType {
@@ -92,6 +102,7 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
     isBtnCancelHidden,
     isBtnSaveHidden,
     gapPx = 0,
+    aInputRef,
   } = props;
   const [standingLocal, setStandingLocal] = useState<StandingEnum>(StandingEnum.INITIAL);
   const [isLoading, setIsLoading] = useState(false);
@@ -124,7 +135,9 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
     if (!onConfirm) return true;
 
     setIsLoading(true);
+    aInputRef?.current?.setAttribute('disabled', 'true');
     const { isSuccess, errorText } = await onConfirm();
+    aInputRef?.current?.removeAttribute('disabled');
     setIsLoading(false);
     if (isSuccess) {
       setStandingLocal(StandingEnum.INITIAL);
@@ -140,6 +153,21 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
     onCancel?.();
   };
 
+  const handleKeyDown = async (event: KeyboardEvent) => {
+    console.log('!!-!!-!! event {230428063944}\n', event); // del+
+    switch (event.code) {
+      case "Enter":
+        await handleBtnSave();
+        break;
+      case "Escape":
+        await handleBtnCancel();
+        break;
+    }
+  }
+
+  const defatulRef = useRef(null);
+  useEventListener('keydown', handleKeyDown, aInputRef || defatulRef);
+
   return <ContainerStyled>
     <BaseLineStyled>
       <ComponentWrapperStyled>
@@ -148,12 +176,12 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
       </ComponentWrapperStyled>
       <ButtonsContainerStyled gap={gapPx}>
         {!isLoading && isInitial && !isBtnEditHidden &&
-          <ButtonEditStyled onClick={handleBtnEdit} disabled={isBtnEditDisabled || isLoading} />}
+					<ButtonEditStyled onClick={handleBtnEdit} disabled={isBtnEditDisabled || isLoading}/>}
         {!isLoading && isEdit && !isBtnSaveHidden &&
-          <ButtonSaveStyled onClick={handleBtnSave} disabled={isBtnSaveDisabled || isLoading} />}
+					<ButtonSaveStyled onClick={handleBtnSave} disabled={isBtnSaveDisabled || isLoading}/>}
         {!isLoading && isEdit && !isBtnCancelHidden &&
-          <ButtonCancelStyled onClick={handleBtnCancel} disabled={isBtnCancelDisabled || isLoading} />}
-        {isLoading && <SpinnerStyled><Spinner size={'small'} /></SpinnerStyled>}
+					<ButtonCancelStyled onClick={handleBtnCancel} disabled={isBtnCancelDisabled || isLoading}/>}
+        {isLoading && <SpinnerStyled><Spinner size={'small'}/></SpinnerStyled>}
       </ButtonsContainerStyled>
     </BaseLineStyled>
     {isErrShowed && errText && !isInitial && <ErrorsLineStyled>{errText}</ErrorsLineStyled>}
