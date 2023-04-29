@@ -3,7 +3,7 @@ import { PropsWithChildren } from 'react';
 import { NavStripeProps } from '../types/types';
 import { NavStripe } from '../components/NavStripe';
 import { EditableText } from '../shared/components/lvl-1/EditableText/EditableText';
-import { OnVerifyResultType } from '../shared/components/lvl-1/EditableText/types/OnVerifyResultType';
+import { OnVerifyResultType } from '../shared/components/types/OnVerifyResultType';
 
 export function Main({ children, ...rest }: PropsWithChildren<NavStripeProps>) {
 
@@ -16,6 +16,10 @@ export function Main({ children, ...rest }: PropsWithChildren<NavStripeProps>) {
             valueOut: valueIn,
             errorText: 'длина должна быть ровно 5',
           });
+        } else if (valueIn === 'hellm') {
+          resolve({
+            isSuccess: true, valueOut: valueIn, errorText: ''
+          })
         } else {
           resolve({ isSuccess: false, valueOut: valueIn, errorText: 'что-то пошло не так' });
         }
@@ -26,7 +30,7 @@ export function Main({ children, ...rest }: PropsWithChildren<NavStripeProps>) {
   return <div>
     <NavStripe {...rest} />
 
-    <EditableText value={'hello hello'} onConfirm={handleOnConfirm} />
+    <EditableText value={'hello hello'} onConfirm={handleOnConfirm}/>
 
     <div>
       {children}

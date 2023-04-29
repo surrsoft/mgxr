@@ -1,10 +1,9 @@
 import styled from 'styled-components/macro';
 
-import { EditableEntry, EditableRefType, StandingEnum } from '../../lvl-0/EditableEntry/EditableEntry';
+import { EditableEntry } from '../../lvl-0/EditableEntry/EditableEntry';
 import { useCallback, useRef, useState } from 'react';
-import { OnVerifyType } from './types/OnVerifyType';
-import { OnVerifyResultType } from './types/OnVerifyResultType';
-import { noop } from 'lodash';
+import { OnVerifyType } from '../../types/OnVerifyType';
+import { OnVerifyResultType } from '../../types/OnVerifyResultType';
 
 const TestAreaStyled = styled.div`
   display: flex;
@@ -37,85 +36,52 @@ interface Props {
 /** Редактируемый текст. Справа от текста показывается иконка "редактировать", при нажатию накоторую текст
  * переключается в режим редактирования */
 export function EditableText(props: Props) {
-  const { value = '', onConfirm, maxLength = 0 } = props;
-  const [valueLocal, setValueLocal] = useState(value);
+  const { value: valueProp = '', onConfirm, maxLength = 0 } = props;
+  const [valueLocal, setValueLocal] = useState(valueProp);
+  // значение на момент начала редактирования, чтобы вернуться к нему в случае cancel
   const [valueMemo, setValueMemo] = useState(valueLocal);
-  const [inputScrollWithOnStart, setInputScrollWithOnStart] = useState(0);
 
-  const editableRef = useRef<EditableRefType>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleOnChange = (ev: any) => {
-    editableRef.current?.setIsErrShowed(false);
-    const val = ev.target.value;
-    if (maxLength && val && val.length > maxLength) return;
-    setValueLocal(val || '');
-    // --- подгонка ширины инпута под содержимое
-    const input = inputRef.current;
-    if (input?.scrollWidth && !inputScrollWithOnStart) {
-      setInputScrollWithOnStart(input.scrollWidth);
-    }
-    if (input && input.scrollWidth > inputScrollWithOnStart) {
-      input.style.width = `${input.scrollWidth}px`;
-    }
-  };
-
-  const confirmLogic = useCallback(async (): Promise<OnVerifyResultType> => {
+  const handleOnConfirm = useCallback(async (): Promise<OnVerifyResultType> => {
+    const valueIn = inputRef.current?.value || '';
     if (onConfirm) {
-      const confirmResult = await onConfirm(valueLocal);
+      const confirmResult = await onConfirm(valueIn);
       const { isSuccess, valueOut } = confirmResult;
-      // ---
       if (isSuccess) {
         setValueLocal(valueOut);
         setValueMemo(valueOut);
       }
       return confirmResult;
     } else {
-      setValueMemo(valueLocal);
+      setValueMemo(valueIn);
       return { isSuccess: true, valueOut: '', errorText: '' };
     }
-  }, [valueLocal, onConfirm]);
+  }, [inputRef?.current, onConfirm]);
 
   const handleOnCancel = () => {
     setValueLocal(valueMemo);
-    editableRef.current?.changeStanding(StandingEnum.INITIAL);
   };
 
-  const handleOnStartEdit = () => {
-    setTimeout(() => {
-      const input = inputRef.current;
-      setInputScrollWithOnStart(input?.scrollWidth ?? 0);
-      if (input?.scrollWidth) {
-        input.style.width = `${input.scrollWidth}px`;
-      }
-    }, 0);
-
-  };
-
-  const handleOnConfirm = () => {
-    return confirmLogic();
-  };
-
-  const handleOnChangeTw = async (val?: string) => {
-    console.log('!!-!!-!!  val {230428224433}\n', val); // del+
+  const handleOnChange = async (val?: string) => {
     if (maxLength && val && val.length > maxLength) return;
     setValueLocal(val || '');
   };
 
-  const handleOnCh = () => {
-    return false;
-  };
+  const handleOnValue = (val: string) => {
+    setValueLocal(val)
+    setValueMemo(val)
+  }
 
   return <TestAreaStyled>
     <EditableEntry
       componentInitial={<InitialStyled>{valueLocal}</InitialStyled>}
-      componentEdit={<InputStyled ref={inputRef} defaultValue={valueLocal} autoFocus />}
+      componentEdit={<InputStyled ref={inputRef} defaultValue={valueLocal} autoFocus/>}
       inputRef={inputRef}
-      ref={editableRef}
       onCancel={handleOnCancel}
-      onStartEdit={handleOnStartEdit}
-      onConfirm={handleOnConfirm}
-      onChange={handleOnChangeTw}
+      onConfirm={onConfirm}
+      onChange={handleOnChange}
+      onValue={handleOnValue}
       gapPx={6}
     />
   </TestAreaStyled>;

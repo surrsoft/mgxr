@@ -1,20 +1,18 @@
 import {
-  ChangeEvent,
   Dispatch,
   forwardRef,
   ReactNode,
   Ref,
   RefObject,
-  SetStateAction, useCallback, useEffect,
-  useImperativeHandle,
+  SetStateAction, useImperativeHandle,
   useRef,
   useState,
 } from 'react';
 import styled from 'styled-components/macro';
 import { IconButton, Spinner } from '@primer/react';
 import { CheckIcon, PencilIcon, XIcon } from '@primer/octicons-react';
-import { OnVerifyRsType } from './types/OnVerifyRsType';
-import { useEffectOnce, useEventListener } from 'usehooks-ts';
+import { useEventListener } from 'usehooks-ts';
+import { OnVerifyType } from '../../types/OnVerifyType';
 
 /*
 - переключатель между двумя компонентами. Рисует кнопки редактировать, сохранить, отменить
@@ -77,12 +75,17 @@ interface Props {
   isBtnSaveHidden?: boolean;
   isBtnCancelHidden?: boolean;
   onCancel?: () => void;
+  /** исполнитель должен вызывать при каждом начале редактирования */
   onStartEdit?: () => void;
-  onConfirm?: () => Promise<OnVerifyRsType>;
+  onConfirm?: OnVerifyType;
   onChange?: (val?: string) => Promise<void>;
-  /** Зазор между "телом" и кнопками */
+  /** исполнитель должен вызывать это при успешном завершении редактирования, передавая valueOut полученный по
+   * результатам onConfirm() */
+  onValue?: (val: string) => void;
+  /** клиент может указать здесь зазор между "телом" и кнопками */
   gapPx?: number;
-  inputRef?: RefObject<HTMLElement>;
+  /** клиент может указать здесь ref на инпут из componentEdit */
+  inputRef?: RefObject<HTMLInputElement>;
 }
 
 export interface EditableRefType {
@@ -100,6 +103,7 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
     onStartEdit,
     onConfirm,
     onChange,
+    onValue,
     isBtnEditDisabled,
     isBtnCancelDisabled,
     isBtnSaveDisabled,
@@ -133,6 +137,14 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
     setIsErrShowed(false);
     setStandingLocal(StandingEnum.EDIT);
     onStartEdit?.();
+    // --- управление длиной (шириной) инпута
+    setTimeout(() => {
+      const input = inputRef?.current;
+      setInputScrollWithOnStart(input?.scrollWidth ?? 0);
+      if (input?.scrollWidth) {
+        input.style.width = `${input.scrollWidth}px`;
+      }
+    }, 0);
   };
 
   const handleBtnSave = async () => {
@@ -142,11 +154,16 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
 
     setIsLoading(true);
     inputRef?.current?.setAttribute('disabled', 'true');
-    const { isSuccess, errorText } = await onConfirm();
+    const { isSuccess, errorText, valueOut } = await onConfirm(inputRef?.current?.value || '');
     inputRef?.current?.removeAttribute('disabled');
     setIsLoading(false);
     if (isSuccess) {
       setStandingLocal(StandingEnum.INITIAL);
+      if (inputRef?.current) {
+        inputRef.current.value = valueOut
+        inputRef.current.defaultValue = valueOut
+      }
+      onValue?.(valueOut);
     } else {
       setErrText(errorText);
       setIsErrShowed(true);
@@ -200,12 +217,12 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
       </ComponentWrapperStyled>
       <ButtonsContainerStyled gap={gapPx}>
         {!isLoading && isInitial && !isBtnEditHidden &&
-          <ButtonEditStyled onClick={handleBtnEdit} disabled={isBtnEditDisabled || isLoading} />}
+					<ButtonEditStyled onClick={handleBtnEdit} disabled={isBtnEditDisabled || isLoading}/>}
         {!isLoading && isEdit && !isBtnSaveHidden &&
-          <ButtonSaveStyled onClick={handleBtnSave} disabled={isBtnSaveDisabled || isLoading} />}
+					<ButtonSaveStyled onClick={handleBtnSave} disabled={isBtnSaveDisabled || isLoading}/>}
         {!isLoading && isEdit && !isBtnCancelHidden &&
-          <ButtonCancelStyled onClick={handleBtnCancel} disabled={isBtnCancelDisabled || isLoading} />}
-        {isLoading && <SpinnerStyled><Spinner size={'small'} /></SpinnerStyled>}
+					<ButtonCancelStyled onClick={handleBtnCancel} disabled={isBtnCancelDisabled || isLoading}/>}
+        {isLoading && <SpinnerStyled><Spinner size={'small'}/></SpinnerStyled>}
       </ButtonsContainerStyled>
     </BaseLineStyled>
     {isErrShowed && errText && !isInitial && <ErrorsLineStyled>{errText}</ErrorsLineStyled>}
