@@ -4,7 +4,8 @@ import {
   ReactNode,
   Ref,
   RefObject,
-  SetStateAction, useImperativeHandle,
+  SetStateAction,
+  useImperativeHandle,
   useRef,
   useState,
 } from 'react';
@@ -12,6 +13,7 @@ import styled from 'styled-components/macro';
 import { IconButton, Spinner } from '@primer/react';
 import { CheckIcon, PencilIcon, XIcon } from '@primer/octicons-react';
 import { useEventListener } from 'usehooks-ts';
+
 import { OnVerifyType } from '../../types/OnVerifyType';
 
 /*
@@ -160,8 +162,8 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
     if (isSuccess) {
       setStandingLocal(StandingEnum.INITIAL);
       if (inputRef?.current) {
-        inputRef.current.value = valueOut
-        inputRef.current.defaultValue = valueOut
+        inputRef.current.value = valueOut;
+        inputRef.current.defaultValue = valueOut;
       }
       onValue?.(valueOut);
     } else {
@@ -217,12 +219,12 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
       </ComponentWrapperStyled>
       <ButtonsContainerStyled gap={gapPx}>
         {!isLoading && isInitial && !isBtnEditHidden &&
-					<ButtonEditStyled onClick={handleBtnEdit} disabled={isBtnEditDisabled || isLoading}/>}
+          <ButtonEditStyled onClick={handleBtnEdit} disabled={isBtnEditDisabled || isLoading} />}
         {!isLoading && isEdit && !isBtnSaveHidden &&
-					<ButtonSaveStyled onClick={handleBtnSave} disabled={isBtnSaveDisabled || isLoading}/>}
+          <ButtonSaveStyled onClick={handleBtnSave} disabled={isBtnSaveDisabled || isLoading} />}
         {!isLoading && isEdit && !isBtnCancelHidden &&
-					<ButtonCancelStyled onClick={handleBtnCancel} disabled={isBtnCancelDisabled || isLoading}/>}
-        {isLoading && <SpinnerStyled><Spinner size={'small'}/></SpinnerStyled>}
+          <ButtonCancelStyled onClick={handleBtnCancel} disabled={isBtnCancelDisabled || isLoading} />}
+        {isLoading && <SpinnerStyled><Spinner size={'small'} /></SpinnerStyled>}
       </ButtonsContainerStyled>
     </BaseLineStyled>
     {isErrShowed && errText && !isInitial && <ErrorsLineStyled>{errText}</ErrorsLineStyled>}

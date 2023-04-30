@@ -43,22 +43,6 @@ export function EditableText(props: Props) {
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleOnConfirm = useCallback(async (): Promise<OnVerifyResultType> => {
-    const valueIn = inputRef.current?.value || '';
-    if (onConfirm) {
-      const confirmResult = await onConfirm(valueIn);
-      const { isSuccess, valueOut } = confirmResult;
-      if (isSuccess) {
-        setValueLocal(valueOut);
-        setValueMemo(valueOut);
-      }
-      return confirmResult;
-    } else {
-      setValueMemo(valueIn);
-      return { isSuccess: true, valueOut: '', errorText: '' };
-    }
-  }, [inputRef?.current, onConfirm]);
-
   const handleOnCancel = () => {
     setValueLocal(valueMemo);
   };
