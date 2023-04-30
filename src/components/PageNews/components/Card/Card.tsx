@@ -4,9 +4,10 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import isBetween from 'dayjs/plugin/isBetween';
 
 import { CardFtType } from '../../types/CardFtType';
-import { EditableText } from '../../../../shared/components/lvl-1/EditableText/EditableText';
+import { EditableTest } from '../../../../shared/components/lvl-1/EditableText/EditableTest';
 import { useEffectOnce } from 'usehooks-ts';
 import { CardsCls } from '../../entries/CardsCls';
+import { EditableValue } from './EditableValue';
 
 const COLOR_1 = '#f2f7f8';
 const COLOR_2 = '#56686d';
@@ -171,7 +172,7 @@ export function Card(props: Props) {
     </LinkStyled>
     <CommNpStyled>
       <div>комментарий:</div>
-      <EditableText value={comm} onConfirm={handleCommOnConfirm} />
+      <EditableValue value={comm || ''} onConfirm={handleCommOnConfirm} />
     </CommNpStyled>
     <div>{body}</div>
     {/* // --- теги */}
@@ -188,7 +189,7 @@ export function Card(props: Props) {
     </CardInfosStyled>
     <BrokenNpStyled>
       <div>признак недействительности:</div>
-      <EditableText value={broken || ''} onConfirm={handleBrokenOnConfirm} />
+      <EditableValue value={broken || ''} onConfirm={handleBrokenOnConfirm} />
     </BrokenNpStyled>
   </CardStyled>);
 }

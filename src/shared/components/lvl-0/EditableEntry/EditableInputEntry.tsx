@@ -4,7 +4,7 @@ import {
   ReactNode,
   Ref,
   RefObject,
-  SetStateAction,
+  SetStateAction, useEffect,
   useImperativeHandle,
   useRef,
   useState,
@@ -15,14 +15,6 @@ import { CheckIcon, PencilIcon, XIcon } from '@primer/octicons-react';
 import { useEventListener } from 'usehooks-ts';
 
 import { OnVerifyType } from '../../types/OnVerifyType';
-
-/*
-- переключатель между двумя компонентами. Рисует кнопки редактировать, сохранить, отменить
-- состояния (standings):
-  - 'initial' -
-  - 'edit' -
-
- */
 
 const ContainerStyled = styled.div`
   display: flex;
@@ -48,14 +40,11 @@ const ButtonsContainerStyled = styled.div<{ gap: number }>`
   padding-left: ${({ gap }) => gap}px;
 `;
 
-const ButtonEditStyled = styled(IconButton).attrs({ icon: PencilIcon, 'aria-label': 'Default' })`
-`;
+const ButtonEditStyled = styled(IconButton).attrs({ icon: PencilIcon, 'aria-label': 'Default' })``;
 
-const ButtonSaveStyled = styled(IconButton).attrs({ icon: CheckIcon, 'aria-label': 'Default' })`
-`;
+const ButtonSaveStyled = styled(IconButton).attrs({ icon: CheckIcon, 'aria-label': 'Default' })``;
 
-const ButtonCancelStyled = styled(IconButton).attrs({ icon: XIcon, 'aria-label': 'Default' })`
-`;
+const ButtonCancelStyled = styled(IconButton).attrs({ icon: XIcon, 'aria-label': 'Default' })``;
 
 const SpinnerStyled = styled.div`
   display: flex;
@@ -68,26 +57,39 @@ export enum StandingEnum {
 }
 
 interface Props {
-  componentInitial: ReactNode;
-  componentEdit: ReactNode;
+  /** JSX для состояния {@link StandingEnum.INITIAL} */
+  jsxInitial: ReactNode;
+  /** JSX для состояния {@link StandingEnum.EDIT} */
+  jsxEdit: ReactNode;
+  /** клиент может указать здесь ref на инпут из jsxEdit */
+  inputRef?: RefObject<HTMLInputElement>;
   isBtnEditDisabled?: boolean;
   isBtnSaveDisabled?: boolean;
   isBtnCancelDisabled?: boolean;
   isBtnEditHidden?: boolean;
   isBtnSaveHidden?: boolean;
   isBtnCancelHidden?: boolean;
+  /** исполнитель должен вызвать это когда компонент переходит из состояния EDIT в состояние INITIAL не в результате
+   * успешного завершения редактирования */
   onCancel?: () => void;
-  /** исполнитель должен вызывать при каждом начале редактирования */
+  /** исполнитель должен вызывать этот колбэк при каждом начале редактирования */
   onStartEdit?: () => void;
+  /**
+   * клиент олжен проверить значение valueIn, и если оно валидное, выполнить нужные действия и вернуть { isSuccess: true, ... }.
+   * valueOut может быть таким же как valueIn или отличаться от него если нужно.
+   */
   onConfirm?: OnVerifyType;
-  onChange?: (val?: string) => Promise<void>;
+  /**
+   * клиент должен проверить val и вернуть пустую строку если всё хорошо, иначе должен вернуть текст, который
+   * исполнитель должен показать как ошибку
+   * @param val
+   */
+  onChange?: (val?: string) => Promise<string>;
   /** исполнитель должен вызывать это при успешном завершении редактирования, передавая valueOut полученный по
    * результатам onConfirm() */
   onValue?: (val: string) => void;
   /** клиент может указать здесь зазор между "телом" и кнопками */
   gapPx?: number;
-  /** клиент может указать здесь ref на инпут из componentEdit */
-  inputRef?: RefObject<HTMLInputElement>;
 }
 
 export interface EditableRefType {
@@ -97,10 +99,20 @@ export interface EditableRefType {
   setErrText: Dispatch<SetStateAction<string | undefined | null>>;
 }
 
-export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref: Ref<EditableRefType>) {
+/**
+ * Редактируемый текст. Справа от jsxInitial показывается кнопка "редактировать", при нажатии на которую
+ * компонент переходит в режим редактирования, в котором пользователь может сделать необходимые правки текста.
+ *
+ * Переключает между двумя компонентами - jsxInitial и jsxEdit.
+ * jsxEdit должен содержать внутри себя элемент input, ref на который нужно передать в пропс inputRef.
+ *
+ * Рисует кнопки "редактировать", "сохранить", "отменить".
+ * Подгоняет длину input под содержимое.
+ */
+export const EditableInputEntry = forwardRef(function EditableEntry(props: Props, ref: Ref<EditableRefType>) {
   const {
-    componentInitial,
-    componentEdit,
+    jsxInitial,
+    jsxEdit,
     onCancel,
     onStartEdit,
     onConfirm,
@@ -120,9 +132,17 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
   const [isErrShowed, setIsErrShowed] = useState(false);
   const [errText, setErrText] = useState<string | undefined | null>('');
   const [inputScrollWithOnStart, setInputScrollWithOnStart] = useState(0);
+  // значение на момент начала редактирования, чтобы вернуться к нему в случае cancel
+  const [valueMemo, setValueMemo] = useState<string>('');
 
   const isInitial = standingLocal === StandingEnum.INITIAL;
   const isEdit = standingLocal === StandingEnum.EDIT;
+
+  useEffect(() => {
+    if (inputRef?.current?.defaultValue && !valueMemo) {
+      setValueMemo(inputRef.current.defaultValue);
+    }
+  }, [inputRef?.current?.defaultValue]);
 
   useImperativeHandle(ref, () => {
     return {
@@ -164,6 +184,7 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
       if (inputRef?.current) {
         inputRef.current.value = valueOut;
         inputRef.current.defaultValue = valueOut;
+        setValueMemo(valueOut);
       }
       onValue?.(valueOut);
     } else {
@@ -174,6 +195,10 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
 
   const handleBtnCancel = () => {
     setIsErrShowed(false);
+    debugger; // del+ 230430113845
+    if (inputRef?.current) {
+      inputRef.current.value = valueMemo;
+    }
     setStandingLocal(StandingEnum.INITIAL);
     onCancel?.();
   };
@@ -190,12 +215,14 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
     }
   };
 
-  const handleOnChange = (event: any) => {
-    console.log('!!-!!-!!  event {230428224543}\n', event); // del+
-
+  const handleOnChange = async (event: any) => {
     setIsErrShowed(false);
     const val = (event.target as any)?.value;
-    onChange?.(val);
+    const errString = await onChange?.(val);
+    if (errString) {
+      setIsErrShowed(true);
+      setErrText(errString);
+    }
 
     // --- подгонка ширины инпута под содержимое
     const input = inputRef?.current;
@@ -214,14 +241,14 @@ export const EditableEntry = forwardRef(function EditableEntry(props: Props, ref
   return <ContainerStyled>
     <BaseLineStyled>
       <ComponentWrapperStyled>
-        {isInitial && componentInitial}
-        {isEdit && componentEdit}
+        {isInitial && jsxInitial}
+        {isEdit && jsxEdit}
       </ComponentWrapperStyled>
       <ButtonsContainerStyled gap={gapPx}>
         {!isLoading && isInitial && !isBtnEditHidden &&
           <ButtonEditStyled onClick={handleBtnEdit} disabled={isBtnEditDisabled || isLoading} />}
         {!isLoading && isEdit && !isBtnSaveHidden &&
-          <ButtonSaveStyled onClick={handleBtnSave} disabled={isBtnSaveDisabled || isLoading} />}
+          <ButtonSaveStyled onClick={handleBtnSave} disabled={isBtnSaveDisabled || isLoading || isErrShowed} />}
         {!isLoading && isEdit && !isBtnCancelHidden &&
           <ButtonCancelStyled onClick={handleBtnCancel} disabled={isBtnCancelDisabled || isLoading} />}
         {isLoading && <SpinnerStyled><Spinner size={'small'} /></SpinnerStyled>}
