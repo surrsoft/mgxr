@@ -171,14 +171,17 @@ export const EditableInputEntry = forwardRef(function EditableEntry(props: Props
 
   const handleBtnSave = async () => {
     setIsErrShowed(false);
+    const input = inputRef?.current;
 
+    // --- onConfirm
     if (!onConfirm) return true;
-
     setIsLoading(true);
     inputRef?.current?.setAttribute('disabled', 'true');
     const { isSuccess, errorText, valueOut } = await onConfirm(inputRef?.current?.value || '');
     inputRef?.current?.removeAttribute('disabled');
     setIsLoading(false);
+
+    // ---
     if (isSuccess) {
       setStandingLocal(StandingEnum.INITIAL);
       if (inputRef?.current) {
