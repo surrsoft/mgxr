@@ -138,6 +138,9 @@ export const EditableInputEntry = forwardRef(function EditableEntry(props: Props
   const isInitial = standingLocal === StandingEnum.INITIAL;
   const isEdit = standingLocal === StandingEnum.EDIT;
 
+  const inputCr = inputRef?.current;
+  console.log('!!-!!-!!  inputCr {230501094132}\n', inputCr); // del+
+
   useEffect(() => {
     if (inputRef?.current?.defaultValue && !valueMemo) {
       setValueMemo(inputRef.current.defaultValue);
@@ -176,15 +179,15 @@ export const EditableInputEntry = forwardRef(function EditableEntry(props: Props
     // --- onConfirm
     if (!onConfirm) return true;
     setIsLoading(true);
-    inputRef?.current?.setAttribute('disabled', 'true');
-    const { isSuccess, errorText, valueOut } = await onConfirm(inputRef?.current?.value || '');
-    inputRef?.current?.removeAttribute('disabled');
+    input?.setAttribute('disabled', 'true');
+    const { isSuccess, errorText, valueOut } = await onConfirm(input?.value || '');
+    input?.removeAttribute('disabled');
     setIsLoading(false);
 
     // ---
     if (isSuccess) {
       setStandingLocal(StandingEnum.INITIAL);
-      if (inputRef?.current) {
+      if (input) {
         inputRef.current.value = valueOut;
         inputRef.current.defaultValue = valueOut;
         setValueMemo(valueOut);
