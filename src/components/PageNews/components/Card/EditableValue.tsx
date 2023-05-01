@@ -28,9 +28,10 @@ export function EditableValue({ value, onConfirm }: Props) {
   };
 
   return <EditableInputEntry
-    jsxInitial={<InitialStyled>{valueLocal}</InitialStyled>}
+    jsxInitialInterpolation={(val: string) => (<InitialStyled>{val}</InitialStyled>)}
     jsxEdit={<InputStyled ref={inputRef} defaultValue={valueLocal} autoFocus />}
-    onValue={handleOnValue}
+    initialValue={valueLocal}
+    onDone={handleOnValue}
     onConfirm={onConfirm}
     inputRef={inputRef}
   />;

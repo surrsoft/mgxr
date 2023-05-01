@@ -25,13 +25,12 @@ interface Props {
   value?: string;
 }
 
-const MAX_LENGTH = 10;
+const MAX_LENGTH = 30;
 
 /** Редактируемый текст. Справа от текста показывается иконка "редактировать", при нажатию накоторую текст
  * переключается в режим редактирования */
 export function EditableTest(props: Props) {
-  const { value: valueProp = ''} = props;
-  const [valueLocal, setValueLocal] = useState(valueProp);
+  const { value = '' } = props;
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -45,20 +44,16 @@ export function EditableTest(props: Props) {
     return '';
   };
 
-  const handleOnValue = (val: string) => {
-    setValueLocal(val);
-  };
-
   const handleOnConfirm = async (valueIn: string) => {
     return new Promise<OnVerifyResultType>((resolve, reject) => {
       setTimeout(() => {
-        if (valueIn.length !== 5) {
+        if (valueIn.length < 6) {
           resolve({
             isSuccess: false,
             valueOut: valueIn,
-            errorText: 'длина должна быть ровно 5',
+            errorText: 'длина должна быть >= 6',
           });
-        } else if (valueIn === 'hellm') {
+        } else if (valueIn.length >= 6) {
           resolve({
             isSuccess: true, valueOut: valueIn, errorText: '',
           });
@@ -71,13 +66,13 @@ export function EditableTest(props: Props) {
 
   return <TestAreaStyled>
     <EditableInputEntry
-      jsxInitial={<InitialStyled>{valueLocal}</InitialStyled>}
-      jsxEdit={<InputStyled ref={inputRef} defaultValue={valueLocal} autoFocus />}
+      jsxInitialInterpolation={(val: string) => (<InitialStyled>{val}</InitialStyled>)}
+      jsxEdit={<InputStyled ref={inputRef} defaultValue={value} autoFocus />}
+      initialValue={value}
       inputRef={inputRef}
       onConfirm={handleOnConfirm}
       onChange={handleOnChange}
-      onValue={handleOnValue}
-      gapPx={6}
+      options={{ gapPx: 6 }}
     />
   </TestAreaStyled>;
 }
