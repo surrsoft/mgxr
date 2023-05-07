@@ -6,7 +6,7 @@ import { ReactComponent as SvgIconEdit } from './IconEdit.svg';
 import { ReactComponent as SvgIconCheck } from './IconCheck.svg';
 import { ReactComponent as SvgIconClose } from './IconClose.svg';
 
-const sizePx = '240px';
+const sizePx = '24px';
 
 const ButtonIn = styled.button`
   ${SvgButtonBaseStyled};
@@ -36,7 +36,7 @@ const colors: ButtonColorsType = {
 export function ButtonEd({ icon, onClick, isLoading, disabled }: Props) {
   return <ButtonIn
     colors={colors}
-    svgSizesPx={{whPx: 140}}
+    svgSizesPx={{whPx: 14}}
     onClick={onClick}
     isLoading={isLoading}
     disabled={disabled}

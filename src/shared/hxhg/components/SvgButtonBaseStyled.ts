@@ -28,7 +28,7 @@ export const SvgButtonBaseStyled = css<{
     fill: ${({ colors }) => (colors?.normal ?? 'unset')};
   }
 
-  &:hover svg, &:hover svg path {
+  &:hover svg {
     fill: ${({ colors }) => (colors?.hover ?? colors?.normal ?? 'unset')};
   }
 
