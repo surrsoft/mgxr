@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro';
 
-import { EditableInputEntry } from '../../lvl-0/EditableEntry/EditableInputEntry';
+import { EditableInputEntry } from '../../L1/EditableEntry/EditableInputEntry';
 import { useRef, useState } from 'react';
 import { OnVerifyType } from '../../types/OnVerifyType';
 import { OnVerifyResultType } from '../../types/OnVerifyResultType';

@@ -4,7 +4,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import isBetween from 'dayjs/plugin/isBetween';
 
 import { CardFtType } from '../../types/CardFtType';
-import { EditableTest } from '../../../../shared/components/lvl-1/EditableText/EditableTest';
+import { EditableTest } from '../../../../shared/components/L2/EditableText/EditableTest';
 import { useEffectOnce } from 'usehooks-ts';
 import { CardsCls } from '../../entries/CardsCls';
 import { EditableValue } from './EditableValue';

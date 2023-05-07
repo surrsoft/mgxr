@@ -1,20 +1,20 @@
 import {
   Dispatch,
-  forwardRef, Fragment,
+  forwardRef,
   ReactNode,
   Ref,
   RefObject,
-  SetStateAction, useEffect,
+  SetStateAction,
+  useEffect,
   useImperativeHandle,
   useRef,
   useState,
 } from 'react';
 import styled from 'styled-components/macro';
-import { IconButton, Spinner } from '@primer/react';
-import { CheckIcon, PencilIcon, XIcon } from '@primer/octicons-react';
 import { useEventListener } from 'usehooks-ts';
 
 import { OnVerifyType } from '../../types/OnVerifyType';
+import { ButtonEd } from './components/ButtonEd';
 
 const ContainerStyled = styled.div`
   display: flex;
@@ -37,17 +37,9 @@ const ComponentWrapperStyled = styled.div`
 
 const ButtonsContainerStyled = styled.div<{ gap: number }>`
   display: flex;
-  padding-left: ${({ gap }) => gap}px;
-`;
-
-const ButtonEditStyled = styled(IconButton).attrs({ icon: PencilIcon, 'aria-label': 'Default' })``;
-
-const ButtonSaveStyled = styled(IconButton).attrs({ icon: CheckIcon, 'aria-label': 'Default' })``;
-
-const ButtonCancelStyled = styled(IconButton).attrs({ icon: XIcon, 'aria-label': 'Default' })``;
-
-const SpinnerStyled = styled.div`
-  display: flex;
+  gap: 6px;
+  margin-left: ${({ gap }) => gap}px;
+  justify-content: center;
   align-items: center;
 `;
 
@@ -292,12 +284,16 @@ export const EditableInputEntry = forwardRef(function EditableEntry(props: Props
       </ComponentWrapperStyled>
       <ButtonsContainerStyled gap={options?.gapPx ?? 0}>
         {!isLoading && isInitial && !isBtnEditHidden &&
-          <ButtonEditStyled onClick={handleBtnEdit} disabled={isBtnEditDisabled || isLoading} />}
-        {!isLoading && isEdit && !isBtnSaveHidden &&
-          <ButtonSaveStyled onClick={handleBtnSave} disabled={isBtnSaveDisabled || isLoading || isErrShowed} />}
+          <ButtonEd icon="edit" onClick={handleBtnEdit} disabled={isBtnEditDisabled || isLoading} />}
+        {isEdit && !isBtnSaveHidden &&
+          <ButtonEd
+            icon="confirm"
+            onClick={handleBtnSave}
+            disabled={isBtnSaveDisabled || isLoading || isErrShowed}
+            isLoading={isLoading}
+          />}
         {!isLoading && isEdit && !isBtnCancelHidden &&
-          <ButtonCancelStyled onClick={handleBtnCancel} disabled={isBtnCancelDisabled || isLoading} />}
-        {isLoading && <SpinnerStyled><Spinner size={'small'} /></SpinnerStyled>}
+          <ButtonEd icon="cancel" onClick={handleBtnCancel} disabled={isBtnCancelDisabled || isLoading} />}
       </ButtonsContainerStyled>
     </BaseLineStyled>
     {isErrShowed && errText && !isInitial && <ErrorsLineStyled>{errText}</ErrorsLineStyled>}
