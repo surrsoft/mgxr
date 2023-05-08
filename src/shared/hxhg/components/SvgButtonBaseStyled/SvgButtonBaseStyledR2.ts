@@ -1,6 +1,7 @@
 import { CSSProperties, css } from 'styled-components';
-import { ButtonColorsType } from '../types/L2/ButtonColorsType';
-import { sizesPxInterprete, SizesPxType } from '../types/L1/SizesPxType';
+import { ButtonColorsTypeR1 } from '../../types/L2/ButtonColorsType/ButtonColorsTypeR1';
+import { SizesPxTypeR1 } from '../../types/L1/SizesPxType/SizesPxTypeR1';
+import { sizesPxInterpreteR1 } from '../../utils/sizesPxInterprete/sizesPxInterpreteR1';
 
 /**
  * Стилизатор для <svg> внутри <button>. Меняет цвет svg для состояний normal, hover, disabled, click. Есть опция
@@ -11,9 +12,9 @@ import { sizesPxInterprete, SizesPxType } from '../types/L1/SizesPxType';
  *
  * ID hxhg-[[230507110019]] rev 2 1.0.1 2023-05-07
  */
-export const SvgButtonBaseStyled = css<{
-  colors?: ButtonColorsType,
-  svgSizesPx?: SizesPxType,
+export const SvgButtonBaseStyledR2 = css<{
+  colors?: ButtonColorsTypeR1,
+  svgSizesPx?: SizesPxTypeR1,
   css?: CSSProperties,
   isLoading?: boolean
 }>`
@@ -23,8 +24,8 @@ export const SvgButtonBaseStyled = css<{
   cursor: pointer;
 
   svg {
-    width: ${({ svgSizesPx }) => `${sizesPxInterprete(svgSizesPx).wPx}px`};
-    height: ${({ svgSizesPx }) => `${sizesPxInterprete(svgSizesPx).hPx}px`};
+    width: ${({ svgSizesPx }) => `${sizesPxInterpreteR1(svgSizesPx).wPx}px`};
+    height: ${({ svgSizesPx }) => `${sizesPxInterpreteR1(svgSizesPx).hPx}px`};
     fill: ${({ colors }) => (colors?.normal ?? 'unset')};
   }
 

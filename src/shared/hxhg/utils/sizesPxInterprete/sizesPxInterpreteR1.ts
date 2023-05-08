@@ -1,14 +1,4 @@
-/**
- * Размер ширины и высоты в пикселях.
- *
- * ID hxhg-[[230507102054]] rev 1 1.0.0 2023-05-07
- */
-export interface SizesPxType {
-  /** задание сразу одинаковой ширины и высоты */
-  whPx?: number;
-  wPx?: number;
-  hPx?: number;
-}
+import { SizesPxTypeR1 } from '../../types/L1/SizesPxType/SizesPxTypeR1';
 
 /**
  * Интерпретатор для SizexPxType ([230507102054])
@@ -17,7 +7,7 @@ export interface SizesPxType {
  *
  * @param sizes см. hxhg-[230507102054]
  */
-export const sizesPxInterprete = (sizes: SizesPxType = {}): { wPx: number, hPx: number } => {
+export const sizesPxInterpreteR1 = (sizes: SizesPxTypeR1 = {}): { wPx: number, hPx: number } => {
   if (sizes.whPx) {
     return { wPx: sizes.whPx, hPx: sizes.whPx };
   }

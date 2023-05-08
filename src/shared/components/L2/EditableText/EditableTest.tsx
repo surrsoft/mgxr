@@ -2,8 +2,8 @@ import styled from 'styled-components/macro';
 
 import { EditableInputEntry } from '../../L1/EditableEntry/EditableInputEntry';
 import { useRef, useState } from 'react';
-import { OnVerifyType } from '../../types/OnVerifyType';
-import { OnVerifyResultType } from '../../types/OnVerifyResultType';
+import { OnVerifyTypeR1 } from '../../../hxhg/types/L2/OnVerifyType/OnVerifyTypeR1';
+import { OnVerifyResultTypeR1 } from '../../../hxhg/types/L1/OnVeriryResultType/OnVerifyResultTypeR1';
 
 const TestAreaStyled = styled.div`
   display: flex;
@@ -45,7 +45,7 @@ export function EditableTest(props: Props) {
   };
 
   const handleOnConfirm = async (valueIn: string) => {
-    return new Promise<OnVerifyResultType>((resolve, reject) => {
+    return new Promise<OnVerifyResultTypeR1>((resolve, reject) => {
       setTimeout(() => {
         if (valueIn.length < 6) {
           resolve({

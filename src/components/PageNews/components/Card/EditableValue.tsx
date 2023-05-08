@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 
 import { EditableInputEntry } from '../../../../shared/components/L1/EditableEntry/EditableInputEntry';
-import { OnVerifyType } from '../../../../shared/components/types/OnVerifyType';
+import { OnVerifyTypeR1 } from '../../../../shared/hxhg/types/L2/OnVerifyType/OnVerifyTypeR1';
 import styled from 'styled-components/macro';
 
 const InitialStyled = styled.div`
@@ -16,7 +16,7 @@ const InputStyled = styled.input`
 
 interface Props {
   value: string;
-  onConfirm: OnVerifyType;
+  onConfirm: OnVerifyTypeR1;
 }
 
 export function EditableValue({ value, onConfirm }: Props) {

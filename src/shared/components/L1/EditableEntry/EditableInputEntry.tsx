@@ -13,7 +13,7 @@ import {
 import styled from 'styled-components/macro';
 import { useEventListener } from 'usehooks-ts';
 
-import { OnVerifyType } from '../../types/OnVerifyType';
+import { OnVerifyTypeR1 } from '../../../hxhg/types/L2/OnVerifyType/OnVerifyTypeR1';
 import { ButtonEd } from './components/ButtonEd';
 
 const ContainerStyled = styled.div`
@@ -77,7 +77,7 @@ interface Props {
    * клиент олжен проверить значение valueIn, и если оно валидное, выполнить нужные действия и вернуть { isSuccess: true, ... }.
    * valueOut может быть таким же как valueIn или отличаться от него если нужно.
    */
-  onConfirm?: OnVerifyType;
+  onConfirm?: OnVerifyTypeR1;
   /**
    * клиент должен проверить val и вернуть пустую строку если всё хорошо, иначе должен вернуть текст, который
    * исполнитель должен показать как ошибку

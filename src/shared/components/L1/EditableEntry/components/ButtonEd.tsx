@@ -1,15 +1,15 @@
 import React from 'react';
 import styled from 'styled-components/macro';
-import { SvgButtonBaseStyled } from '../../../../hxhg/components/SvgButtonBaseStyled';
-import { ButtonColorsType } from '../../../../hxhg/types/L2/ButtonColorsType';
 import { ReactComponent as SvgIconEdit } from './IconEdit.svg';
 import { ReactComponent as SvgIconCheck } from './IconCheck.svg';
 import { ReactComponent as SvgIconClose } from './IconClose.svg';
+import { SvgButtonBaseStyledR2 } from '../../../../hxhg/components/SvgButtonBaseStyled/SvgButtonBaseStyledR2';
+import { ButtonColorsTypeR1 } from '../../../../hxhg/types/L2/ButtonColorsType/ButtonColorsTypeR1';
 
 const sizePx = '240px';
 
 const ButtonIn = styled.button`
-  ${SvgButtonBaseStyled};
+  ${SvgButtonBaseStyledR2};
   
   display: flex;
   align-items: center;
@@ -26,7 +26,7 @@ interface Props {
   isLoading?: boolean;
 }
 
-const colors: ButtonColorsType = {
+const colors: ButtonColorsTypeR1 = {
   normal: 'black',
   disabled: 'silver',
   hover: 'red',
