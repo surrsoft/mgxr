@@ -6,7 +6,7 @@ import { ReactComponent as SvgIconClose } from './IconClose.svg';
 import { SvgButtonBaseStyledR2 } from '../../../../hxhg/components/SvgButtonBaseStyled/SvgButtonBaseStyledR2';
 import { ButtonColorsTypeR1 } from '../../../../hxhg/types/L2/ButtonColorsType/ButtonColorsTypeR1';
 
-const sizePx = '240px';
+const sizePx = '24px';
 
 const ButtonIn = styled.button`
   ${SvgButtonBaseStyledR2};
@@ -36,7 +36,7 @@ const colors: ButtonColorsTypeR1 = {
 export function ButtonEd({ icon, onClick, isLoading, disabled }: Props) {
   return <ButtonIn
     colors={colors}
-    svgSizesPx={{whPx: 140}}
+    svgSizesPx={{whPx: 14}}
     onClick={onClick}
     isLoading={isLoading}
     disabled={disabled}
