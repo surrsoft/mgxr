@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components/macro';
-import { ReactComponent as SvgIconEdit } from './IconEdit.svg';
-import { ReactComponent as SvgIconCheck } from './IconCheck.svg';
-import { ReactComponent as SvgIconClose } from './IconClose.svg';
-import { SvgButtonBaseStyledR2 } from '../../../../hxhg/components/SvgButtonBaseStyled/SvgButtonBaseStyledR2';
-import { ButtonColorsTypeR1 } from '../../../../hxhg/types/L2/ButtonColorsType/ButtonColorsTypeR1';
+import { ReactComponent as SvgIconEdit } from '../assets/IconEdit.svg';
+import { ReactComponent as SvgIconCheck } from '../assets/IconCheck.svg';
+import { ReactComponent as SvgIconClose } from '../assets/IconClose.svg';
+import { SvgButtonBaseStyledR2 } from '../../SvgButtonBaseStyled/SvgButtonBaseStyledR2';
+import { ButtonColorsTypeR1 } from '../../../types/L2/ButtonColorsType/ButtonColorsTypeR1';
 
 const sizePx = '24px';
 

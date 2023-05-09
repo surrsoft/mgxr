@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro';
 
-import { EditableInputEntry } from '../../L1/EditableEntry/EditableInputEntry';
+import { EditableInputEntryR1 } from '../../../hxhg/components/EditableInputEntry/EditableInputEntryR1';
 import { useRef, useState } from 'react';
 import { OnVerifyTypeR1 } from '../../../hxhg/types/L2/OnVerifyType/OnVerifyTypeR1';
 import { OnVerifyResultTypeR1 } from '../../../hxhg/types/L1/OnVeriryResultType/OnVerifyResultTypeR1';
@@ -65,7 +65,7 @@ export function EditableTest(props: Props) {
   };
 
   return <TestAreaStyled>
-    <EditableInputEntry
+    <EditableInputEntryR1
       jsxInitialInterpolation={(val: string) => (<InitialStyled>{val}</InitialStyled>)}
       jsxEdit={<InputStyled ref={inputRef} defaultValue={value} autoFocus />}
       initialValue={value}

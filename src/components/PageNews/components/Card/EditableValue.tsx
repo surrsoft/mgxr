@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 
-import { EditableInputEntry } from '../../../../shared/components/L1/EditableEntry/EditableInputEntry';
+import { EditableInputEntryR1 } from '../../../../shared/hxhg/components/EditableInputEntry/EditableInputEntryR1';
 import { OnVerifyTypeR1 } from '../../../../shared/hxhg/types/L2/OnVerifyType/OnVerifyTypeR1';
 import styled from 'styled-components/macro';
 
@@ -27,7 +27,7 @@ export function EditableValue({ value, onConfirm }: Props) {
     setValueLocal(val);
   };
 
-  return <EditableInputEntry
+  return <EditableInputEntryR1
     jsxInitialInterpolation={(val: string) => (<InitialStyled>{val}</InitialStyled>)}
     jsxEdit={<InputStyled ref={inputRef} defaultValue={valueLocal} autoFocus />}
     initialValue={valueLocal}

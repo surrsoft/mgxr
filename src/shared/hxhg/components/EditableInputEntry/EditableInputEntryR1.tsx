@@ -1,19 +1,8 @@
-import {
-  Dispatch,
-  forwardRef,
-  ReactNode,
-  Ref,
-  RefObject,
-  SetStateAction,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react';
+import { ReactNode, RefObject, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components/macro';
 import { useEventListener } from 'usehooks-ts';
 
-import { OnVerifyTypeR1 } from '../../../hxhg/types/L2/OnVerifyType/OnVerifyTypeR1';
+import { OnVerifyTypeR1 } from '../../types/L2/OnVerifyType/OnVerifyTypeR1';
 import { ButtonEd } from './components/ButtonEd';
 
 const ContainerStyled = styled.div`
@@ -98,16 +87,9 @@ export interface EditableInputEntryOptionsType {
   isIgnoreNoChanged?: boolean;
 }
 
-export interface EditableRefType {
-  changeStanding: (standing: StandingEnum) => void;
-  setIsLoading: Dispatch<SetStateAction<boolean>>;
-  setIsErrShowed: Dispatch<SetStateAction<boolean>>;
-  setErrText: Dispatch<SetStateAction<string | undefined | null>>;
-}
-
 /**
  * Компонент переключения между двумя состояними - "просто отображения - INITIAL" и "редактирования - EDIT".
- * Содержит "редактировать", при нажатии на которую
+ * Содержит кнопку "редактировать", при нажатии на которую
  * компонент переходит в режим редактирования, в котором пользователь может сделать необходимые правки текста input-а.
  *
  * Переключает между двумя компонентами - jsxInitialInterpolation и jsxEdit.
@@ -115,8 +97,15 @@ export interface EditableRefType {
  *
  * Рисует кнопки "редактировать", "сохранить", "отменить".
  * Подгоняет длину input под содержимое.
+ *
+ * NPM ЗАВИСИМОСТИ:
+ * - react@17.0.1
+ * - styled-components@5.1.26
+ * - usehooks-ts@2.9.1
+ *
+ * ID [[230509180900]] rev 1 1.0.0 2023-05-09
  */
-export const EditableInputEntry = forwardRef(function EditableEntry(props: Props, ref: Ref<EditableRefType>) {
+export function EditableInputEntryR1(props: Props) {
   const {
     jsxInitialInterpolation,
     jsxEdit,
@@ -169,17 +158,6 @@ export const EditableInputEntry = forwardRef(function EditableEntry(props: Props
       setValueMemo(inputCr.defaultValue);
     }
   }, [inputCr?.defaultValue]);
-
-  useImperativeHandle(ref, () => {
-    return {
-      changeStanding: (standing: StandingEnum) => {
-        setStandingLocal(standing);
-      },
-      setIsLoading,
-      setIsErrShowed,
-      setErrText,
-    };
-  });
 
   // старт редактирования
   const handleBtnEdit = async () => {
@@ -298,4 +276,4 @@ export const EditableInputEntry = forwardRef(function EditableEntry(props: Props
     </BaseLineStyled>
     {isErrShowed && errText && !isInitial && <ErrorsLineStyled>{errText}</ErrorsLineStyled>}
   </ContainerStyled>;
-});
+}
