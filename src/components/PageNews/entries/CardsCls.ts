@@ -16,6 +16,7 @@ export class CardsCls {
   public static FIELD_SHOW_DATE_LAST = 'show_date_last';
   public static FIELD_TAGS = 'tags';
   public static FIELD_BROKEN = 'broken';
+  public static FIELD_RATING = 'rating';
 
   constructor(readonly records: Record[]) {
   }
@@ -39,6 +40,7 @@ export class CardsCls {
       show_date_last: record.get(CardsCls.FIELD_SHOW_DATE_LAST),
       tags: record.get(CardsCls.FIELD_TAGS),
       broken: record.get(CardsCls.FIELD_BROKEN),
+      rating: record.get(CardsCls.FIELD_RATING),
     };
   }
 
@@ -61,6 +63,13 @@ export class CardsCls {
   static async commUpdate(tid: string, commText: string) {
     const fields = {
       [CardsCls.FIELD_COMM]: commText,
+    };
+    await MAirtable.recordUpdate(tid, fields);
+  }
+
+  static async ratingUpdate(tid: string, rating: number) {
+    const fields = {
+      [CardsCls.FIELD_RATING]: rating,
     };
     await MAirtable.recordUpdate(tid, fields);
   }

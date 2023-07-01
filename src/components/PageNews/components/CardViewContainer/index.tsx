@@ -26,8 +26,7 @@ export class CardViewContainer extends Component<any, any> {
       <button className="rc-viewer__button" onClick={this.props.handleShow}>Show</button>
       {
         this.props.card
-          ?
-          <div className="rc-viewer__card">
+          ? <div className="rc-viewer__card">
             <Card
               key={this.props.card.id}
               card={this.props.card}

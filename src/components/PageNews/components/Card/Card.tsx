@@ -8,6 +8,7 @@ import { EditableTest } from '../../../../shared/components/L2/EditableText/Edit
 import { useEffectOnce } from 'usehooks-ts';
 import { CardsCls } from '../../entries/CardsCls';
 import { EditableValue } from './EditableValue';
+import { RatingUi } from './RatingUi';
 
 const COLOR_1 = '#f2f7f8';
 const COLOR_2 = '#56686d';
@@ -112,6 +113,7 @@ export interface Props {
 
 export function Card(props: Props) {
   const { card, handleLinkClick } = props;
+  console.log('!!-!!-!!  card {230701204235}\n', card); // del+
 
   useEffectOnce(() => {
     dayjs.extend(relativeTime);
@@ -191,5 +193,6 @@ export function Card(props: Props) {
       <div>признак недействительности:</div>
       <EditableValue value={broken || ''} onConfirm={handleBrokenOnConfirm} />
     </BrokenNpStyled>
+    <RatingUi tid={card.tid || ''} rating={card.rating || 0} />
   </CardStyled>);
 }

@@ -43,7 +43,7 @@ export function PageNews() {
         try {
           setIsApiKeySetted(true);
           // --- получаем вообще ВСЕ записи
-          // [[210222113321]]
+          // (>>>) [[210222113321]]
           const records = await MAirtable.recordsGet();
           // ---
           const cardsNext = new CardsCls(records);
